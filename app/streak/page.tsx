@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../layout-components/Sidebar';
 import Header from '../layout-components/Header';
+import Image from 'next/image';
 
 /** * TYPES 
  */
@@ -110,7 +111,7 @@ export default function SpiritualPathPage() {
               </span>
               <h2 className="text-3xl font-bold text-[#4d6054] mb-4 leading-tight">{selectedNode.title}</h2>
               <div className="w-full h-48 rounded-2xl bg-[#e3e9f0] mb-6 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop" alt="Meditative Scene" className="w-full h-full object-cover" />
+                <Image src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop" alt="Meditative Scene" className="w-full h-full object-cover" />
               </div>
               <p className="text-[#434844] mb-8 leading-relaxed">{selectedNode.desc}</p>
               <div className="space-y-4 font-sans">
