@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Sidebar from '../../../app/layout-components/Sidebar';
 import Header from '../../../app/layout-components/Header';
 import { signOut } from 'next-auth/react';
+import Image from 'next/image';
 
 export default function ProfileSettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -127,10 +128,12 @@ export default function ProfileSettingsPage() {
                     className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-surface-container-high cursor-pointer relative group"
                   >
                     {profile.image ? (
-                      <img 
+                      <Image
                         src={profile.image} 
                         alt="Profile avatar" 
                         className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
+                        width={128}
+                        height={128}  
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-on-surface-variant/40 bg-gray-100">
