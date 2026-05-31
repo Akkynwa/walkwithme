@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WalkWithMe - Morning Peace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Playfair Display', serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-player {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .progress-bar-glow {
+            box-shadow: 0 0 10px rgba(183, 204, 188, 0.4);
+        }
+        .audio-wave-anim {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 16px;
+        }
+        .audio-wave-anim div {
+            width: 2px;
+            background: #b7ccbc;
+            animation: wave 1s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#474744",
+                      "on-secondary-fixed": "#1b1c19",
+                      "tertiary": "#605b55",
+                      "secondary-container": "#e1dfdb",
+                      "inverse-surface": "#2b3137",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-variant": "#dde3eb",
+                      "surface-container-low": "#eff4fc",
+                      "primary": "#4d6054",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-container-high": "#e3e9f0",
+                      "on-tertiary-container": "#fffbff",
+                      "surface": "#f7f9ff",
+                      "outline": "#737873",
+                      "on-primary-container": "#f6fff6",
+                      "surface-bright": "#f7f9ff",
+                      "tertiary-fixed-dim": "#ccc5be",
+                      "primary-container": "#66796c",
+                      "on-surface-variant": "#434844",
+                      "inverse-on-surface": "#ecf1f9",
+                      "on-tertiary-fixed": "#1e1b16",
+                      "secondary": "#5e5e5b",
+                      "secondary-fixed-dim": "#c8c6c2",
+                      "background": "#f7f9ff",
+                      "on-secondary-container": "#63635f",
+                      "inverse-primary": "#b7ccbc",
+                      "on-tertiary-fixed-variant": "#4a4640",
+                      "on-primary-fixed": "#0d1f15",
+                      "on-primary-fixed-variant": "#384b3f",
+                      "outline-variant": "#c3c8c2",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#79746d",
+                      "surface-tint": "#506356",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#e9e1d9",
+                      "surface-container": "#e9eef6",
+                      "secondary-fixed": "#e4e2dd",
+                      "primary-fixed-dim": "#b7ccbc",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#d5dae2",
+                      "primary-fixed": "#d2e8d8",
+                      "on-primary": "#ffffff",
+                      "surface-container-highest": "#dde3eb",
+                      "on-surface": "#161c22",
+                      "on-background": "#161c22"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "8px",
+                      "container-max": "1200px",
+                      "xs": "4px",
+                      "margin-mobile": "20px",
+                      "lg": "48px",
+                      "sm": "12px",
+                      "xl": "80px",
+                      "md": "24px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": ["Playfair Display"],
+                      "headline-md-mobile": ["Playfair Display"],
+                      "display-lg": ["Playfair Display"],
+                      "label-md": ["Plus Jakarta Sans"],
+                      "headline-md": ["Playfair Display"],
+                      "body-md": ["Playfair Display"],
+                      "label-sm": ["Plus Jakarta Sans"],
+                      "body-lg": ["Playfair Display"]
+              },
+              "fontSize": {
+                      "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                      "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- App Shell -->
+<div class="flex min-h-screen relative">
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright dark:bg-inverse-surface border-r border-outline-variant/50 z-40 w-64">
+<div class="mb-xl px-sm">
+<h1 class="font-headline-md text-headline-md text-primary">WalkWithMe</h1>
+<p class="text-on-surface-variant text-sm mt-xs">Walking in Light</p>
+</div>
+<nav class="flex-1 space-y-base">
+<a class="flex items-center gap-md px-md py-sm transition-colors duration-500 text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors duration-500 bg-primary-container text-on-primary-container rounded-lg font-semibold font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span>Bible</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors duration-500 text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span>Reflect</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors duration-500 text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>History</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors duration-500 text-on-surface-variant hover:bg-surface-container-low font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span>Profile</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-xl">
+<div class="bg-primary-container text-on-primary-container p-md rounded-xl text-center">
+<button class="font-label-md text-label-md font-bold uppercase tracking-wider">Start Daily Verse</button>
+</div>
+</div>
+</aside>
+<!-- Main Content (The Digital Sanctuary) -->
+<main class="flex-1 lg:ml-64 relative min-h-screen">
+<!-- Hero Background (Dark Forest/Mountain at Dawn) -->
+<div class="absolute inset-0 z-0 overflow-hidden">
+<div class="absolute inset-0 bg-black/40 z-10"></div>
+<img class="w-full h-full object-cover" data-alt="A serene landscape of rolling misty mountain peaks during the blue hour of dawn. The scene is dominated by deep muted greens, dark forest silhouettes in the foreground, and a soft, ethereal glowing light on the horizon. The atmosphere is quiet, meditative, and still, evoking a sense of spiritual peace and deep focus for a prayerful session." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkJPotg_chrUBeRevg4y2Jf02DTx02mbEzycq5WvBaMapmUZ2l6HA56WtB9WTAN1jrZ4X2-xGsVVX-1QccW6naAACRDldjHE6dADakOwk4_64V42GcP509vzV1dVL_GYOpJT3yVKRIxxDE5zObpVKYtSzfWSSzJm1yCbEOkjfxXGKyRo8TzXBDwLZCrKD-CtP7z2dTI441smcRbvkqBG2P8sjFIAPtMqOGtXPnQcCYQkhuIzINWRP48_nqoUhlhL23cvAmXWwWjkOd"/>
+</div>
+<!-- Header for Mobile/Back navigation -->
+<header class="relative z-20 flex justify-between items-center px-margin-mobile py-base md:px-lg max-w-container-max mx-auto text-white">
+<button class="p-base hover:bg-white/10 rounded-full transition-colors active:scale-95 duration-300">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex items-center gap-xs">
+<div class="audio-wave-anim">
+<div style="animation-delay: 0.1s"></div>
+<div style="animation-delay: 0.3s"></div>
+<div style="animation-delay: 0.2s"></div>
+<div style="animation-delay: 0.4s"></div>
+</div>
+<span class="font-label-sm text-label-sm tracking-widest opacity-80">STILLNESS SESSION</span>
+</div>
+<button class="p-base hover:bg-white/10 rounded-full transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</header>
+<!-- Player Canvas -->
+<div class="relative z-20 flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-margin-mobile pb-xl">
+<!-- "Now Playing" Glassmorphism Card -->
+<div class="glass-player w-full max-w-[500px] p-md md:p-lg rounded-[2rem] shadow-2xl transition-all duration-700 hover:shadow-primary/20">
+<!-- Content Header -->
+<div class="text-center mb-lg">
+<h2 class="font-display-lg text-headline-md text-white mb-xs tracking-tight">Morning Peace: Psalm 23</h2>
+<p class="font-body-md text-body-md text-primary-fixed opacity-90">Narrated by Julianna Thorne</p>
+</div>
+<!-- Visual Focus (Album Art Placeholder) -->
+<div class="aspect-square w-48 md:w-64 mx-auto mb-lg relative">
+<div class="absolute inset-0 rounded-full border border-white/20 animate-[pulse_6s_infinite] scale-110"></div>
+<img class="w-full h-full object-cover rounded-full border-2 border-primary-fixed-dim/30 shadow-xl" data-alt="A soft focus, minimalist macro photograph of a single dewdrop on a sage green leaf, captured in the soft light of dawn. The image is circular, featuring gentle bokeh and a calm, organic aesthetic that blends seamlessly with the dark forest background of the app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAigbzsvgIvY_fAU1-XLVXgleIvLhwyxoxdPW5tECONJ0ltDnmuRIpOD40p68Hv8axIZkpvZyC3zs73FU5C5rQlHhG3OOPAwEdxg2My_E0ij_wm3lzw_CGFBjmBzcwNtm0rHsF-DxiL8iwYAfdWNIFoQzlNSd1mnMBlfREH_I2GwQKGu_m-dZe23jJ92keYlwOUzR40dAK6ql6h8nv_e8nDPxx480NpR0Xe-NLgGffI6mtcJiVt1W94hpYGKxyUQTQu05ARVv7TU0l-"/>
+</div>
+<!-- Controls -->
+<div class="flex flex-col gap-lg">
+<!-- Progress Area -->
+<div class="space-y-sm">
+<div class="h-1 w-full bg-white/20 rounded-full overflow-hidden relative">
+<div class="absolute left-0 top-0 h-full w-1/3 bg-primary-fixed-dim progress-bar-glow"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-white/60">
+<span>04:12</span>
+<span>12:45</span>
+</div>
+</div>
+<!-- Main Play Controls -->
+<div class="flex items-center justify-between">
+<button class="text-white/70 hover:text-white transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="replay_10">replay_10</span>
+</button>
+<div class="flex items-center gap-md md:gap-lg">
+<button class="text-white hover:text-primary-fixed-dim transition-all duration-300 transform active:scale-90">
+<span class="material-symbols-outlined text-[32px]" data-icon="skip_previous" style="font-variation-settings: 'FILL' 1;">skip_previous</span>
+</button>
+<button class="w-20 h-20 md:w-24 md:h-24 bg-primary-fixed text-primary rounded-full flex items-center justify-center shadow-lg transition-all duration-500 hover:scale-105 active:scale-95 group" id="playBtn">
+<span class="material-symbols-outlined text-[48px]" data-icon="pause" id="playIcon" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="text-white hover:text-primary-fixed-dim transition-all duration-300 transform active:scale-90">
+<span class="material-symbols-outlined text-[32px]" data-icon="skip_next" style="font-variation-settings: 'FILL' 1;">skip_next</span>
+</button>
+</div>
+<button class="text-white/70 hover:text-white transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="forward_30">forward_30</span>
+</button>
+</div>
+<!-- Extra Actions -->
+<div class="flex justify-around items-center pt-base border-t border-white/10">
+<button class="flex flex-col items-center gap-xs text-white/70 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="text-[10px] uppercase tracking-tighter font-label-sm">Save</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-white/70 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="slow_motion_video">slow_motion_video</span>
+<span class="text-[10px] uppercase tracking-tighter font-label-sm">1.0x</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-white/70 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+<span class="text-[10px] uppercase tracking-tighter font-label-sm">Share</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Up Next Section -->
+<section class="w-full max-w-[500px] mt-xl">
+<div class="flex justify-between items-end mb-md">
+<h3 class="font-headline-md text-headline-md text-white/90">Up Next</h3>
+<a class="font-label-md text-label-md text-primary-fixed hover:underline underline-offset-4" href="#">View All</a>
+</div>
+<div class="space-y-sm">
+<!-- List Item 1 -->
+<div class="flex items-center gap-md p-sm bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 cursor-pointer group">
+<div class="w-14 h-14 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A tranquil soft-focus forest floor with sunlight filtering through leaves, creating a dreamy, ethereal texture of greens and golds." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3V-Ay3xdKpZyHnynKXhwAWz-jEymrTXvkIEa3KeJmgd_rji0PfO-HprSAgRRxqlpOlqz9Zku05c3hVgZikoADVE9Uo-03fVLbxJSsO7YnQQ9YAqrPImIqMQF-B9M5od0YQRWt0i0akmbi5sQfiC36L0xMIHct-VBqmkDQx6VYcwjgzRSNtoW1LjmLtRM_r8OgueEDYkEainGZS6-TBNJZVkt2crmdBEzJiRzrclSWqNIAn1Ul7SywVjH4qadIYRgS_AGVfU3Ufd7y"/>
+</div>
+<div class="flex-1">
+<h4 class="text-white font-body-md text-body-md">Finding Stillness</h4>
+<p class="text-white/60 font-label-sm text-label-sm">8 min • Meditation</p>
+</div>
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors" data-icon="play_circle">play_circle</span>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center gap-md p-sm bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 cursor-pointer group">
+<div class="w-14 h-14 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A misty morning lake with calm water reflecting a soft orange and blue sky at sunrise. Minimalist and peaceful." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvrC5XsBBaUmWaU7EsE0OEPa84tM_DEs6xHfvgHYDcnxE2m_oidzWJC6nezuKIoEfUfoY1_XIKheMO3fHCIlHit5D0CiuxM61rVWHBaVv1pW7BTgC37V0gXdj54W8Ll9KRz29SPOjZYLdWBYxbvu8P-nOPiLcehcDYOzAfI0CQdehSOX7-6qF2Fjb93EftHp2uWNr4iBaWEXiUBHnMfEUH8FJoCZ87eFJI16LavfeO4F7xjGdFEBa-UdncZB8miC60_uESI0ac12Pr"/>
+</div>
+<div class="flex-1">
+<h4 class="text-white font-body-md text-body-md">The Shepherd's Call</h4>
+<p class="text-white/60 font-label-sm text-label-sm">15 min • Narrated Text</p>
+</div>
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors" data-icon="play_circle">play_circle</span>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center gap-md p-sm bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 cursor-pointer group">
+<div class="w-14 h-14 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Soft hazy mountains in the far distance with a vast open sky, emphasizing a sense of space, promise, and rest." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-LvLr9GUwZW4nLvg5jc_quVSSHftTS5Otl_tpdaUtYmmujkT7qSsjgUXHN2DYt8QABTxEnNEcnHt9IzJyAGkotdJlfCUobV4yZ4hldbHsleF63PgglXy-7tJXj5xI-PpHWMUwX801Oi8k7HDFaJd877iOdAsJ-4LCdHXQwR-kZM2nwDaaZApZkia_z8FNd9qQLjU_UQNGFVbRuw5tuK-0JKHO5WZOlUKuTC18YbEJKoBrfOj0-UGjnQ3ZDIk7emEVtChV7om0yQXx"/>
+</div>
+<div class="flex-1">
+<h4 class="text-white font-body-md text-body-md">Resting in Promise</h4>
+<p class="text-white/60 font-label-sm text-label-sm">10 min • Reflection</p>
+</div>
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span>Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-transform duration-300 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="local_library" style="font-variation-settings: 'FILL' 1;">local_library</span>
+<span>Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span>Journal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span>Stats</span>
+</a>
+</nav>
+</div>
+<script>
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        let isPlaying = true;
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playIcon.textContent = isPlaying ? 'pause' : 'play_arrow';
+            
+            // Visual feedback
+            if (isPlaying) {
+                playBtn.classList.add('bg-primary-fixed');
+                playBtn.classList.remove('bg-white');
+            } else {
+                playBtn.classList.remove('bg-primary-fixed');
+                playBtn.classList.add('bg-white');
+            }
+        });
+
+        // Slow fade-in of elements for meditative entry
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.querySelector('main');
+            mainContent.style.opacity = '0';
+            mainContent.style.transition = 'opacity 1.5s ease-out';
+            setTimeout(() => {
+                mainContent.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body></html>

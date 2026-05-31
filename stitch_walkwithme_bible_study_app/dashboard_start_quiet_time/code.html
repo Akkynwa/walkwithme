@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WalkWithMe - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#2b3137",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#f7f9ff",
+                      "secondary-container": "#e1dfdb",
+                      "on-surface-variant": "#434844",
+                      "primary-fixed-dim": "#b7ccbc",
+                      "secondary-fixed-dim": "#c8c6c2",
+                      "surface-dim": "#d5dae2",
+                      "on-secondary-container": "#63635f",
+                      "surface-container-low": "#eff4fc",
+                      "surface-container-lowest": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#506356",
+                      "secondary": "#5e5e5b",
+                      "surface-variant": "#dde3eb",
+                      "on-primary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#b7ccbc",
+                      "on-surface": "#161c22",
+                      "on-secondary-fixed": "#1b1c19",
+                      "on-error": "#ffffff",
+                      "surface-container": "#e9eef6",
+                      "tertiary-fixed-dim": "#ccc5be",
+                      "on-secondary-fixed-variant": "#474744",
+                      "primary-container": "#66796c",
+                      "on-background": "#161c22",
+                      "on-tertiary-fixed": "#1e1b16",
+                      "on-tertiary": "#ffffff",
+                      "primary": "#4d6054",
+                      "outline": "#737873",
+                      "surface-container-highest": "#dde3eb",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#384b3f",
+                      "on-tertiary-fixed-variant": "#4a4640",
+                      "on-tertiary-container": "#fffbff",
+                      "secondary-fixed": "#e4e2dd",
+                      "background": "#f7f9ff",
+                      "tertiary-container": "#79746d",
+                      "surface": "#f7f9ff",
+                      "tertiary-fixed": "#e9e1d9",
+                      "on-primary-container": "#f6fff6",
+                      "tertiary": "#605b55",
+                      "inverse-on-surface": "#ecf1f9",
+                      "primary-fixed": "#d2e8d8",
+                      "outline-variant": "#c3c8c2",
+                      "surface-container-high": "#e3e9f0",
+                      "on-primary-fixed": "#0d1f15"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "container-max": "1200px",
+                      "base": "8px",
+                      "margin-mobile": "20px",
+                      "lg": "48px",
+                      "sm": "12px",
+                      "xl": "80px",
+                      "gutter": "24px",
+                      "md": "24px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": ["Playfair Display"],
+                      "body-lg": ["Playfair Display"],
+                      "display-lg": ["Playfair Display"],
+                      "label-sm": ["Plus Jakarta Sans"],
+                      "headline-md": ["Playfair Display"],
+                      "label-md": ["Plus Jakarta Sans"],
+                      "headline-md-mobile": ["Playfair Display"],
+                      "body-md": ["Playfair Display"]
+              },
+              "fontSize": {
+                      "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .breathe-pulse {
+            animation: breathe 8s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.15; }
+        }
+        .canvas-shadow {
+            box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md transition-colors duration-500">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim flex justify-between items-center w-full px-margin-mobile py-base md:px-lg max-w-container-max mx-auto fixed top-0 left-0 right-0 z-40">
+<h1 class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim">WalkWithMe</h1>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-3xl cursor-pointer hover:opacity-80 transition-all duration-500" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright dark:bg-inverse-surface border-r border-outline-variant/50 w-64 z-50">
+<div class="mb-xl px-2">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">WalkWithMe</h2>
+<p class="font-label-md text-label-md text-secondary">Walking in Light</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-sm px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-semibold scale-[0.98] transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-md text-label-md">Bible</span>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="font-label-md text-label-md">Reflect</span>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<button class="mt-auto w-full py-4 bg-primary text-on-primary rounded-xl font-label-md text-label-md hover:opacity-90 transition-opacity">
+            Start Daily Verse
+        </button>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-[100px] pb-[100px] lg:pt-base lg:pl-[280px] max-w-container-max mx-auto px-margin-mobile md:px-lg min-h-screen">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-xl">
+<div class="animate-in fade-in duration-700 slide-in-from-bottom-4">
+<h2 class="font-headline-md text-headline-md md:text-display-lg md:font-display-lg text-primary mb-2">Good morning, Elias</h2>
+<p class="text-secondary opacity-80">May your path be guided by peace today.</p>
+</div>
+<!-- Streak Counter -->
+<div class="flex items-center gap-sm bg-surface-container-low border border-outline-variant/30 px-base py-sm rounded-full w-fit canvas-shadow">
+<div class="bg-primary-container/20 p-xs rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<span class="font-label-md text-label-md text-primary">7 Day Streak 🔥</span>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Hero Meditation Card (Asymmetric Span) -->
+<div class="md:col-span-8 group cursor-pointer overflow-hidden rounded-3xl bg-surface-container-lowest border border-outline-variant/50 canvas-shadow transition-all duration-500 hover:border-primary/40">
+<div class="relative h-[400px] flex items-end p-lg">
+<div class="absolute inset-0 z-0">
+<img alt="Morning Landscape" class="w-full h-full object-cover grayscale-[0.2] transition-transform duration-1000 group-hover:scale-105" data-alt="A cinematic, ultra-wide landscape photograph of a misty valley at sunrise. The soft morning light filters through ancient trees, creating long, ethereal shadows and a warm glow. The color palette is dominated by muted sage greens, warm creams, and soft charcoal tones. The atmosphere is profoundly serene and silent, capturing a perfect moment of spiritual stillness and digital sanctuary." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAb4SWXQY8OLMVvzstqOmdLREMakIZsr7D-gshTH2V0Fev5U6hW5rFLHqiejCmaxqDYuHdJ5UsSCxsEOVzUzUBrjsGeq9FuIz7-BrT3XQxQ8iPlD0EaigX-ggTBKK5dF0JDIvQdwkoh10qPyQXsKHNpZFEsELCq4-9I7GbahZkRlY9XK5921yClc2K9FBiJrAHdVyXeCY9g3ZnGiNcf6Tu9js1kmkwo4RmrvU3LSHRapSxHw7xOPk2bM57tEAuQ0LNKYAH6I8knyRW4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+</div>
+<div class="relative z-10 w-full flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div class="text-white">
+<span class="font-label-sm text-label-sm uppercase tracking-widest opacity-80 mb-base block">Today's Reading</span>
+<h3 class="font-headline-md text-headline-md md:text-display-lg md:font-display-lg mb-2">Psalm 23</h3>
+<p class="text-white/80 max-w-md italic font-body-md text-body-md line-clamp-2">"The Lord is my shepherd; I shall not want..."</p>
+</div>
+<button class="bg-white text-primary px-xl py-4 rounded-full font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-all duration-300 flex items-center gap-xs">
+                            Start Journey <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Breathe Micro-Component -->
+<div class="md:col-span-4 flex flex-col items-center justify-center bg-primary-container/10 border border-outline-variant/30 rounded-3xl p-lg text-center canvas-shadow">
+<div class="relative mb-md">
+<div class="w-32 h-32 rounded-full bg-primary/20 breathe-pulse absolute inset-0"></div>
+<div class="w-32 h-32 rounded-full border border-primary flex items-center justify-center relative z-10">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="air">air</span>
+</div>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary mb-2">Take a breath</h4>
+<p class="text-secondary font-label-md text-label-md px-base">Pause for 60 seconds before you begin your study.</p>
+<button class="mt-md text-primary font-label-md text-label-md border-b border-primary/20 pb-xs hover:border-primary transition-all">Begin Exercise</button>
+</div>
+<!-- Quick Actions Section -->
+<div class="md:col-span-12 mt-md">
+<h4 class="font-headline-md-mobile text-headline-md-mobile text-primary mb-base">Quick Actions</h4>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Action Card 1 -->
+<div class="group flex items-center gap-md p-base bg-surface-container-lowest border border-outline-variant/50 rounded-2xl hover:bg-surface-container transition-all duration-300 cursor-pointer">
+<div class="w-16 h-16 rounded-xl bg-surface-container flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="history_edu">history_edu</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Journal History</p>
+<p class="text-secondary text-sm opacity-70">Review 12 past entries</p>
+</div>
+</div>
+<!-- Action Card 2 -->
+<div class="group flex items-center gap-md p-base bg-surface-container-lowest border border-outline-variant/50 rounded-2xl hover:bg-surface-container transition-all duration-300 cursor-pointer">
+<div class="w-16 h-16 rounded-xl bg-surface-container flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="local_library">local_library</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Bible Library</p>
+<p class="text-secondary text-sm opacity-70">Read offline-stored books</p>
+</div>
+</div>
+<!-- Action Card 3 (Stats) -->
+<div class="group flex items-center gap-md p-base bg-surface-container-lowest border border-outline-variant/50 rounded-2xl hover:bg-surface-container transition-all duration-300 cursor-pointer">
+<div class="w-16 h-16 rounded-xl bg-surface-container flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="query_stats">query_stats</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Your Stats</p>
+<p class="text-secondary text-sm opacity-70">Spiritual growth metrics</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Verse of the Day Card -->
+<div class="md:col-span-12 mt-md p-lg bg-surface-bright border border-outline-variant/30 rounded-3xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-lg opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="format_quote">format_quote</span>
+</div>
+<div class="relative z-10 max-w-2xl">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest block mb-md">Verse of the Day</span>
+<blockquote class="font-display-lg text-headline-md md:text-headline-md text-on-surface mb-sm italic">"Let everything that has breath praise the Lord."</blockquote>
+<cite class="font-label-md text-label-md text-secondary block not-italic">— Psalm 150:6</cite>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-95 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-sm text-label-sm">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="local_library">local_library</span>
+<span class="font-label-sm text-label-sm">Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-label-sm text-label-sm">Journal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-sm text-label-sm">Stats</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.95)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = '';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = '';
+            });
+        });
+
+        // Atmospheric fade-in on load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('opacity-100');
+        });
+    </script>
+</body></html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WalkWithMe - Bible Reading</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2b3137",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "secondary-container": "#e1dfdb",
+                    "on-surface-variant": "#434844",
+                    "primary-fixed-dim": "#b7ccbc",
+                    "secondary-fixed-dim": "#c8c6c2",
+                    "surface-dim": "#d5dae2",
+                    "on-secondary-container": "#63635f",
+                    "surface-container-low": "#eff4fc",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#506356",
+                    "secondary": "#5e5e5b",
+                    "surface-variant": "#dde3eb",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#b7ccbc",
+                    "on-surface": "#161c22",
+                    "on-secondary-fixed": "#1b1c19",
+                    "on-error": "#ffffff",
+                    "surface-container": "#e9eef6",
+                    "tertiary-fixed-dim": "#ccc5be",
+                    "on-secondary-fixed-variant": "#474744",
+                    "primary-container": "#66796c",
+                    "on-background": "#161c22",
+                    "on-tertiary-fixed": "#1e1b16",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#4d6054",
+                    "outline": "#737873",
+                    "surface-container-highest": "#dde3eb",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#384b3f",
+                    "on-tertiary-fixed-variant": "#4a4640",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary-fixed": "#e4e2dd",
+                    "background": "#f7f9ff",
+                    "tertiary-container": "#79746d",
+                    "surface": "#f7f9ff",
+                    "tertiary-fixed": "#e9e1d9",
+                    "on-primary-container": "#f6fff6",
+                    "tertiary": "#605b55",
+                    "inverse-on-surface": "#ecf1f9",
+                    "primary-fixed": "#d2e8d8",
+                    "outline-variant": "#c3c8c2",
+                    "surface-container-high": "#e3e9f0",
+                    "on-primary-fixed": "#0d1f15"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "container-max": "1200px",
+                    "base": "8px",
+                    "margin-mobile": "20px",
+                    "lg": "48px",
+                    "sm": "12px",
+                    "xl": "80px",
+                    "gutter": "24px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Playfair Display"],
+                    "body-lg": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "headline-md": ["Playfair Display"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-md-mobile": ["Playfair Display"],
+                    "body-md": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f7f9ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        .serif-text { font-family: 'Playfair Display', serif; }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .reading-container { max-width: 800px; margin: 0 auto; }
+        .breathe-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: #4d6054;
+            border-radius: 50%;
+            animation: pulse 4s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 0 0 rgba(77, 96, 84, 0.4); }
+            50% { transform: scale(1.8); opacity: 1; box-shadow: 0 0 0 10px rgba(77, 96, 84, 0); }
+            100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 0 0 rgba(77, 96, 84, 0); }
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c8c2; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-x-hidden">
+<!-- Top Progress Bar (Visual Anchor) -->
+<div class="fixed top-0 left-0 w-full h-1 bg-surface-container z-[60] lg:pl-64">
+<div class="h-full bg-primary transition-all duration-700 ease-in-out" style="width: 65%;"></div>
+</div>
+<!-- Side Navigation Shell (Authority: JSON SideNavBar) -->
+<aside class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright border-r border-outline-variant/50 w-64 z-50">
+<div class="mb-xl px-2">
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">WalkWithMe</h1>
+<p class="text-label-sm text-secondary tracking-widest uppercase mt-1">Walking in Light</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Bible Active State -->
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-semibold shadow-sm transition-transform duration-300 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label-md text-label-md">Bible</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">edit_note</span>
+<span class="font-label-md text-label-md">Reflect</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant/30 px-2">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A serene, close-up portrait of a thoughtful person in soft, natural daylight. The image has a calm, minimalist aesthetic with a soft focus background. The lighting is ethereal and gentle, emphasizing a quiet moment of spiritual reflection and peace, perfectly aligning with a digital sanctuary theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb2aG3ACOycVaJZAXE1sCVefWMZ4Yiih88hEHBQiervNnsUstkbEwJVzEQlcHPXmef5almzprxZor07c8Etj0TpGyFX9UvvyRPEg2xpzAp2szoNg3lGLfz_QZ1ypNHm-c4M5UTk308SAqWXZzId1m_KSkyAnb-0hFOZ0cAvlX-aEa4keeqG32tb3Cs3QoTZ6_jD9bOs7l3GGOoi-9bv9R8JPjAdUqEMq-ikW_lXZu2KDCQIfdT1LYLQ-2WgQwL0Kw-aRmKfxHqcEVO"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-tight">Sarah</p>
+<p class="text-[10px] text-secondary">32 Day Streak</p>
+</div>
+</div>
+<button class="w-full py-3 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                Start Daily Verse
+            </button>
+</div>
+</aside>
+<!-- Top AppBar (Mobile Authority) -->
+<header class="lg:hidden flex justify-between items-center w-full px-margin-mobile py-base sticky top-0 z-[55] bg-surface">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tighter">WalkWithMe</h1>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="lg:pl-64 min-h-screen flex flex-col items-center">
+<!-- Header Section -->
+<section class="w-full max-w-4xl px-margin-mobile lg:px-lg pt-12 pb-8 flex flex-col items-center text-center">
+<div class="breathe-indicator mb-8"></div>
+<p class="text-label-sm text-secondary tracking-[0.2em] uppercase mb-0">Old Testament • Psalms</p><div class="flex flex-wrap justify-center gap-4 mt-6 mb-2">
+<div class="relative group/selector">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-300">
+<span class="material-symbols-outlined text-[18px]">translate</span>
+<span class="font-label-md">English</span>
+<span class="material-symbols-outlined text-[18px] group-hover/selector:rotate-180 transition-transform">expand_more</span>
+</button>
+</div>
+<div class="relative group/selector">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-300">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span class="font-label-md">KJV</span>
+<span class="material-symbols-outlined text-[18px] group-hover/selector:rotate-180 transition-transform">expand_more</span>
+</button>
+</div>
+</div>
+<h2 class="font-display-lg text-display-lg md:text-display-lg text-on-surface mb-2 serif-text">Psalm 23</h2>
+<div class="w-12 h-[1px] bg-outline-variant/60 my-6"></div>
+</section>
+<!-- Reading Canvas (Focused Journey) -->
+<article class="reading-container w-full px-margin-mobile lg:px-0 pb-32 fade-in">
+<div class="space-y-12 serif-text text-on-surface leading-relaxed">
+<div class="relative group">
+<span class="absolute -left-8 top-0 text-label-sm text-outline hidden md:block">1</span>
+<p class="font-body-lg text-body-lg md:text-[24px] md:leading-[1.8]">
+                        The Lord is my shepherd; I shall not want.
+                    </p>
+</div>
+<div class="relative group">
+<span class="absolute -left-8 top-0 text-label-sm text-outline hidden md:block">2</span>
+<p class="font-body-lg text-body-lg md:text-[24px] md:leading-[1.8]">
+                        He maketh me to lie down in green pastures: he leadeth me beside the still waters.
+                    </p>
+</div>
+<div class="relative group">
+<span class="absolute -left-8 top-0 text-label-sm text-outline hidden md:block">3</span>
+<p class="font-body-lg text-body-lg md:text-[24px] md:leading-[1.8]">
+                        He restoreth my soul: he leadeth me in the paths of righteousness for his name's sake.
+                    </p>
+</div>
+<div class="relative group">
+<span class="absolute -left-8 top-0 text-label-sm text-outline hidden md:block">4</span>
+<p class="font-body-lg text-body-lg md:text-[24px] md:leading-[1.8]">
+                        Yea, though I walk through the valley of the shadow of death, I will fear no evil: for thou art with me; thy rod and thy staff they comfort me.
+                    </p>
+</div>
+<div class="relative group">
+<span class="absolute -left-8 top-0 text-label-sm text-outline hidden md:block">5</span>
+<p class="font-body-lg text-body-lg md:text-[24px] md:leading-[1.8]">
+                        Thou preparest a table before me in the presence of mine enemies: thou anointest my head with oil; my cup runneth over.
+                    </p>
+</div>
+<div class="relative group">
+<span class="absolute -left-8 top-0 text-label-sm text-outline hidden md:block">6</span>
+<p class="font-body-lg text-body-lg md:text-[24px] md:leading-[1.8]">
+                        Surely goodness and mercy shall follow me all the days of my life: and I will dwell in the house of the Lord for ever.
+                    </p>
+</div>
+</div>
+<!-- Atmospheric Image Divider -->
+<div class="mt-20 rounded-xl overflow-hidden shadow-sm aspect-[16/7] w-full">
+<img alt="Still waters and green pastures" class="w-full h-full object-cover" data-alt="A breathtakingly tranquil landscape of a glassy, mirror-like lake at dawn, surrounded by rolling hills covered in lush green grass. The atmosphere is filled with a soft morning mist and warm golden light breaking through the horizon. The composition is clean and minimalist, evoking a sense of deep peace, stillness, and spiritual sanctuary, perfectly matching the calm aesthetic of the WalkWithMe brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcQmSEdz8bEjmBn5bsc-mB3sOltcj7gxWnhLXdJiOlW2Xixiz6il5DQ_T-vKBf3jecu4zlx5HLa-jGpK9P6XXowi5WbksL8qr6O7kBCJY61dygLVFGRWbFcatBOSNvXr7up6wPi4g73o4fMoc2r5PIqI9JKTvwYnn4dVjVOx6mvH_4PEWj-S699sS64spoi0kUwnkZyiWIN3FcofZ0Ee6gshDSz5oq7HKo744u2NXW3Df2lVD-mEh4HVDOR3Nj2R6RbryhTuYMKL2k"/>
+</div>
+</article>
+<!-- Footer Action (Authority: Transactional focused) -->
+<footer class="fixed bottom-0 lg:left-64 right-0 bg-surface-bright/80 backdrop-blur-md py-6 px-margin-mobile flex justify-center z-40 border-t border-outline-variant/20">
+<button class="group relative flex items-center justify-center gap-3 px-12 py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:shadow-lg transition-all duration-500 active:scale-95">
+<span>Continue to Reflection</span>
+<span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</button>
+</footer>
+</main>
+<!-- BottomNavBar (Mobile Shell Authority) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-secondary">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm">Daily</span>
+</div>
+<!-- Active Tab: Bible -->
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_library</span>
+<span class="font-label-sm text-label-sm">Bible</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Journal</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-sm text-label-sm">Stats</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction: Subtle scroll progress update
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.querySelector('.bg-primary').style.width = scrolled + '%';
+        });
+
+        // Interactive "Read State" marking
+        const verses = document.querySelectorAll('.group');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.remove('opacity-40');
+                } else {
+                    entry.target.classList.add('opacity-40');
+                }
+            });
+        }, { threshold: 0.8 });
+
+        verses.forEach(v => observer.observe(v));
+    </script>
+</body></html>

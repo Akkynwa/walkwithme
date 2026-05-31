@@ -1,0 +1,254 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Added directUrl for structural migrations
+}
+
+model User {
+  id                   String                @id @default(cuid())
+  email                String                @unique
+  emailVerified        DateTime?
+  name                 String?
+  image                String?               @db.Text // Text type safely stores large base64 data strings
+  bio                  String?               @db.Text // Holds your spiritual objectives and focus metrics
+  password             String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  passwordResetToken   String?   @unique
+  passwordResetExpires DateTime?
+  emailNotifications Boolean   @default(true)
+  pushNotifications  Boolean   @default(true)
+  dailyReminder      Boolean   @default(true)
+  prayerReminder     Boolean   @default(true)
+  newContent         Boolean   @default(true)
+
+  
+  // Relationships
+  accounts             Account[]
+  sessions             Session[]
+  journalEntries       JournalEntry[]
+  prayers              Prayer[]
+  quietTimeSessions    QuietTimeSession[]
+  communityMemberships CommunityMembership[]
+  userPreferences      UserPreferences?
+  streakData           StreakData?
+  discussions          Discussion[]          // Added relation map
+  replies              Reply[]               // Added relation map
+  auditLogs            AuditLog[]            // Added relation map
+  
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
+model VerificationToken {
+  id          String   @id @default(cuid()) // Recommended best practice explicit identifier
+  identifier  String
+  token       String   @unique
+  expires     DateTime
+  
+  @@unique([identifier, token])
+}
+
+model UserPreferences {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  language            String   @default("en")
+  theme               String   @default("light") // Matches 'light' | 'dark' | 'system' parameters
+  fontSize            Int      @default(2)       // Stores your 1 to 5 context reader text scale
+  
+  // Bible Sub-Preferences fields
+  bibleTranslation    String   @default("KJV")
+  readingMode         String   @default("verse") // 'verse', 'passage', 'chapter'
+  showCrossReferences Boolean  @default(true)
+  showCommentary      Boolean  @default(true)
+  
+  // Notification Sub-Preferences fields
+  dailyVerseReminder  Boolean  @default(true)
+  journalPrompts      Boolean  @default(true)
+  weeklySummary       Boolean  @default(false)
+  
+  // Deprecated legacy matching parameters for backwards compatibility 
+  notifications       Boolean  @default(true)
+  dailyReminder       Boolean  @default(true)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  content   String   @db.Text
+  mood      String?
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, createdAt])
+}
+
+model Prayer {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  description String    @db.Text
+  category    String
+  status      String    @default("pending") // pending, answered, archived
+  answeredAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, status])
+}
+
+model QuietTimeSession {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // reading, reflection, audio, summary
+  duration  Int      // in minutes
+  scripture String?
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, createdAt])
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @db.Text
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  groups  CommunityGroup[]
+  members CommunityMembership[]
+}
+
+model CommunityGroup {
+  id          String   @id @default(cuid())
+  communityId String
+  name        String
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  community   Community    @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  discussions Discussion[]
+  
+  @@index([communityId])
+}
+
+model CommunityMembership {
+  id          String   @id @default(cuid())
+  userId      String
+  communityId String
+  role        String   @default("member") // member, moderator, admin
+  joinedAt    DateTime @default(now())
+  
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, communityId])
+  @@index([userId])
+}
+
+model Discussion {
+  id        String   @id @default(cuid())
+  groupId   String
+  title     String
+  content   String   @db.Text
+  authorId  String   // Changed author to authorId for User relational mapping
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  group   CommunityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replies Reply[]
+  
+  @@index([groupId])
+  @@index([authorId])
+}
+
+model Reply {
+  id           String   @id @default(cuid())
+  discussionId String
+  authorId     String   // Changed author to authorId for User relational mapping
+  content      String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  discussion Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  @@index([discussionId])
+  @@index([authorId])
+}
+
+model StreakData {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  lastActiveAt  DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String?  @db.Text
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, createdAt])
+}

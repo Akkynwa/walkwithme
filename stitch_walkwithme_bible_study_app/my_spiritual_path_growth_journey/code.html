@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WalkWithMe - My Spiritual Path</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#e4e2dd",
+                        "on-primary-fixed-variant": "#384b3f",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2b3137",
+                        "inverse-on-surface": "#ecf1f9",
+                        "surface-dim": "#d5dae2",
+                        "on-surface": "#161c22",
+                        "on-secondary-fixed": "#1b1c19",
+                        "background": "#f7f9ff",
+                        "primary-fixed-dim": "#b7ccbc",
+                        "outline-variant": "#c3c8c2",
+                        "surface-tint": "#506356",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#63635f",
+                        "tertiary-container": "#79746d",
+                        "surface-container": "#e9eef6",
+                        "surface-variant": "#dde3eb",
+                        "surface": "#f7f9ff",
+                        "secondary": "#5e5e5b",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed": "#0d1f15",
+                        "secondary-fixed-dim": "#c8c6c2",
+                        "tertiary-fixed-dim": "#ccc5be",
+                        "on-primary-container": "#f6fff6",
+                        "primary-container": "#66796c",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d2e8d8",
+                        "primary": "#4d6054",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#eff4fc",
+                        "secondary-container": "#e1dfdb",
+                        "on-tertiary-fixed-variant": "#4a4640",
+                        "surface-bright": "#f7f9ff",
+                        "on-tertiary-fixed": "#1e1b16",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#434844",
+                        "outline": "#737873",
+                        "on-secondary-fixed-variant": "#474744",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#dde3eb",
+                        "surface-container-high": "#e3e9f0",
+                        "on-primary": "#ffffff",
+                        "on-background": "#161c22",
+                        "tertiary": "#605b55",
+                        "tertiary-fixed": "#e9e1d9",
+                        "inverse-primary": "#b7ccbc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "container-max": "1200px",
+                        "lg": "48px",
+                        "margin-mobile": "20px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Playfair Display"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Playfair Display"],
+                        "body-lg": ["Playfair Display"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md-mobile": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f9ff;
+            color: #161c22;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .path-svg {
+            filter: drop-shadow(0 4px 10px rgba(80, 99, 86, 0.1));
+        }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s ease-in-out infinite;
+        }
+        .step-node:hover {
+            transform: translateY(-4px);
+            transition: transform 0.3s ease;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c8c2; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #737873; }
+        
+        /* Modal Backdrop */
+        #detail-panel {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #detail-panel.hidden-panel {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top AppBar (Mobile/Tablet) -->
+<header class="bg-surface dark:bg-surface-dim flex justify-between items-center w-full px-margin-mobile py-base md:px-lg max-w-container-max mx-auto fixed top-0 left-0 right-0 z-40 lg:hidden">
+<h1 class="font-display-lg text-headline-md text-primary dark:text-primary-fixed-dim">WalkWithMe</h1>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">account_circle</span>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright dark:bg-inverse-surface border-r border-outline-variant/50 w-64 z-50">
+<div class="mb-xl">
+<h2 class="font-headline-md text-headline-md text-primary mb-1">WalkWithMe</h2>
+<p class="font-label-md text-label-md text-secondary opacity-70">Walking in Light</p>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-md text-label-md">Bible</span>
+</a>
+<a class="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="font-label-md text-label-md">Reflect</span>
+</a>
+<a class="flex items-center gap-4 p-3 bg-primary-container text-on-primary-container rounded-lg font-semibold active:scale-[0.98] transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">route</span>
+<span class="font-label-md text-label-md">Path</span>
+</a>
+<a class="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+<button class="mt-auto bg-primary text-on-primary font-label-md text-label-md py-4 px-6 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">auto_awesome</span>
+                Start Daily Verse
+            </button>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-64 p-margin-mobile md:p-lg pt-24 lg:pt-lg max-w-container-max mx-auto w-full relative">
+<!-- Header Section -->
+<div class="max-w-[800px] mx-auto mb-xl text-center">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-4">My Spiritual Path</h1>
+<p class="font-body-lg text-body-lg text-secondary leading-relaxed max-w-2xl mx-auto">
+                    A visual map of your journey toward peace and spiritual growth. Every step is a moment of light.
+                </p>
+</div>
+<!-- The Path Visualization -->
+<div class="relative max-w-[600px] mx-auto min-h-[1200px]">
+<!-- SVG Path Connector -->
+<svg class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none path-svg" fill="none" viewbox="0 0 400 1200" xmlns="http://www.w3.org/2000/svg">
+<path d="M200 0C200 100 350 150 350 250C350 350 50 450 50 550C50 650 350 750 350 850C350 950 200 1050 200 1200" stroke="#c3c8c2" stroke-dasharray="12 12" stroke-width="4"></path>
+<!-- Progress Path Overlay -->
+<path d="M200 0C200 100 350 150 350 250C350 350 50 450 50 550" stroke="#4d6054" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<!-- Nodes Container -->
+<div class="relative z-10 space-y-48 pt-12">
+<!-- Milestone 1: Completed -->
+<div class="flex flex-col items-center group">
+<div class="step-node w-16 h-16 rounded-full bg-primary-fixed-dim text-on-primary-fixed-variant flex items-center justify-center cursor-pointer shadow-lg shadow-primary/10" onclick="openNode('Read Psalm 23', 'A reflection on divine protection and guidance.', 'completed')">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="mt-4 text-center">
+<h3 class="font-headline-md text-label-md text-primary">Read Psalm 23</h3>
+<p class="font-label-sm text-label-sm text-secondary">Completed July 12</p>
+</div>
+</div>
+<!-- Milestone 2: Completed -->
+<div class="flex flex-col items-center translate-x-24 md:translate-x-32 group">
+<div class="step-node w-16 h-16 rounded-full bg-primary-fixed-dim text-on-primary-fixed-variant flex items-center justify-center cursor-pointer shadow-lg shadow-primary/10" onclick="openNode('Morning Meditation', '10 minutes of silent presence and breathing.', 'completed')">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="mt-4 text-center">
+<h3 class="font-headline-md text-label-md text-primary">10-Minute Morning Meditation</h3>
+<p class="font-label-sm text-label-sm text-secondary">Completed July 14</p>
+</div>
+</div>
+<!-- Milestone 3: Current (Active) -->
+<div class="flex flex-col items-center -translate-x-24 md:-translate-x-32 group">
+<div class="step-node w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center cursor-pointer shadow-xl shadow-primary/20 animate-pulse-soft" onclick="openNode('Gratitude Challenge', 'Begin a 7-day journey identifying daily blessings.', 'active')">
+<span class="material-symbols-outlined text-4xl">auto_awesome</span>
+</div>
+<div class="mt-4 text-center">
+<h3 class="font-headline-md text-label-md text-primary font-bold">7-Day Gratitude Challenge</h3>
+<p class="font-label-sm text-label-sm text-primary-container font-semibold">Active Step</p>
+</div>
+</div>
+<!-- Milestone 4: Future -->
+<div class="flex flex-col items-center translate-x-24 md:translate-x-32 opacity-40 grayscale group">
+<div class="step-node w-16 h-16 rounded-full bg-surface-container-high border-2 border-dashed border-outline text-secondary flex items-center justify-center cursor-pointer" onclick="openNode('Spiritual Goal', 'Setting intentions for the coming month of growth.', 'locked')">
+<span class="material-symbols-outlined text-3xl">lock</span>
+</div>
+<div class="mt-4 text-center">
+<h3 class="font-headline-md text-label-md text-secondary">Set Monthly Spiritual Goal</h3>
+<p class="font-label-sm text-label-sm text-secondary">Upcoming</p>
+</div>
+</div>
+<!-- Milestone 5: Future -->
+<div class="flex flex-col items-center opacity-40 grayscale group pb-24">
+<div class="step-node w-16 h-16 rounded-full bg-surface-container-high border-2 border-dashed border-outline text-secondary flex items-center justify-center cursor-pointer" onclick="openNode('Community Outreach', 'Exploring ways to serve others through light.', 'locked')">
+<span class="material-symbols-outlined text-3xl">diversity_3</span>
+</div>
+<div class="mt-4 text-center">
+<h3 class="font-headline-md text-label-md text-secondary">Service Reflection</h3>
+<p class="font-label-sm text-label-sm text-secondary">Upcoming</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Breathe Component (Passive) -->
+<div class="max-w-[400px] mx-auto my-xl p-lg bg-secondary-container/30 rounded-3xl text-center border border-outline-variant/30">
+<div class="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary opacity-20 rounded-full animate-pulse-soft scale-150"></div>
+<div class="absolute inset-0 bg-primary opacity-40 rounded-full animate-pulse-soft delay-700"></div>
+<div class="w-12 h-12 bg-primary rounded-full z-10"></div>
+</div>
+<h4 class="font-headline-md text-label-md text-primary mb-2">Breathe in Peace</h4>
+<p class="font-body-md text-label-sm text-secondary">Take a moment to center your spirit before continuing.</p>
+</div>
+</main>
+<!-- Detail Side Panel -->
+<aside class="hidden-panel fixed top-0 right-0 h-full w-full max-w-md bg-surface-bright shadow-2xl z-[60] border-l border-outline-variant/50 overflow-y-auto" id="detail-panel">
+<div class="p-8 h-full flex flex-col">
+<button class="self-end p-2 text-secondary hover:text-primary transition-colors" onclick="closePanel()">
+<span class="material-symbols-outlined text-3xl">close</span>
+</button>
+<div class="mt-8 flex-grow">
+<div class="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-primary-container text-on-primary-container" id="panel-status-tag">Active</div>
+<h2 class="font-display-lg text-headline-md text-primary mb-4 leading-tight" id="panel-title">7-Day Gratitude Challenge</h2>
+<div class="w-full h-48 rounded-2xl bg-surface-container-high mb-6 overflow-hidden" id="panel-image">
+<img class="w-full h-full object-cover" data-alt="A tranquil morning scene in a lush, green forest with sunlight filtering through the leaves onto a wooden table where a leather-bound journal sits. The atmosphere is quiet, serene, and filled with a sense of peace and gratitude. The lighting is soft and warm, highlighting the textures of the forest and the paper." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhKYt3vB_l2WwXwC4UCJtxaLWXFN-LmNYXM3xTMxMA-u_YJqtGbNMH-09QyLRf8o06FlAuRxZirZckOfzFA_Wc5GPXtmhEZzAn5-klcAxuQVwFnjHfHnaH3TlDGodmJQWH7cU2RKWazQENst1ux7uKfZlVdBQf-n0EBbeZTv4S8J5ZHYgo1_hafdq1PHa3TD1EYhbU2cg1qP3c2irR2Q6PE7SNiD48MrzpZBtyyHbZF_t6nDViJVDpoorL4eQXNmmUB2xmnCtqM-Ps"/>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8" id="panel-desc">
+                        Begin a intentional journey of identifying the small and large blessings in your life. This practice centers the soul on abundance rather than lack.
+                    </p>
+<div class="space-y-6">
+<div class="flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Scripture Focus</h4>
+<p class="font-label-sm text-label-sm text-secondary italic">"Give thanks in all circumstances; for this is the will of God in Christ Jesus for you." — 1 Thessalonians 5:18</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary">hourglass_bottom</span>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Estimated Time</h4>
+<p class="font-label-sm text-label-sm text-secondary">15 minutes daily</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-xl space-y-4">
+<button class="w-full py-4 bg-primary text-on-primary font-label-md text-label-md rounded-xl shadow-lg hover:opacity-90 transition-all" id="main-cta">Start Activity</button>
+<button class="w-full py-4 border border-outline text-secondary font-label-md text-label-md rounded-xl hover:bg-surface-container transition-all" onclick="closePanel()">Dismiss</button>
+</div>
+</div>
+</aside>
+<!-- Bottom NavBar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-secondary py-1">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm">Daily</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary py-1">
+<span class="material-symbols-outlined">local_library</span>
+<span class="font-label-sm text-label-sm">Bible</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">route</span>
+<span class="font-label-sm text-label-sm">Path</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary py-1">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Journal</span>
+</div>
+</nav>
+</div>
+<!-- Background Decoration -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-20 overflow-hidden">
+<div class="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] bg-primary rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 -left-1/4 w-[400px] h-[400px] bg-tertiary rounded-full blur-[100px]"></div>
+</div>
+<script>
+        const panel = document.getElementById('detail-panel');
+        const titleEl = document.getElementById('panel-title');
+        const descEl = document.getElementById('panel-desc');
+        const statusEl = document.getElementById('panel-status-tag');
+        const ctaEl = document.getElementById('main-cta');
+
+        function openNode(title, desc, status) {
+            titleEl.textContent = title;
+            descEl.textContent = desc;
+            
+            // Handle Status UI
+            if(status === 'completed') {
+                statusEl.textContent = 'Completed';
+                statusEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-secondary-container text-secondary';
+                ctaEl.textContent = 'View Reflection';
+                ctaEl.disabled = false;
+            } else if (status === 'locked') {
+                statusEl.textContent = 'Locked';
+                statusEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-surface-container-highest text-secondary';
+                ctaEl.textContent = 'Not Available';
+                ctaEl.disabled = true;
+                ctaEl.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                statusEl.textContent = 'In Progress';
+                statusEl.className = 'inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-primary-container text-on-primary-container';
+                ctaEl.textContent = 'Continue Journey';
+                ctaEl.disabled = false;
+                ctaEl.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+
+            panel.classList.remove('hidden-panel');
+        }
+
+        function closePanel() {
+            panel.classList.add('hidden-panel');
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePanel();
+        });
+    </script>
+</body></html>

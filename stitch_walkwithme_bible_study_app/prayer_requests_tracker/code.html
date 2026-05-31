@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WalkWithMe - Prayer Requests</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .breathe-animation {
+            animation: breathe 8s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#66796c",
+                        "surface-container-low": "#eff4fc",
+                        "on-primary-fixed": "#0d1f15",
+                        "inverse-surface": "#2b3137",
+                        "primary-fixed-dim": "#b7ccbc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#ecf1f9",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f7f9ff",
+                        "outline-variant": "#c3c8c2",
+                        "primary": "#4d6054",
+                        "on-tertiary-container": "#fffbff",
+                        "on-tertiary-fixed-variant": "#4a4640",
+                        "on-surface-variant": "#434844",
+                        "tertiary-container": "#79746d",
+                        "on-secondary-fixed-variant": "#474744",
+                        "surface-bright": "#f7f9ff",
+                        "secondary": "#5e5e5b",
+                        "background": "#f7f9ff",
+                        "on-surface": "#161c22",
+                        "surface-variant": "#dde3eb",
+                        "secondary-fixed-dim": "#c8c6c2",
+                        "on-secondary-container": "#63635f",
+                        "inverse-primary": "#b7ccbc",
+                        "surface-container": "#e9eef6",
+                        "on-secondary-fixed": "#1b1c19",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#605b55",
+                        "tertiary-fixed": "#e9e1d9",
+                        "secondary-container": "#e1dfdb",
+                        "surface-dim": "#d5dae2",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d2e8d8",
+                        "on-primary-container": "#f6fff6",
+                        "on-background": "#161c22",
+                        "on-tertiary-fixed": "#1e1b16",
+                        "tertiary-fixed-dim": "#ccc5be",
+                        "surface-container-highest": "#dde3eb",
+                        "secondary-fixed": "#e4e2dd",
+                        "outline": "#737873",
+                        "surface-container-high": "#e3e9f0",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#384b3f",
+                        "surface-tint": "#506356",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "xl": "80px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Playfair Display"],
+                        "label-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                        "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- Side Navigation Bar (Desktop) -->
+<nav class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright dark:bg-inverse-surface border-r border-outline-variant/50 w-64 z-50">
+<div class="mb-lg px-2">
+<h1 class="font-headline-md text-headline-md text-primary">WalkWithMe</h1>
+<p class="text-on-surface-variant font-label-sm">Walking in Light</p>
+</div>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">menu_book</span>
+<span class="font-label-md text-label-md">Bible</span>
+</a>
+<!-- Active Tab: Reflect (Prayer Context) -->
+<a class="flex items-center gap-4 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-semibold shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<span class="font-label-md text-label-md">Reflect</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+<button class="mt-auto bg-primary text-on-primary font-label-md py-4 rounded-xl shadow-lg hover:opacity-90 transition-all Active:scale-[0.98] duration-300">
+            Start Daily Verse
+        </button>
+</nav>
+<!-- Top Bar (Mobile) -->
+<header class="lg:hidden flex justify-between items-center w-full px-margin-mobile py-base bg-surface shadow-sm sticky top-0 z-40">
+<h1 class="font-display-lg text-primary text-[28px]">WalkWithMe</h1>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 min-h-screen px-margin-mobile md:px-lg py-lg max-w-container-max mx-auto pb-32 lg:pb-lg">
+<!-- Header Section -->
+<div class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary mb-2">Prayer Requests</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+                    Cast your anxieties on Him, for He cares for you. Keep track of your conversations with God and witness His faithfulness.
+                </p>
+</div>
+<button class="flex items-center justify-center gap-2 bg-primary text-on-primary px-lg py-4 rounded-full font-label-md shadow-md hover:shadow-xl transition-all duration-500 group">
+<span class="material-symbols-outlined">add</span>
+<span>New Prayer</span>
+</button>
+</div>
+<!-- Bento Grid Layout for Dashboard Feel -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Filter Tabs & Stats (Asymmetric layout) -->
+<div class="md:col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+<!-- Status Tabs Card -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant/30 shadow-sm">
+<h3 class="font-label-md text-secondary mb-4 uppercase tracking-widest">Navigation</h3>
+<div class="flex flex-col gap-2">
+<button class="flex items-center justify-between w-full p-4 rounded-lg bg-primary-fixed text-on-primary-fixed-variant font-semibold">
+<span class="flex items-center gap-3"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">pending</span>Pending</span>
+<span class="bg-primary/20 px-3 py-1 rounded-full text-xs">12</span>
+</button>
+<button class="flex items-center justify-between w-full p-4 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="flex items-center gap-3"><span class="material-symbols-outlined">verified</span>Answered</span>
+<span class="text-xs">45</span>
+</button>
+<button class="flex items-center justify-between w-full p-4 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="flex items-center gap-3"><span class="material-symbols-outlined">archive</span>Archived</span>
+<span class="text-xs">8</span>
+</button>
+</div>
+</div>
+<!-- Atmospheric "Breathe" Component -->
+<div class="bg-primary-container/10 p-lg rounded-xl flex flex-col items-center justify-center text-center relative overflow-hidden group">
+<div class="breathe-animation absolute w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<span class="material-symbols-outlined text-primary text-4xl mb-4">spa</span>
+<h4 class="font-headline-md text-primary text-2xl mb-2">Moment of Stillness</h4>
+<p class="font-label-sm text-on-surface-variant">Take 30 seconds to focus your heart before reviewing your requests.</p>
+<button class="mt-md font-label-md text-primary border border-primary/30 px-sm py-2 rounded-full hover:bg-primary hover:text-white transition-all">Begin Breath</button>
+</div>
+</div>
+</div>
+<!-- Prayer List Area -->
+<div class="md:col-span-12 lg:col-span-8 flex flex-col gap-md">
+<!-- Card 1: Pending -->
+<div class="group bg-surface-container-lowest p-md md:p-lg rounded-xl border border-outline-variant/20 shadow-[0_4px_20px_0_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_0_rgba(0,0,0,0.06)] transition-all duration-500">
+<div class="flex flex-col md:flex-row justify-between gap-md mb-4">
+<div class="flex-grow">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm px-3 py-1 rounded-full">Health</span>
+<span class="text-outline text-xs">• Added 2 days ago</span>
+</div>
+<h4 class="font-headline-md text-primary text-2xl mb-2">Health for my family</h4>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+                                Praying for healing and strength for my mother as she recovers from surgery. May the peace of God which transcends all understanding guard her heart and mind.
+                            </p>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-end gap-3 mt-md pt-md border-t border-outline-variant/20">
+<button class="flex items-center gap-2 px-4 py-2 text-secondary font-label-md hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">edit</span>
+                            Edit
+                        </button>
+<button class="flex items-center gap-2 px-6 py-2 bg-primary-fixed text-on-primary-fixed-variant font-label-md rounded-full hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                            Mark Answered
+                        </button>
+</div>
+</div>
+<!-- Card 2: Pending -->
+<div class="group bg-surface-container-lowest p-md md:p-lg rounded-xl border border-outline-variant/20 shadow-[0_4px_20px_0_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_0_rgba(0,0,0,0.06)] transition-all duration-500">
+<div class="flex flex-col md:flex-row justify-between gap-md mb-4">
+<div class="flex-grow">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-secondary-container text-on-secondary-container font-label-sm px-3 py-1 rounded-full">Finances</span>
+<span class="text-outline text-xs">• Added today</span>
+</div>
+<h4 class="font-headline-md text-primary text-2xl mb-2">Wisdom in Provision</h4>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+                                Seeking clarity on household budgeting and the upcoming car repairs. Asking for the discipline to steward resources well and trust in His timing.
+                            </p>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-end gap-3 mt-md pt-md border-t border-outline-variant/20">
+<button class="flex items-center gap-2 px-4 py-2 text-secondary font-label-md hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">edit</span>
+                            Edit
+                        </button>
+<button class="flex items-center gap-2 px-6 py-2 bg-primary-fixed text-on-primary-fixed-variant font-label-md rounded-full hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                            Mark Answered
+                        </button>
+</div>
+</div>
+<!-- Visual Anchor Image -->
+<div class="relative w-full h-48 rounded-xl overflow-hidden mt-md">
+<img class="w-full h-full object-cover" data-alt="A serene landscape at dawn featuring a mist-covered mountain range and a quiet, still lake in the foreground. The lighting is soft, warm, and golden, conveying a sense of spiritual peace and morning devotion. The color palette consists of soft sage greens, muted earth tones, and warm cream light, perfectly matching the meditative digital sanctuary aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgVna_fIRAW5CLJ9o9I9f3nNyErZW0oSWzmyNmuPjv4lxjTCZgHgq0LFNoedziFGikKL44cWvZ8acaoZht8MPNNPnA6_1g9713ZVN8QI1glIuio0cBXJHccCiAI25-mRpLh5QNtbbPSJyk2ZI_b580wV0SBFN3Z7HyFJlW1jzt4UvQ4e4gAxgkFlXG1zM0_foTCTSykaUFi0SZeB1ScIzZp6VjvP3N61p6RsHiAj_9fTio_jIj-hcDjyOJxRDA1qves4fbOSiG3xNg"/>
+<div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<p class="text-white font-body-lg italic px-lg text-center drop-shadow-md">"Be still, and know that I am God."</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">local_library</span>
+<span class="font-label-sm">Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+<span class="font-label-sm">Journal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-sm">Stats</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for cards
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('click', () => {
+                // Subtle feedback on click
+                card.style.transform = 'scale(0.99)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Breathing effect controller logic can be expanded here
+        let isBreathing = false;
+        const breatheBtn = document.querySelector('.bg-primary-container\\/10 button');
+        breatheBtn.addEventListener('click', function() {
+            if(!isBreathing) {
+                this.innerText = 'Exhale...';
+                this.classList.add('animate-pulse');
+                isBreathing = true;
+                setTimeout(() => {
+                    this.innerText = 'Inhale...';
+                }, 4000);
+                setTimeout(() => {
+                    this.innerText = 'Begin Breath';
+                    this.classList.remove('animate-pulse');
+                    isBreathing = false;
+                }, 8000);
+            }
+        });
+    </script>
+</body></html>

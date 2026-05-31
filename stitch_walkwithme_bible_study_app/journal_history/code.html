@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Journal History - WalkWithMe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2b3137",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "secondary-container": "#e1dfdb",
+                    "on-surface-variant": "#434844",
+                    "primary-fixed-dim": "#b7ccbc",
+                    "secondary-fixed-dim": "#c8c6c2",
+                    "surface-dim": "#d5dae2",
+                    "on-secondary-container": "#63635f",
+                    "surface-container-low": "#eff4fc",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#506356",
+                    "secondary": "#5e5e5b",
+                    "surface-variant": "#dde3eb",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#b7ccbc",
+                    "on-surface": "#161c22",
+                    "on-secondary-fixed": "#1b1c19",
+                    "on-error": "#ffffff",
+                    "surface-container": "#e9eef6",
+                    "tertiary-fixed-dim": "#ccc5be",
+                    "on-secondary-fixed-variant": "#474744",
+                    "primary-container": "#66796c",
+                    "on-background": "#161c22",
+                    "on-tertiary-fixed": "#1e1b16",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#4d6054",
+                    "outline": "#737873",
+                    "surface-variant": "#dde3eb",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#384b3f",
+                    "on-tertiary-fixed-variant": "#4a4640",
+                    "on-tertiary-container": "#fffbff",
+                    "secondary-fixed": "#e4e2dd",
+                    "background": "#f7f9ff",
+                    "tertiary-container": "#79746d",
+                    "surface": "#f7f9ff",
+                    "tertiary-fixed": "#e9e1d9",
+                    "on-primary-container": "#f6fff6",
+                    "tertiary": "#605b55",
+                    "inverse-on-surface": "#ecf1f9",
+                    "primary-fixed": "#d2e8d8",
+                    "outline-variant": "#c3c8c2",
+                    "surface-container-high": "#e3e9f0",
+                    "on-primary-fixed": "#0d1f15"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "container-max": "1200px",
+                    "base": "8px",
+                    "margin-mobile": "20px",
+                    "lg": "48px",
+                    "sm": "12px",
+                    "xl": "80px",
+                    "gutter": "24px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Playfair Display"],
+                    "body-lg": ["Playfair Display"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "headline-md": ["Playfair Display"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .breathe-indicator {
+            animation: breathe 8s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c8c2; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="bg-surface docked full-width top-0 z-40">
+<div class="flex justify-between items-center w-full px-margin-mobile py-base md:px-lg max-w-container-max mx-auto">
+<h1 class="font-display-lg text-display-lg text-primary">WalkWithMe</h1>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex max-w-container-max mx-auto min-h-[calc(100vh-80px)]">
+<!-- Side Navigation (Desktop) -->
+<aside class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 w-64 bg-surface-bright border-r border-outline-variant/50">
+<div class="mb-xl">
+<h2 class="font-headline-md text-headline-md text-primary">WalkWithMe</h2>
+<p class="text-label-md text-secondary">Walking in Light</p>
+</div>
+<nav class="space-y-base flex-grow">
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-md">Bible</span>
+</a>
+<a class="flex items-center justify-between px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-semibold shadow-sm" href="#">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="font-label-md">Reflect</span>
+</div>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md">History</span>
+</a>
+<a class="flex items-center gap-sm px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md">Profile</span>
+</a>
+</nav>
+<button class="mt-auto bg-primary text-on-primary py-4 px-md rounded-xl font-label-md hover:opacity-90 transition-all duration-300">
+                Start Daily Verse
+            </button>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow lg:ml-64 px-margin-mobile md:px-lg py-lg max-w-[800px] mx-auto pb-32">
+<!-- Header & Filters Section -->
+<div class="mb-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Journal History</h2>
+<div class="flex flex-col md:flex-row gap-md items-center">
+<!-- Search Bar -->
+<div class="relative w-full md:flex-grow">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-sm pr-md py-4 rounded-xl border-none bg-surface-container/50 focus:ring-1 focus:ring-primary text-body-md transition-all placeholder:text-outline/60" placeholder="Search reflections or scriptures..." type="text"/>
+</div>
+<!-- Date Filter -->
+<button class="flex items-center gap-sm px-md py-4 bg-surface-container-low border border-outline-variant/30 rounded-xl text-label-md text-on-surface-variant hover:bg-surface-container transition-colors shrink-0">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                        Filter by Date
+                    </button>
+</div>
+</div>
+<!-- Entries List -->
+<div class="space-y-md">
+<!-- Entry 1 -->
+<div class="group bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-md md:p-lg hover:shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 relative overflow-hidden cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-sm text-secondary tracking-widest uppercase">October 24, 2023</span>
+<span class="material-symbols-outlined text-outline/40 group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-primary mb-xs">John 3:16</h3>
+<p class="text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">
+                        The magnitude of "whosoever" struck me today. It's a boundless invitation. I felt a deep sense of peace reflecting on the permanence of this promise compared to the fleeting nature of my current worries. The quietness of the morning helped me center on...
+                    </p>
+<div class="mt-md flex gap-base">
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Peace</span>
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Promise</span>
+</div>
+</div>
+<!-- Entry 2 -->
+<div class="group bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-md md:p-lg hover:shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 relative overflow-hidden cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-sm text-secondary tracking-widest uppercase">October 22, 2023</span>
+<span class="material-symbols-outlined text-outline/40 group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-primary mb-xs">Psalm 23:1-3</h3>
+<p class="text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">
+                        "He leads me beside still waters." In a world of digital noise, these still waters are my daily sanctuary. I'm learning that rest isn't a reward for finishing my work, but a prerequisite for doing it with a grateful heart...
+                    </p>
+<div class="mt-md flex gap-base">
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Rest</span>
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Gratitude</span>
+</div>
+</div>
+<!-- Entry 3 -->
+<div class="group bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-md md:p-lg hover:shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 relative overflow-hidden cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-sm text-secondary tracking-widest uppercase">October 20, 2023</span>
+<span class="material-symbols-outlined text-outline/40 group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-primary mb-xs">Romans 8:28</h3>
+<p class="text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">
+                        Finding purpose in the challenges of this week. It's difficult to see the 'good' when the stress is high, but the discipline of journaling helps me document the small victories that would otherwise be forgotten...
+                    </p>
+<div class="mt-md flex gap-base">
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Hope</span>
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Purpose</span>
+</div>
+</div>
+<!-- Date Group Header -->
+<div class="py-md flex items-center gap-md">
+<div class="h-[1px] flex-grow bg-outline-variant/50"></div>
+<span class="text-label-sm text-outline font-semibold uppercase tracking-[0.2em]">Previous Months</span>
+<div class="h-[1px] flex-grow bg-outline-variant/50"></div>
+</div>
+<!-- Entry 4 -->
+<div class="group bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-md md:p-lg hover:shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all duration-500 relative overflow-hidden cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-sm">
+<span class="text-label-sm text-secondary tracking-widest uppercase">September 15, 2023</span>
+<span class="material-symbols-outlined text-outline/40 group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-primary mb-xs">Philippians 4:6-7</h3>
+<p class="text-body-md text-on-surface-variant line-clamp-3 leading-relaxed">
+                        The architecture of worry and the architecture of prayer. I spent time mapping out my anxieties today and consciously choosing to present them one by one. The feeling of 'surrender' isn't defeat; it's freedom...
+                    </p>
+<div class="mt-md flex gap-base">
+<span class="px-sm py-1 bg-surface-container rounded-full text-label-sm text-on-surface-variant">Prayer</span>
+</div>
+</div>
+</div>
+<!-- Breathe Component (Subtle atmospheric element) -->
+<div class="mt-xl py-lg flex flex-col items-center opacity-40">
+<div class="w-12 h-12 rounded-full bg-primary-fixed breathe-indicator mb-sm"></div>
+<p class="text-label-sm text-secondary">A moment of stillness</p>
+</div>
+</main>
+</div>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-sm">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="local_library">local_library</span>
+<span class="font-label-sm">Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-label-sm">Journal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-sm">Stats</span>
+</a>
+</nav>
+<!-- Floating Action Button (FAB) Contextual -->
+<button class="fixed bottom-24 right-6 lg:bottom-12 lg:right-12 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 z-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<script>
+        // Simple search filtering simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        const entryCards = document.querySelectorAll('.group.bg-surface-container-lowest');
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            entryCards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(term)) {
+                    card.style.display = 'block';
+                    card.classList.add('fade-in');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Slow fade-in entry effect
+        document.addEventListener('DOMContentLoaded', () => {
+            entryCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

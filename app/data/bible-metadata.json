@@ -1,0 +1,25 @@
+{
+  "languages": [
+    { "code": "en", "name": "English", "translations": [{ "id": "de4e12af7f29f59f-01", "name": "KJV" }, { "id": "06125ad3d5662098-01", "name": "NIV" }] },
+    { "code": "fr", "name": "Français", "translations": [{ "id": "01b17f8a70e2842c-01", "name": "LSG" }] },
+    { "code": "es", "name": "Español", "translations": [{ "id": "592420522e16040d-01", "name": "RVR1960" }] },
+    { "code": "de", "name": "Deutsch", "translations": [{ "id": "b17e01658803510c-01", "name": "Luther" }] }
+  ],
+  "bibleNames": {
+    "en": { "GEN": "Genesis", "EXO": "Exodus", "PSA": "Psalms", "MAT": "Matthew", "JHN": "John" },
+    "fr": { "GEN": "Genèse", "EXO": "Exode", "PSA": "Psaumes", "MAT": "Matthieu", "JHN": "Jean" },
+    "es": { "GEN": "Génesis", "EXO": "Éxodo", "PSA": "Salmos", "MAT": "Mateo", "JHN": "Juan" },
+    "de": { "GEN": "1. Mose", "EXO": "2. Mose", "PSA": "Psalmen", "MAT": "Matthäus", "JHN": "Johannes" }
+  },
+  "structure": {
+    "oldTestament": [
+      { "name": "GEN", "chapters": 50 },
+      { "name": "EXO", "chapters": 40 },
+      { "name": "PSA", "chapters": 150 }
+    ],
+    "newTestament": [
+      { "name": "MAT", "chapters": 28 },
+      { "name": "JHN", "chapters": 21 }
+    ]
+  }
+}

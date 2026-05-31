@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Management - WalkWithMe</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#f6fff6",
+                    "tertiary-fixed-dim": "#ccc5be",
+                    "secondary-fixed-dim": "#c8c6c2",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#d2e8d8",
+                    "primary": "#4d6054",
+                    "primary-container": "#66796c",
+                    "on-error": "#ffffff",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed": "#0d1f15",
+                    "secondary": "#5e5e5b",
+                    "on-tertiary-container": "#fffbff",
+                    "surface-tint": "#506356",
+                    "primary-fixed-dim": "#b7ccbc",
+                    "outline-variant": "#c3c8c2",
+                    "background": "#f7f9ff",
+                    "on-secondary-fixed": "#1b1c19",
+                    "surface-variant": "#dde3eb",
+                    "tertiary-container": "#79746d",
+                    "surface-container": "#e9eef6",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#63635f",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#e4e2dd",
+                    "on-primary-fixed-variant": "#384b3f",
+                    "surface-dim": "#d5dae2",
+                    "on-surface": "#161c22",
+                    "inverse-on-surface": "#ecf1f9",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2b3137",
+                    "tertiary-fixed": "#e9e1d9",
+                    "inverse-primary": "#b7ccbc",
+                    "tertiary": "#605b55",
+                    "on-primary": "#ffffff",
+                    "on-background": "#161c22",
+                    "outline": "#737873",
+                    "on-surface-variant": "#434844",
+                    "surface-container-high": "#e3e9f0",
+                    "surface-container-highest": "#dde3eb",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#474744",
+                    "on-tertiary-fixed": "#1e1b16",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#f7f9ff",
+                    "surface-container-low": "#eff4fc",
+                    "secondary-container": "#e1dfdb",
+                    "on-tertiary-fixed-variant": "#4a4640"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "48px",
+                    "container-max": "1200px",
+                    "base": "8px",
+                    "margin-mobile": "20px",
+                    "md": "24px",
+                    "gutter": "24px",
+                    "sm": "12px",
+                    "xl": "80px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["Playfair Display"],
+                    "body-lg": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-md-mobile": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .breathe-indicator {
+            box-shadow: 0 0 15px rgba(77, 96, 84, 0.2);
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dde3eb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md transition-colors duration-500">
+<!-- Desktop Navigation Shell -->
+<aside class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright dark:bg-inverse-surface border-r border-outline-variant/50 w-64 z-50">
+<div class="mb-xl px-4">
+<h1 class="font-headline-md text-headline-md text-primary">WalkWithMe</h1>
+<p class="font-label-md text-label-md text-on-surface-variant/70">Walking in Light</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">menu_book</span>
+<span class="font-label-md text-label-md">Bible</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">edit_note</span>
+<span class="font-label-md text-label-md">Reflect</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<!-- Active State: Profile -->
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-semibold shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<button class="w-full py-4 px-6 bg-primary text-on-primary rounded-xl font-label-md text-label-md hover:opacity-90 transition-all duration-300 shadow-sm">
+                Start Daily Verse
+            </button>
+</div>
+</aside>
+<!-- Mobile Top Bar -->
+<header class="lg:hidden flex justify-between items-center w-full px-margin-mobile py-base bg-surface dark:bg-surface-dim sticky top-0 z-40">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary">WalkWithMe</h1>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 min-h-screen pb-xl">
+<div class="max-w-[800px] mx-auto px-margin-mobile md:px-lg pt-xl">
+<!-- 1. Header Section -->
+<section class="mb-xl animate-fade-in">
+<div class="flex flex-col md:flex-row items-start md:items-center gap-md">
+<div class="relative">
+<img alt="User Avatar" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-surface-container-low shadow-sm" data-alt="A portrait of a serene woman with a peaceful expression, softly lit by natural morning light filtering through a window. The aesthetic is clean and minimalist, featuring soft sage and warm cream tones that align with a meditative lifestyle. The composition is calm and professional, emphasizing a digital sanctuary theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClvYBW0quviiUJ-1ljSeqmrmzHHUe4TtIcRPIp6r_Y-F-shG2RE8YN0PVG6XT8KebrxOBEc2StIV_m7LXeFYHsxOjIfObcsFok4TPAkVWouL6AiDNliL6OtU4ReeUVFviHW_OW-iVmvvsFNM3GEwAhsexq9QxaDhW9x1I5549wMR1bB0-jYcQx0V55o3rg0Mu-dQax-XG5XNq8coF1zR8YG7ltfz9cO5iCRqaoK1GhaVnvWHVlFgK6Qq0fq4sfmD6kDdG6BNLiuECG"/>
+<div class="absolute bottom-1 right-1 bg-primary p-1.5 rounded-full text-on-primary shadow-lg border-2 border-surface cursor-pointer hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Eleanor Woods</h2>
+<p class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            Joined December 2023
+                        </p>
+<p class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-primary-fixed text-on-primary-fixed rounded-full font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">eco</span>
+                            34 Day Streak
+                        </p>
+</div>
+</div>
+</section>
+<!-- Content Grid/Forms -->
+<div class="space-y-xl">
+<!-- 2. Personal Information -->
+<section>
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-primary">badge</span>
+<h3 class="font-headline-md text-headline-md-mobile md:text-headline-md text-on-surface">Personal Information</h3>
+</div>
+<div class="space-y-md">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Full Name</label>
+<input class="w-full px-md py-4 bg-surface-container-low/50 border-0 border-b border-transparent focus:border-primary focus:ring-0 rounded-lg text-body-md font-body-md transition-all" type="text" value="Eleanor Woods"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Email Address</label>
+<input class="w-full px-md py-4 bg-surface-container-low/50 border-0 border-b border-transparent focus:border-primary focus:ring-0 rounded-lg text-body-md font-body-md transition-all" type="email" value="eleanor.woods@example.com"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant ml-1">Spiritual Bio</label>
+<textarea class="w-full px-md py-4 bg-surface-container-low/50 border-0 border-b border-transparent focus:border-primary focus:ring-0 rounded-lg text-body-md font-body-md transition-all resize-none" placeholder="Enter your favorite verse or personal mission..." rows="3">Seeking stillness in the chaos. Walking daily with the Word as my lamp.</textarea>
+</div>
+</div>
+</section>
+<hr class="border-stone-200/50"/>
+<!-- 3. Notification Preferences -->
+<section>
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<h3 class="font-headline-md text-headline-md-mobile md:text-headline-md text-on-surface">Preferences</h3>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden">
+<div class="divide-y divide-stone-100">
+<!-- Toggle Item 1 -->
+<div class="p-md flex items-center justify-between hover:bg-surface-container-low/30 transition-colors">
+<div class="space-y-xs">
+<p class="font-label-md text-label-md text-on-surface">Daily Verse Reminders</p>
+<p class="text-[14px] text-on-surface-variant">Receive an inspiring verse every morning at 7:00 AM</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-secondary-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Item 2 -->
+<div class="p-md flex items-center justify-between hover:bg-surface-container-low/30 transition-colors">
+<div class="space-y-xs">
+<p class="font-label-md text-label-md text-on-surface">Journaling Prompts</p>
+<p class="text-[14px] text-on-surface-variant">Gentle nudges to reflect on your daily walk</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-secondary-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Item 3 -->
+<div class="p-md flex items-center justify-between hover:bg-surface-container-low/30 transition-colors">
+<div class="space-y-xs">
+<p class="font-label-md text-label-md text-on-surface">Weekly Progress Summary</p>
+<p class="text-[14px] text-on-surface-variant">A holistic view of your spiritual habits every Sunday</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-secondary-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<hr class="border-stone-200/50"/>
+<!-- 4. App Customization -->
+<section>
+<div class="flex items-center gap-2 mb-md">
+<span class="material-symbols-outlined text-primary">palette</span>
+<h3 class="font-headline-md text-headline-md-mobile md:text-headline-md text-on-surface">App Customization</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Theme Selection -->
+<div class="p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl space-y-md">
+<p class="font-label-md text-label-md text-on-surface">Visual Theme</p>
+<div class="flex gap-4">
+<button class="flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 border-primary bg-primary/5">
+<div class="w-full h-12 bg-white rounded border border-stone-200"></div>
+<span class="font-label-sm text-label-sm">Light</span>
+</button>
+<button class="flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 border-transparent hover:bg-surface-container-low transition-colors">
+<div class="w-full h-12 bg-inverse-surface rounded"></div>
+<span class="font-label-sm text-label-sm">Dark</span>
+</button>
+<button class="flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 border-transparent hover:bg-surface-container-low transition-colors">
+<div class="w-full h-12 bg-gradient-to-r from-white to-inverse-surface rounded"></div>
+<span class="font-label-sm text-label-sm">System</span>
+</button>
+</div>
+</div>
+<!-- Font Size Adjustment -->
+<div class="p-md bg-surface-container-lowest border border-outline-variant/30 rounded-xl space-y-md">
+<div class="flex justify-between items-center">
+<p class="font-label-md text-label-md text-on-surface">Reader Font Size</p>
+<span class="font-label-sm text-label-sm text-primary">Medium</span>
+</div>
+<div class="px-2">
+<input class="w-full h-1.5 bg-secondary-container rounded-lg appearance-none cursor-pointer accent-primary" max="5" min="1" type="range" value="3"/>
+<div class="flex justify-between mt-2 px-1 text-[10px] text-on-surface-variant font-semibold">
+<span>A</span>
+<span class="text-[16px]">A</span>
+</div>
+</div>
+<p class="text-[13px] italic text-on-surface-variant text-center opacity-70">"The Lord is my shepherd..."</p>
+</div>
+</div>
+</section>
+<!-- 5. Account Actions -->
+<div class="flex flex-col md:flex-row items-center justify-between gap-md pt-lg">
+<button class="w-full md:w-auto px-xl py-4 bg-primary text-on-primary rounded-xl font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all shadow-md">
+                        Save All Changes
+                    </button>
+<button class="w-full md:w-auto px-xl py-4 border border-outline text-on-surface-variant rounded-xl font-label-md text-label-md hover:bg-error/5 hover:text-error hover:border-error active:scale-95 transition-all">
+                        Sign Out
+                    </button>
+</div>
+<div class="flex justify-center py-md">
+<div class="flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-fixed breathe-indicator flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[18px]">self_improvement</span>
+</div>
+<span class="text-[12px] uppercase tracking-widest text-on-surface-variant/40 font-bold">Digital Sanctuary</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Navigation -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined">local_library</span>
+<span class="font-label-sm text-label-sm">Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Journal</span>
+</a>
+<!-- Active Tab Mobile -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for input fields
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('opacity-100');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('opacity-100');
+            });
+        });
+
+        // Theme switching simulation
+        const themeBtn = document.querySelectorAll('[class*="theme-btn"]');
+        // Logic for visuals only in this demo
+    </script>
+</body></html>

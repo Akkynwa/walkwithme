@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The rest of your code... */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-on-background;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, blockquote {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  /* Material Symbols Alignment */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined', sans-serif;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+    font-size: 24px;
+    font-weight: normal;
+    font-style: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    display: inline-block;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #f7f9ff; /* Matches your surface color */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #c3c8c2; /* Matches outline-variant */
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #4d6054; /* Matches primary */
+  }
+
+  /* Material Design 3 Input Style */
+  .input-sanctuary {
+    @apply w-full bg-surface-container-low border-none border-b border-transparent 
+    focus:ring-0 focus:border-primary px-md py-sm rounded-lg 
+    text-on-surface placeholder:text-outline/60 transition-all duration-300;
+  }
+
+  /* Sanctuary Button Style */
+  .btn-sanctuary-primary {
+    @apply bg-primary text-on-primary py-4 px-8 rounded-full 
+    font-semibold text-center shadow-sm hover:opacity-90 
+    active:scale-95 transition-all duration-300;
+  }
+}
+
+/* Custom Animation Utilities (Standard CSS to avoid Config conflicts) */
+.parallax-wrapper {
+  perspective: 1000px;
+}
+
+.parallax-image {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #D4CDBA; border-radius: 10px; }

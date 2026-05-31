@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2b3137",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f7f9ff",
+                        "secondary-container": "#e1dfdb",
+                        "on-surface-variant": "#434844",
+                        "primary-fixed-dim": "#b7ccbc",
+                        "secondary-fixed-dim": "#c8c6c2",
+                        "surface-dim": "#d5dae2",
+                        "on-secondary-container": "#63635f",
+                        "surface-container-low": "#eff4fc",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#506356",
+                        "secondary": "#5e5e5b",
+                        "surface-variant": "#dde3eb",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b7ccbc",
+                        "on-surface": "#161c22",
+                        "on-secondary-fixed": "#1b1c19",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e9eef6",
+                        "tertiary-fixed-dim": "#ccc5be",
+                        "on-secondary-fixed-variant": "#474744",
+                        "primary-container": "#66796c",
+                        "on-background": "#161c22",
+                        "on-tertiary-fixed": "#1e1b16",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#4d6054",
+                        "outline": "#737873",
+                        "surface-container-highest": "#dde3eb",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#384b3f",
+                        "on-tertiary-fixed-variant": "#4a4640",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary-fixed": "#e4e2dd",
+                        "background": "#f7f9ff",
+                        "tertiary-container": "#79746d",
+                        "surface": "#f7f9ff",
+                        "tertiary": "#605b55",
+                        "inverse-on-surface": "#ecf1f9",
+                        "primary-fixed": "#d2e8d8",
+                        "outline-variant": "#c3c8c2",
+                        "surface-container-high": "#e3e9f0",
+                        "on-primary-fixed": "#0d1f15"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "container-max": "1200px",
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "lg": "48px",
+                        "sm": "12px",
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Playfair Display"],
+                        "body-lg": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Playfair Display"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md-mobile": ["Playfair Display"],
+                        "body-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .breathe-glow {
+            box-shadow: 0 0 20px rgba(77, 96, 84, 0.2);
+            animation: breathe 8s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 0.9; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c3c8c2;
+            border-radius: 10px;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright dark:bg-inverse-surface border-r border-outline-variant/50 w-64 z-40">
+<div class="mb-xl">
+<h1 class="font-headline-md text-headline-md text-primary">WalkWithMe</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Walking in Light</p>
+</div>
+<div class="flex flex-col space-y-2 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">menu_book</span> Bible
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-semibold transition-transform duration-300 active:scale-[0.98] font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">edit_note</span> Reflect
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">history</span> History
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">person</span> Profile
+            </a>
+</div>
+<button class="mt-auto bg-primary text-on-primary font-label-md text-label-md py-4 px-6 rounded-xl hover:opacity-90 transition-opacity">
+            Start Daily Verse
+        </button>
+</nav>
+<!-- TopAppBar (Mobile) -->
+<header class="lg:hidden flex justify-between items-center w-full px-margin-mobile py-base bg-surface dark:bg-surface-dim sticky top-0 z-50">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary font-extrabold tracking-tight">WalkWithMe</h1>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-headline-md">account_circle</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow lg:ml-64 pb-32 pt-8 px-margin-mobile md:px-lg max-w-container-max mx-auto w-full fade-in">
+<!-- Page Header -->
+<header class="mb-xl text-center md:text-left">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm mb-4">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span>Tuesday, October 24</span>
+</div>
+<h2 class="font-display-lg text-display-lg md:text-display-lg text-on-surface mb-2">Daily Reflection</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[600px]">Take a moment of stillness to process today's word and align your spirit.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Scripture Reference (Sticky on Desktop) -->
+<aside class="lg:col-span-4 lg:sticky lg:top-8 h-fit">
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-md shadow-sm transition-all duration-500 hover:shadow-md">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-md text-label-md uppercase tracking-widest">Today's Scripture</span>
+</div>
+<blockquote class="font-body-lg text-body-lg text-on-surface italic mb-6 leading-relaxed">
+                        "Your word is a lamp to my feet and a light to my path."
+                    </blockquote>
+<p class="font-label-md text-label-md text-on-surface-variant text-right mb-6">— Psalm 119:105</p>
+<div class="border-t border-stone-200/50 pt-6">
+<h4 class="font-label-md text-label-md text-primary mb-2">Context &amp; Summary</h4>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            This verse reminds us that divine wisdom serves as our practical guide through the complexities of daily life, offering clarity when the way ahead feels uncertain.
+                        </p>
+</div>
+<!-- Ambient "Breathe" Component -->
+<div class="mt-8 flex flex-col items-center justify-center p-6 bg-surface-container-low rounded-xl">
+<div class="w-12 h-12 bg-primary rounded-full breathe-glow mb-4"></div>
+<p class="font-label-sm text-label-sm text-secondary">Breathe in. Reflect.</p>
+</div>
+</div>
+</aside>
+<!-- Right Column: Journaling Form -->
+<section class="lg:col-span-8">
+<form class="space-y-lg" id="journalForm">
+<!-- Prompt 1 -->
+<div class="group">
+<label class="block font-headline-md text-headline-md text-on-surface mb-4 transition-colors group-focus-within:text-primary">
+                            What stood out to you in today's reading?
+                        </label>
+<div class="relative">
+<textarea class="w-full bg-surface-container/20 border-none focus:ring-0 border-b border-stone-200 focus:border-primary transition-all duration-300 font-body-md text-body-md text-on-surface placeholder:text-outline-variant/70 p-0 py-2 resize-none custom-scrollbar" name="standing_out" placeholder="Pour your initial thoughts here..." rows="5"></textarea>
+<div class="absolute bottom-0 left-0 h-[1px] bg-primary w-0 group-focus-within:w-full transition-all duration-500"></div>
+</div>
+</div>
+<!-- Prompt 2 -->
+<div class="group">
+<label class="block font-headline-md text-headline-md text-on-surface mb-4 transition-colors group-focus-within:text-primary">
+                            How can you apply this to your life today?
+                        </label>
+<div class="relative">
+<textarea class="w-full bg-surface-container/20 border-none focus:ring-0 border-b border-stone-200 focus:border-primary transition-all duration-300 font-body-md text-body-md text-on-surface placeholder:text-outline-variant/70 p-0 py-2 resize-none custom-scrollbar" name="application" placeholder="Think of a specific action or shift in perspective..." rows="5"></textarea>
+<div class="absolute bottom-0 left-0 h-[1px] bg-primary w-0 group-focus-within:w-full transition-all duration-500"></div>
+</div>
+</div>
+<!-- Prompt 3 (Optional extra for flow) -->
+<div class="group">
+<label class="block font-headline-md text-headline-md text-on-surface mb-4 transition-colors group-focus-within:text-primary">
+                            A prayer or intention for the hours ahead
+                        </label>
+<div class="relative">
+<textarea class="w-full bg-surface-container/20 border-none focus:ring-0 border-b border-stone-200 focus:border-primary transition-all duration-300 font-body-md text-body-md text-on-surface placeholder:text-outline-variant/70 p-0 py-2 resize-none custom-scrollbar" name="intention" placeholder="May my steps be guided..." rows="4"></textarea>
+<div class="absolute bottom-0 left-0 h-[1px] bg-primary w-0 group-focus-within:w-full transition-all duration-500"></div>
+</div>
+</div>
+<!-- Mood Selector (Atmospheric Detail) -->
+<div class="py-6 border-y border-outline-variant/30 flex flex-wrap items-center gap-6">
+<span class="font-label-md text-label-md text-on-surface-variant">How does your spirit feel?</span>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-all" title="Peaceful" type="button">
+<span class="material-symbols-outlined">nature</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-all" title="Seeking" type="button">
+<span class="material-symbols-outlined">explore</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-all" title="Grateful" type="button">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-container hover:text-on-primary-container transition-all" title="Tired" type="button">
+<span class="material-symbols-outlined">bedtime</span>
+</button>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row items-center justify-end gap-4 pt-8">
+<button class="text-secondary font-label-md text-label-md px-8 py-4 hover:text-primary transition-colors" type="button">
+                            Discard Draft
+                        </button>
+<button class="w-full sm:w-auto bg-primary text-on-primary font-label-md text-label-md px-12 py-4 rounded-xl hover:opacity-90 shadow-sm active:scale-95 transition-all duration-300 flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined">done_all</span>
+                            Save Daily Journal
+                        </button>
+</div>
+</form>
+<!-- Footer Image Placeholder (Atmospheric) -->
+<div class="mt-xl rounded-2xl overflow-hidden relative h-[240px] group">
+<img alt="Morning sun breaking through forest mist" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A serene landscape featuring soft morning sunlight filtering through the delicate leaves of a ancient forest in the misty morning. The scene is captured in a high-key light mode style with soft sage greens and warm cream tones. The atmosphere is quiet, spiritual, and deeply restorative, echoing a sense of digital sanctuary and peaceful solitude. High-quality professional photography with a focus on natural bokeh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCJGNwQ-3bnFiZBDLib_Smx3b9xt_CWa--sUOVuiBSqg27HsiRDU68x1i846YPL7jyeY74RcN43o4nzDxWC_BMQX50yvO203UGTstc61SHhnaiwyyZMfJ7-kDuik4yV6i98PQSm3ITMex8MN0PA7-V5aBO9-_sbSh0ntXN2cUnyTg-44OiY7W5HdhQKxaMzUmuxbncqvVtihD6Cq_2ZmV01ZgYnQ8g3y2qU7nHCfLuGrNVtDWnYBTM1e2c0C1T-Ygz3YSHn0IL1qEd"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-8">
+<p class="text-white font-body-md text-body-md italic opacity-90">"Quietness is the beginning of virtue."</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] px-4 pb-4 pt-2 flex justify-around items-center rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500 active:scale-95" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500 active:scale-95" href="#">
+<span class="material-symbols-outlined">local_library</span>
+<span class="font-label-sm text-label-sm">Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Journal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-all duration-500 active:scale-95" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-sm text-label-sm">Stats</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions and form handling
+        document.getElementById('journalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            // Visual feedback
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Saved Successfully';
+                btn.classList.remove('bg-primary');
+                btn.classList.add('bg-primary-container', 'text-on-primary-container');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.add('bg-primary');
+                    btn.classList.remove('bg-primary-container', 'text-on-primary-container');
+                    btn.disabled = false;
+                }, 2000);
+            }, 1200);
+        });
+
+        // Mood selector interactive logic
+        const moodButtons = document.querySelectorAll('.group-focus-within button, .py-6 button');
+        moodButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                moodButtons.forEach(b => b.classList.remove('bg-primary-container', 'text-on-primary-container', 'scale-110'));
+                btn.classList.add('bg-primary-container', 'text-on-primary-container', 'scale-110');
+            });
+        });
+    </script>
+</body></html>

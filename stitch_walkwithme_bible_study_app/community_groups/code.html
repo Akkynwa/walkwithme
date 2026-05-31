@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WalkWithMe - Community</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#e9e1d9",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed": "#1b1c19",
+                    "outline-variant": "#c3c8c2",
+                    "on-secondary": "#ffffff",
+                    "background": "#f7f9ff",
+                    "inverse-surface": "#2b3137",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#d5dae2",
+                    "surface": "#f7f9ff",
+                    "primary": "#4d6054",
+                    "outline": "#737873",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#434844",
+                    "on-primary-container": "#f6fff6",
+                    "surface-tint": "#506356",
+                    "on-background": "#161c22",
+                    "tertiary-container": "#79746d",
+                    "surface-container-low": "#eff4fc",
+                    "on-secondary-fixed-variant": "#474744",
+                    "on-primary-fixed": "#0d1f15",
+                    "secondary-fixed-dim": "#c8c6c2",
+                    "primary-container": "#66796c",
+                    "surface-container-high": "#e3e9f0",
+                    "surface-container-highest": "#dde3eb",
+                    "tertiary-fixed-dim": "#ccc5be",
+                    "surface-bright": "#f7f9ff",
+                    "surface-variant": "#dde3eb",
+                    "primary-fixed": "#d2e8d8",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#5e5e5b",
+                    "inverse-primary": "#b7ccbc",
+                    "on-error": "#ffffff",
+                    "on-surface": "#161c22",
+                    "on-primary-fixed-variant": "#384b3f",
+                    "primary-fixed-dim": "#b7ccbc",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#ecf1f9",
+                    "secondary-container": "#e1dfdb",
+                    "on-secondary-container": "#63635f",
+                    "tertiary": "#605b55",
+                    "surface-container": "#e9eef6",
+                    "on-tertiary-fixed-variant": "#4a4640",
+                    "secondary-fixed": "#e4e2dd",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#1e1b16"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "container-max": "1200px",
+                    "xl": "80px",
+                    "md": "24px",
+                    "base": "8px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "lg": "48px",
+                    "sm": "12px"
+            },
+            "fontFamily": {
+                    "label-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-md": ["Playfair Display"],
+                    "headline-md-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "body-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                    "body-md": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Playfair Display', serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .digital-sanctuary-shadow {
+            box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.04);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- Top AppBar (Mobile Only) -->
+<header class="lg:hidden flex justify-between items-center w-full px-margin-mobile py-base bg-surface border-none z-50 fixed top-0 left-0">
+<h1 class="font-display-lg text-headline-md text-primary">WalkWithMe</h1>
+<button class="p-base text-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<!-- SideNavBar (Desktop Shell) -->
+<aside class="hidden lg:flex flex-col h-screen p-md fixed left-0 top-0 bg-surface-bright border-r border-outline-variant/50 w-64 z-40">
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-primary">WalkWithMe</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Walking in Light</p>
+</div>
+<nav class="flex-grow space-y-base">
+<a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-md">Bible</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+<span class="font-label-md">Reflect</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md">History</span>
+</a>
+<a class="flex items-center gap-sm p-sm bg-primary-container text-on-primary-container rounded-lg font-semibold shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md">Community</span>
+</a>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-500 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md">Profile</span>
+</a>
+</nav>
+<button class="mt-auto bg-primary text-on-primary p-md rounded-xl font-label-md hover:opacity-90 transition-all duration-300">
+            Start Daily Verse
+        </button>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-24 pb-32 lg:pt-16 lg:pb-16 px-margin-mobile md:px-lg max-w-container-max mx-auto">
+<!-- Header Section -->
+<header class="mb-lg fade-in">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-xs">Community</h1>
+<p class="font-body-lg text-secondary">Connect with others on their spiritual journey</p>
+<div class="h-px w-24 bg-primary-fixed mt-md"></div>
+</header>
+<!-- Bento-inspired Group Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter fade-in" style="animation-delay: 0.2s;">
+<!-- Group Card 1: Bible Study -->
+<article class="group bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden digital-sanctuary-shadow hover:scale-[1.01] transition-transform duration-500">
+<div class="h-48 overflow-hidden">
+<img alt="Bible Study Group" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A macro close-up photograph of an open, weathered vintage Bible resting on a rustic wooden table. The scene is bathed in warm, soft morning sunlight filtering through a nearby window, creating a serene and contemplative atmosphere. The color palette is composed of soft ambers, creams, and earthy wood tones, embodying a peaceful spiritual journey." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzyNaxA_9eElDeLFNT6rM8TuepBkeO4iDoiy1B2XK75PhF736k0JXVC0HqIPsXhUfxRiqZ8TyoRo4f-lyMuLTi0GmV1oM3uNCROwFX19DpWosapsVpcR6U9FMZS7A9xISpVEzgzJs8QLg8bUq7QeRkDCQO1Qoc8F5xBDeuamMOaCDMvfLNHCvkSKFo1L6nBLdQP6IqcMcsc04ngTc4veyA7UPmJTOsi2P5CZ2p7vpcl8yf23zD86amB4QZi82ki5mVInVkbsqnYCkv"/>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md-mobile text-primary">Bible Study Group</h3>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-sm py-xs rounded-full font-label-sm">
+                            142 members
+                        </span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-md h-14 overflow-hidden">Daily Bible reading and discussion</p>
+<button class="w-full py-sm bg-primary text-on-primary rounded-lg font-label-md hover:bg-primary-container transition-colors duration-300">
+                        Join
+                    </button>
+</div>
+</article>
+<!-- Group Card 2: Prayer Warriors -->
+<article class="group bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden digital-sanctuary-shadow hover:scale-[1.01] transition-transform duration-500">
+<div class="h-48 overflow-hidden">
+<img alt="Prayer Warriors" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A serene landscape at dusk featuring a quiet, still lake reflecting a soft lavender and pale blue sky. In the foreground, a single silhouette of a person stands in a peaceful, prayerful stance. The lighting is low-contrast and ethereal, using a palette of sage greens and muted purples to evoke a sense of deep intercessory fellowship and calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtybBWnhDIk6faBYHorXyjwm9KVVreS0vnRANkJqTN0vR6DbMm4qPwAM-u3z9BT9Pu7GRs0waDUFBvmCup8CNSYPQ9hikTVFquppsOHbrzv6DWupRI69h8LL-NP_TiB07oVze95XpUUvc08jc40QKdp4wZRxpac1CGlfohcto9rXavZxsWkMtzoqo8kVYv49xyMoloDMGuEGhQS7SaoFBYkC1ROeuoeoPiNBBB6m6FXx3NbbkpN9_epOWOakPzAzJXQWVMLrdqLyhI"/>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md-mobile text-primary">Prayer Warriors</h3>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-sm py-xs rounded-full font-label-sm">
+                            89 members
+                        </span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-md h-14 overflow-hidden">Intercessory prayer fellowship</p>
+<button class="w-full py-sm bg-primary text-on-primary rounded-lg font-label-md hover:bg-primary-container transition-colors duration-300">
+                        Join
+                    </button>
+</div>
+</article>
+<!-- Group Card 3: Spiritual Growth -->
+<article class="group bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden digital-sanctuary-shadow hover:scale-[1.01] transition-transform duration-500">
+<div class="h-48 overflow-hidden">
+<img alt="Spiritual Growth" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="An expansive view of mist-covered green mountains under a soft, overcast sky. The aesthetic is extremely minimalist and breathable, with layers of sage and forest green fading into the distance. The image represents personal development and a spiritual path, captured with high-key lighting to maintain a bright, modern corporate minimalist feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmk96mt70FQGnGW6TIYc-NGj2KHzCKInt3n0GogMVrwJxKNncTJvHWMrQ-DFfDj5g79qUlnOah5DxzGeDcUP0S-wTF9crXlPh5liJd6XufDFwnG2-oBndUOIGBKxUUZPg8FPcwmgSLxgOABJFoFa2K05fNcn-TbSP4mGbA6DdZOAmv5LQ549yM6lujyltSPJha_9sLrCP0VXRGup2JVSgRPg3xpld_9f26H7_cplVFSnMeOviquHLdx4uRxrkZV1dhIBQwkWxQbQ7z"/>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md-mobile text-primary">Spiritual Growth</h3>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-sm py-xs rounded-full font-label-sm">
+                            256 members
+                        </span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-md h-14 overflow-hidden">Personal development and faith journey</p>
+<button class="w-full py-sm bg-primary text-on-primary rounded-lg font-label-md hover:bg-primary-container transition-colors duration-300">
+                        Join
+                    </button>
+</div>
+</article>
+</div>
+<!-- Bottom CTA Section -->
+<section class="mt-xl p-lg rounded-2xl bg-surface-container-low border border-outline-variant/20 flex flex-col md:flex-row items-center justify-between gap-md fade-in" style="animation-delay: 0.4s;">
+<div>
+<h2 class="font-headline-md text-headline-md-mobile md:text-headline-md text-primary mb-xs">Want to create a group?</h2>
+<p class="font-body-md text-secondary">Start your own fellowship and invite others to join your journey.</p>
+</div>
+<button class="whitespace-nowrap px-lg py-md border border-primary text-primary rounded-full font-label-md hover:bg-primary hover:text-on-primary transition-all duration-500 active:scale-95">
+                Create New Group
+            </button>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container-lowest border-none shadow-[0_-4px_20px_0_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary p-2" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-sm text-label-sm mt-1">Daily</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary p-2" href="#">
+<span class="material-symbols-outlined" data-icon="local_library">local_library</span>
+<span class="font-label-sm text-label-sm mt-1">Bible</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="groups" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="font-label-sm text-label-sm">Community</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary p-2" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-sm text-label-sm mt-1">Stats</span>
+</a>
+</nav>
+<script>
+        // Simple interaction for join buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.98)';
+                this.style.opacity = '0.8';
+            });
+            button.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+                this.style.opacity = '1';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.opacity = '1';
+            });
+        });
+
+        // Slow hover effect for cards
+        const cards = document.querySelectorAll('article');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('digital-sanctuary-shadow-lg');
+            });
+        });
+    </script>
+</body></html>
