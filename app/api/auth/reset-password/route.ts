@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend'; // Import Resend
 import crypto from 'crypto';
 
-const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY); // Initialize
 
 export async function POST(request: Request) {
