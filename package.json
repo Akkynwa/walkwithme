@@ -4,6 +4,7 @@
   "description": "A spiritual wellness and Bible study companion app with AI-powered insights, journaling, and community features",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
