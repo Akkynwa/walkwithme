@@ -4,6 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -169,7 +170,7 @@ export default function Header() {
             </div>
             <div className="relative">
               {userImage ? (
-                <img src={userImage} alt={userName} className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" />
+                <Image src={userImage} alt={userName} className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border-2 border-white">
                   <span className="material-symbols-outlined text-primary text-lg">person</span>

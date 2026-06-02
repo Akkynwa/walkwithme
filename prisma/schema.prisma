@@ -28,6 +28,7 @@ model User {
   dailyReminder      Boolean   @default(true)
   prayerReminder     Boolean   @default(true)
   newContent         Boolean   @default(true)
+  messages Message[]
 
   
   // Relationships
@@ -251,4 +252,39 @@ model AuditLog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@index([userId, createdAt])
+}
+model Message {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  role      String   // 'user' or 'assistant'
+  createdAt DateTime @default(now())
+  
+  // Link to your existing User model
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+model Testimony {
+  id         String   @id @default(cuid())
+  author     String
+  location   String
+  content    String   @db.Text
+  isApproved Boolean  @default(false) // Gives you admin control over what shows up
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("testimonies") // Keeps table naming clean in PostgreSQL/MySQL
+}
+model UserPathProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  nodeId      String   // Maps to the unique ID of the path node
+  isCompleted Boolean  @default(false)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, nodeId]) // Ensures a user only has one entry per milestone
+  @@map("user_path_progress")
 }

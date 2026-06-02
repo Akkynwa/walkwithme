@@ -1,7 +1,7 @@
 import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
+// import PasskeyProvider from 'next-auth/providers/passkey';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
@@ -49,11 +49,10 @@ export const authOptions: NextAuthOptions = {
       allowDangerousEmailAccountLinking: true,
     }),
 
-    GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID || '',
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
-      allowDangerousEmailAccountLinking: true,
-    }),
+    // Added Passkey / WebAuthn support
+    // PasskeyProvider({
+    //   // Passkey implementation hooks into your database adapter configurations automatically
+    // }),
   ],
 
   pages: {
@@ -63,7 +62,6 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    // Crucial for JWT strategy: attach the user ID to the token
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -71,7 +69,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     
-    // Pass the ID from the token to the session so it's accessible in the frontend
     async session({ session, token }) {
       if (session.user) {
         session.user.id = (token?.id || token?.sub || "") as string;
@@ -107,7 +104,6 @@ export const authOptions: NextAuthOptions = {
   },
 
   session: {
-    // CHANGED: "database" to "jwt" to fix JWE decryption errors
     strategy: "jwt", 
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },

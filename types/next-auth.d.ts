@@ -27,3 +27,14 @@ declare module 'next-auth/jwt' {
     image?: string;
   }
 }
+declare module "next-auth/providers/webauthn" {
+  import { CommonProviderOptions } from "next-auth/providers";
+  
+  export interface WebAuthnProviderType extends CommonProviderOptions {
+    id: "webauthn";
+    name: "WebAuthn";
+    type: "webauthn";
+  }
+
+  export default function WebAuthnProvider(options?: Record<string, any>): WebAuthnProviderType;
+}

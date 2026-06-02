@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
@@ -9,13 +9,14 @@ import Image from 'next/image';
 export default function Sidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { icon: 'grid_view', label: 'Home', href: '/', key: 'dashboard' },
     { icon: 'menu_book', label: 'Bible', href: '/bible', key: 'bible' },
     { icon: 'library_books', label: 'Devotionals', href: '/sanctuary/devotionals', key: 'devotionals' },
     { icon: 'bedtime', label: 'Quiet Time', href: '/quiet-time', key: 'quiet-time' },
-    { icon: 'auto_awesome', label: 'AI Chat', href: '/ai/chat', key: 'chat' },
+    { icon: 'auto_awesome', label: 'Spiritual Assistant', href: '/ai/chat', key: 'chat' },
     { icon: 'history_edu', label: 'Journal', href: '/journal', key: 'history' },
     { icon: 'potted_plant', label: 'Prayers', href: '/prayers', key: 'prayers' },
     { icon: 'hub', label: 'Community', href: '/community', key: 'community' },
@@ -73,10 +74,12 @@ export default function Sidebar() {
           <div className="mt-auto p-4 shrink-0">
             <div className="flex items-center gap-3 p-3 bg-white/20 backdrop-blur-xl rounded-2xl border border-white/30 shadow-sm mb-3">
               <div className="relative">
-                <Image 
+                <Image
                   src={session?.user?.image || `https://ui-avatars.com/api/?name=${session?.user?.name || 'User'}&background=fb923c&color=fff`} 
                   className="w-10 h-10 rounded-xl object-cover ring-2 ring-white/50"
                   alt="Avatar"
+                  width={40}
+                  height={40}
                 />
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white/50 rounded-full"></div>
               </div>
@@ -99,20 +102,71 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* --- MOBILE NAV (FLOATING GLASS ISLAND) --- */}
-      <nav className="lg:hidden fixed bottom-6 left-6 right-6 bg-white/10 backdrop-blur-2xl border border-white/20 px-2 py-2 z-[100] flex justify-around shadow-2xl rounded-[32px]">
-        {navItems.slice(0, 5).map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link key={item.key} href={item.href} className="flex flex-col items-center py-1">
-              <div className={`w-12 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-orange-400 text-white shadow-lg shadow-orange-500/30' : 'text-gray-400'}`}>
-                <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
-              </div>
-              <span className={`text-[9px] mt-1 font-black uppercase tracking-tighter ${isActive ? 'text-orange-600' : 'text-gray-400'}`}>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* --- MOBILE NAV (SLIDING GRID ON HOVER) --- */}
+      <div className="lg:hidden fixed bottom-6 left-6 right-6 z-[100]">
+        {/* Sliding Grid Menu */}
+        <div 
+          className={`
+            absolute bottom-full left-0 right-0 mb-3
+            transition-all duration-300 ease-out origin-bottom
+            ${isMobileMenuOpen 
+              ? 'opacity-100 scale-y-100 translate-y-0 pointer-events-auto' 
+              : 'opacity-0 scale-y-95 translate-y-4 pointer-events-none'
+            }
+          `}
+        >
+          <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-4 shadow-2xl">
+            <div className="grid grid-cols-4 gap-2">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`
+                      flex flex-col items-center gap-1 py-3 px-2 rounded-xl transition-all duration-200
+                      ${isActive 
+                        ? 'bg-orange-400 text-white shadow-lg shadow-orange-500/30' 
+                        : 'text-gray-400 hover:text-orange-500 hover:bg-white/20'
+                      }
+                    `}
+                  >
+                    <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
+                    <span className={`text-[9px] font-black uppercase tracking-tighter ${isActive ? 'text-white' : ''}`}>
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Floating Action Button / Toggle */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className={`
+            w-full bg-white/10 backdrop-blur-2xl border border-white/20 px-4 py-3
+            flex items-center justify-between rounded-2xl transition-all duration-300
+            hover:bg-white/20 cursor-pointer
+            ${isMobileMenuOpen ? 'shadow-xl' : 'shadow-lg'}
+          `}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-orange-400/80 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-white text-[18px]">menu</span>
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="text-[10px] text-gray-400 font-black uppercase tracking-wider">Navigate</span>
+              <span className="text-[12px] text-[#3C3830] font-bold">Sanctuary Menu</span>
+            </div>
+          </div>
+          <span className={`material-symbols-outlined text-gray-400 transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-180' : ''}`}>
+            expand_less
+          </span>
+        </button>
+      </div>
     </>
   );
 }

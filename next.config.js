@@ -2,15 +2,24 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  
   images: {
+    // Consolidated both into one array
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+        pathname: '/api/**',
       },
     ],
     formats: ['image/avif', 'image/webp'],
   },
+
   headers: async () => {
     return [
       {
@@ -24,7 +33,8 @@ const nextConfig = {
       },
     ];
   },
-  webpack: (config, { isServer }) => {
+
+  webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -32,16 +42,6 @@ const nextConfig = {
       crypto: false,
     };
     return config;
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-    ],
   },
 };
 

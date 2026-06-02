@@ -1,23 +1,27 @@
 import { OpenAI } from 'openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextResponse } from 'next/server';
-
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
+import { db } from '@/lib/db'; // Adjust path based on your Prisma setup
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
   try {
+    // 1. Fetch user session to bind chat data
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     const { messages, activeBook, activeChapter } = await req.json();
 
     if (!messages || messages.length === 0) {
       return NextResponse.json({ error: 'No messages provided' }, { status: 400 });
     }
 
-    const lastMessage = messages[messages.length - 1].content.toLowerCase();
-    const isEmotional = /sad|tired|failed|lonely|worried|anxious|help|hurt|pain|broken/.test(lastMessage);
+    const lastUserMessage = messages[messages.length - 1].content;
+    const lastMessageLower = lastUserMessage.toLowerCase();
+    const isEmotional = /sad|tired|failed|lonely|worried|anxious|help|hurt|pain|broken/.test(lastMessageLower);
 
     const systemMessage = {
       role: 'system',
@@ -43,31 +47,52 @@ export async function POST(req: Request) {
       `
     };
 
-    // const response = await openai.chat.completions.create({
-    //   model: 'gpt-4o', // This is faster, cheaper, and more reliable,
-    //   stream: true,
-    //   messages: [systemMessage, ...messages],
-    //   temperature: 0.65,
-    //   max_tokens: 1000,
-    // });
-
     const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1", // Just add this line!
-});
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: "https://api.groq.com/openai/v1",
+    });
 
-// ... then use their model name
-const response = await openai.chat.completions.create({
-  // Using the new stable Llama 3.3 model on Groq
-  model: 'llama-3.3-70b-versatile', 
-  stream: true,
-  messages: [systemMessage, ...messages],
-  temperature: 0.65,
-  max_tokens: 1024, // Groq likes power-of-two token limits
-});
+    const response = await openai.chat.completions.create({
+      model: 'llama-3.3-70b-versatile', 
+      stream: true,
+      messages: [systemMessage, ...messages],
+      temperature: 0.65,
+      max_tokens: 2048, // Bumped to 2048 to prevent cutting off fluid stream deliveries
+    });
 
-    const stream = OpenAIStream(response as any);
-    return new StreamingTextResponse(stream);
+    // 3. Initialize OpenAI Stream with Non-Blocking Callbacks
+    const stream = OpenAIStream(response as any, {
+      onStart: async () => {
+        if (!userId) return;
+        // Fire-and-forget: background thread execution keeps token rendering unblocked
+        db.message.create({
+          data: {
+            content: lastUserMessage,
+            role: 'user',
+            userId: userId,
+          },
+        }).catch((err) => console.error("Error storing user message:", err));
+      },
+      onCompletion: async (completion) => {
+        if (!userId) return;
+        // Fire-and-forget: stores final response in background safely
+        db.message.create({
+          data: {
+            content: completion,
+            role: 'assistant',
+            userId: userId,
+          },
+        }).catch((err) => console.error("Error storing assistant message:", err));
+      },
+    });
+
+    // 4. Return stream with optimization headers to avoid proxy buffering jitter
+    return new StreamingTextResponse(stream, {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'Cache-Control': 'no-cache, no-transform',
+      },
+    });
 
   } catch (error: any) {
     console.error('Chat Sanctuary Error:', error);

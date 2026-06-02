@@ -1,6 +1,13 @@
 import NextAuth from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+// Fixes unhandled runtime error for WebAuthn crypto on Next.js server sandboxes
+if (typeof globalThis.crypto === 'undefined') {
+  const { webcrypto } = require('node:crypto');
+  // @ts-ignore
+  globalThis.crypto = webcrypto;
+}
+
 const handler = NextAuth(authOptions);
 
 // ONLY export the handlers. 

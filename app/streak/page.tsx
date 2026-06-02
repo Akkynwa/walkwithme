@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Sidebar from '../layout-components/Sidebar';
 import Header from '../layout-components/Header';
 import Image from 'next/image';
 
-/** * TYPES 
- */
 type NodeStatus = 'completed' | 'active' | 'locked';
 
 interface PathNodeData {
@@ -14,66 +14,103 @@ interface PathNodeData {
   title: string;
   desc: string;
   status: NodeStatus;
-  date?: string;
   position: 'center' | 'left' | 'right';
   icon: string;
 }
 
-const PATH_DATA: PathNodeData[] = [
-  { id: '1', title: 'Read Psalm 23', desc: 'A reflection on divine protection and guidance.', status: 'completed', date: 'July 12', position: 'center', icon: 'check_circle' },
-  { id: '2', title: '10-Minute Morning Meditation', desc: '10 minutes of silent presence and breathing.', status: 'completed', date: 'July 14', position: 'right', icon: 'check_circle' },
-  { id: '3', title: '7-Day Gratitude Challenge', desc: 'Begin an intentional journey of identifying daily blessings.', status: 'active', position: 'left', icon: 'auto_awesome' },
-  { id: '4', title: 'Set Monthly Spiritual Goal', desc: 'Setting intentions for the coming month of growth.', status: 'locked', position: 'right', icon: 'lock' },
-  { id: '5', title: 'Service Reflection', desc: 'Exploring ways to serve others through light.', status: 'locked', position: 'center', icon: 'diversity_3' },
-];
+interface PathStats {
+  currentStreak: number;
+  longestStreak: number;
+  totalDays: number;
+}
 
-/**
- * MAIN COMPONENT
- */
 export default function SpiritualPathPage() {
+  const { status } = useSession();
+  const router = useRouter();
+  
+  const [nodes, setNodes] = useState<PathNodeData[]>([]);
+  const [stats, setStats] = useState<PathStats | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<PathNodeData | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+      return;
+    }
+
+    if (status === 'authenticated') {
+      async function syncPathEngine() {
+        try {
+          const response = await fetch('/api/spiritual-path');
+          const resJson = await response.json();
+          if (resJson.success) {
+            setNodes(resJson.nodes);
+            setStats(resJson.stats);
+          }
+        } catch (err) {
+          console.error('Error synchronizing active dashboard maps:', err);
+        } finally {
+          setLoading(false);
+        }
+      }
+      syncPathEngine();
+    }
+  }, [status, router]);
+
   const handleOpenNode = (node: PathNodeData) => {
+    if (node.status === 'locked') return; // Strict UX shield catch rule
     setSelectedNode(node);
     setIsPanelOpen(true);
   };
 
-  return (
-    <div className="min-h-screen bg-[#f7f9ff] text-[#161c22] font-['Playfair_Display'] overflow-x-hidden">
-
-      {/* 2. Main Content Area */}
-      <main className="lg:ml-64 p-6 md:p-12 pt-24 lg:pt-12 max-w-[1200px] mx-auto relative">
-        <Sidebar />
-              <Header />
-                
-        {/* Streak Summary Section (Integrated from your React Code) */}
-        <div className="max-w-[800px] mx-auto mb-16 grid grid-cols-1 md:grid-cols-3 gap-4 font-sans">
-          <StreakCard label="Current Streak" value="24" color="text-[#4d6054]" />
-          <StreakCard label="Longest Streak" value="47" color="text-[#5e5e5b]" />
-          <StreakCard label="Total Days" value="156" color="text-[#605b55]" />
+  if (status === 'loading' || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#F4F7F5]">
+        <div className="animate-pulse text-center">
+          <div className="w-12 h-12 bg-[#4d6054]/20 rounded-full mb-4 mx-auto" />
+          <p className="font-serif italic text-[#4d6054]">Mapping out your sanctuary blueprint...</p>
         </div>
+      </div>
+    );
+  }
 
-        {/* Path Header */}
+  return (
+    <div className="min-h-screen bg-[#F4F7F5] text-[#161c22] font-serif overflow-x-hidden">
+      <Sidebar />
+      <Header />
+
+      <main className="lg:ml-64 p-6 md:p-12 pt-24 lg:pt-16 max-w-[1200px] mx-auto relative z-10">
+        
+        {/* Alignment Performance Metrics row */}
+        {stats && (
+          <div className="max-w-[800px] mx-auto mb-16 grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
+            <StreakCard label="Current Streak" value={stats.currentStreak.toString()} color="text-[#4d6054]" />
+            <StreakCard label="Longest Alignment" value={stats.longestStreak.toString()} color="text-[#e0a96d]" />
+            <StreakCard label="Milestones Met" value={stats.totalDays.toString()} color="text-[#161c22]" />
+          </div>
+        )}
+
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#4d6054] mb-4">My Spiritual Path</h1>
-          <p className="text-lg text-[#5e5e5b] max-w-2xl mx-auto leading-relaxed">
-            A visual map of your journey toward peace and spiritual growth. Every step is a moment of light.
+          <h1 className="text-4xl md:text-5xl font-bold text-[#4d6054] mb-4 tracking-tight">My Spiritual Path</h1>
+          <p className="text-sm md:text-base font-sans text-[#434844]/70 max-w-2xl mx-auto leading-relaxed">
+            A linear sanctuary blueprint sequence. Complete your active focus node to unveil the next phase of your journey.
           </p>
         </div>
 
-        {/* 3. The SVG Path & Nodes */}
-        <div className="relative max-w-[600px] mx-auto min-h-[1000px]">
-          <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-30" viewBox="0 0 400 1000">
+        {/* Dynamic Mapping Route */}
+        <div className="relative max-w-[600px] mx-auto min-h-[900px] pb-12">
+          <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20" viewBox="0 0 400 1000" preserveAspectRatio="none">
             <path 
-              className="stroke-[#c3c8c2] stroke-[4] fill-none" 
-              style={{ strokeDasharray: '12 12' }}
+              className="stroke-[#4d6054] stroke-[3] fill-none" 
+              style={{ strokeDasharray: '8 8' }}
               d="M200 0C200 100 350 150 350 250C350 350 50 450 50 550C50 650 350 750 350 850C350 950 200 1050 200 1200" 
             />
           </svg>
           
-          <div className="relative z-10 flex flex-col gap-32 pt-12">
-            {PATH_DATA.map((node) => (
+          <div className="relative z-10 flex flex-col gap-28 pt-6">
+            {nodes.map((node) => (
               <PathNode 
                 key={node.id} 
                 node={node} 
@@ -82,92 +119,82 @@ export default function SpiritualPathPage() {
             ))}
           </div>
         </div>
-
-        {/* 4. Breathe Component */}
-        <div className="max-w-[400px] mx-auto my-24 p-12 bg-[#e1dfdb]/30 rounded-[32px] text-center border border-[#c3c8c2]/30">
-          <div className="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-            <div className="absolute inset-0 bg-[#4d6054] rounded-full animate-ping opacity-20"></div>
-            <div className="w-12 h-12 bg-[#4d6054] rounded-full z-10 shadow-lg"></div>
-          </div>
-          <h4 className="font-bold text-[#4d6054] mb-2">Breathe in Peace</h4>
-          <p className="text-sm text-[#5e5e5b] font-sans">Take a moment to center your spirit.</p>
-        </div>
       </main>
 
-      {/* 5. Detail Side Panel (Slide-in) */}
+      {/* Slide-out Control Inspector Panel Overlay */}
       <aside 
-        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[70] border-l border-[#c3c8c2]/50 transition-transform duration-500 ease-in-out ${isPanelOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[70] border-l border-gray-100 transition-transform duration-500 ease-in-out ${isPanelOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {selectedNode && (
-          <div className="p-8 h-full flex flex-col">
-            <button onClick={() => setIsPanelOpen(false)} className="self-end p-2 text-[#5e5e5b] hover:text-[#4d6054]">
-              <span className="material-symbols-outlined text-3xl">close</span>
-            </button>
-            <div className="mt-8 flex-grow">
-              <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wider ${
-                selectedNode.status === 'active' ? 'bg-[#d2e8d8] text-[#0d1f15]' : 'bg-[#e9eef6] text-[#434844]'
-              }`}>
-                {selectedNode.status}
-              </span>
-              <h2 className="text-3xl font-bold text-[#4d6054] mb-4 leading-tight">{selectedNode.title}</h2>
-              <div className="w-full h-48 rounded-2xl bg-[#e3e9f0] mb-6 overflow-hidden">
-                <Image src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop" alt="Meditative Scene" className="w-full h-full object-cover" />
+          <div className="p-8 h-full flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <span className={`px-3 py-1 rounded-full text-[10px] font-sans font-black uppercase tracking-widest ${
+                  selectedNode.status === 'active' ? 'bg-[#d2e8d8] text-[#0d1f15]' : 'bg-[#f7ebd9] text-[#4d6054]'
+                }`}>
+                  {selectedNode.status} Focus
+                </span>
+                <button onClick={() => setIsPanelOpen(false)} className="p-2 text-gray-400 hover:text-black transition-colors">
+                  <span className="material-symbols-outlined text-2xl">close</span>
+                </button>
               </div>
-              <p className="text-[#434844] mb-8 leading-relaxed">{selectedNode.desc}</p>
-              <div className="space-y-4 font-sans">
-                <div className="flex gap-4 items-start">
-                  <span className="material-symbols-outlined text-[#4d6054]">menu_book</span>
-                  <p className="text-sm italic text-[#5e5e5b]">"Give thanks in all circumstances..." — 1 Thess 5:18</p>
-                </div>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-[#161c22] mb-4">{selectedNode.title}</h2>
+              
+              <div className="w-full h-44 rounded-2xl bg-gray-100 mb-6 relative overflow-hidden shadow-inner">
+                <Image 
+                  src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800&auto=format&fit=crop" 
+                  alt="Focus Ambient View" 
+                  fill 
+                  className="object-cover" 
+                />
               </div>
+              
+              <p className="text-sm font-sans leading-relaxed text-[#434844] mb-6">{selectedNode.desc}</p>
             </div>
-            <button className="w-full py-4 bg-[#4d6054] text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition-all mt-auto">
-              {selectedNode.status === 'locked' ? 'Locked' : 'Continue Journey'}
+
+            <button className="w-full py-4 bg-[#4d6054] text-white font-sans text-xs font-black tracking-widest uppercase rounded-xl transition-all hover:bg-[#3d4d43]">
+              {selectedNode.status === 'completed' ? 'Reflect Again' : 'Mark Destination Complete'}
             </button>
           </div>
         )}
       </aside>
-
-      {/* Bottom Nav (Mobile) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center p-4 bg-white border-t border-gray-100">
-        <MobileNavItem icon="auto_awesome" label="Daily" />
-        <MobileNavItem icon="route" label="Path" active />
-        <MobileNavItem icon="history_edu" label="Journal" />
-      </nav>
     </div>
   );
 }
 
 /**
- * SUB-COMPONENTS
+ * HOOK & LAYOUT SUB-COMPONENTS
  */
-
 function PathNode({ node, onClick }: { node: PathNodeData; onClick: () => void }) {
-  const alignment = {
+  const positionMapping = {
     center: 'items-center',
-    left: 'items-center -translate-x-24 md:-translate-x-32',
-    right: 'items-center translate-x-24 md:translate-x-32',
+    left: 'items-center -translate-x-16 md:-translate-x-28',
+    right: 'items-center translate-x-16 md:translate-x-28',
   };
 
-  const statusStyles = {
-    completed: 'bg-[#b7ccbc] text-[#384b3f] shadow-primary/10',
-    active: 'bg-[#4d6054] text-white scale-110 shadow-xl animate-pulse',
-    locked: 'bg-[#e3e9f0] border-2 border-dashed border-[#737873] text-[#5e5e5b] opacity-50 grayscale',
+  const statusThemes = {
+    completed: 'bg-white text-[#4d6054] border border-[#4d6054]/20 shadow-sm opacity-80',
+    active: 'bg-[#4d6054] text-white scale-110 shadow-xl ring-4 ring-[#4d6054]/10 cursor-pointer',
+    locked: 'bg-gray-100 border border-gray-200 text-gray-300 cursor-not-allowed select-none',
   };
 
   return (
-    <div className={`flex flex-col transition-all duration-500 group ${alignment[node.position]}`}>
+    <div className={`flex flex-col transition-all duration-300 ${positionMapping[node.position]}`}>
       <div 
         onClick={onClick}
-        className={`w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center cursor-pointer transition-transform hover:scale-110 ${statusStyles[node.status]}`}
+        className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-transform ${
+          node.status !== 'locked' ? 'hover:scale-105 active:scale-95' : ''
+        } ${statusThemes[node.status]}`}
       >
-        <span className="material-symbols-outlined text-3xl">
+        <span className="material-symbols-outlined text-2xl">
           {node.icon}
         </span>
       </div>
-      <div className="mt-4 text-center">
-        <h3 className={`text-sm font-bold ${node.status === 'active' ? 'text-[#4d6054]' : 'text-[#5e5e5b]'}`}>{node.title}</h3>
-        {node.date && <p className="text-[10px] uppercase tracking-widest text-[#5e5e5b] opacity-60">{node.date}</p>}
+      <div className="mt-3 text-center max-w-[140px]">
+        <h3 className={`text-xs font-sans font-bold tracking-tight ${node.status === 'locked' ? 'text-gray-300' : 'text-[#161c22]'}`}>
+          {node.title}
+        </h3>
       </div>
     </div>
   );
@@ -175,20 +202,9 @@ function PathNode({ node, onClick }: { node: PathNodeData; onClick: () => void }
 
 function StreakCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="bg-white p-6 rounded-[24px] shadow-sm border border-gray-100 text-center">
-      <p className="text-xs text-[#5e5e5b] uppercase tracking-tighter mb-1">{label}</p>
-      <p className={`text-4xl font-bold ${color}`}>{value}</p>
-      <p className="text-[10px] text-gray-400">Days</p>
-    </div>
-  );
-}
-
-
-function MobileNavItem({ icon, label, active = false }: { icon: string; label: string; active?: boolean }) {
-  return (
-    <div className={`flex flex-col items-center gap-1 ${active ? 'text-[#4d6054]' : 'text-gray-400'}`}>
-      <span className="material-symbols-outlined">{icon}</span>
-      <span className="text-[10px] font-bold uppercase">{label}</span>
+    <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white shadow-sm text-center">
+      <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase mb-1">{label}</p>
+      <p className={`text-3xl font-bold tracking-tight ${color}`}>{value}</p>
     </div>
   );
 }
