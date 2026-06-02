@@ -38,11 +38,39 @@ export async function GET(request: Request) {
     const textData = await textRes.json();
 
     // 4. Parse verses from the CDN response
-    // The CDN API returns an object with verses array
-    const formattedVerses = textData.verses?.map((v: any) => ({
-      number: v.number || v.verse,
-      text: (v.text || v.content || '').trim()
-    })) || [];
+    // The CDN API may return different formats - handle all variations
+    let formattedVerses: any[] = [];
+    
+    if (Array.isArray(textData.verses)) {
+      // Format: { verses: [{ verse: 1, text: "..." }] }
+      formattedVerses = textData.verses.map((v: any) => ({
+        number: v.verse || v.number || 1,
+        text: (v.text || v.content || '').trim()
+      }));
+    } else if (textData.book && Array.isArray(textData.chapters)) {
+      // Format: { book: "...", chapters: [{ verses: [...] }] }
+      const chapter = textData.chapters[0];
+      if (chapter && Array.isArray(chapter.verses)) {
+        formattedVerses = chapter.verses.map((v: any) => ({
+          number: v.verse || v.number,
+          text: (v.text || v.content || '').trim()
+        }));
+      }
+    } else if (Array.isArray(textData)) {
+      // Format: direct array of verses
+      formattedVerses = textData.map((v: any) => ({
+        number: v.verse || v.number,
+        text: (v.text || v.content || '').trim()
+      }));
+    } else if (textData.text) {
+      // Fallback: single verse returned
+      formattedVerses = [{ number: 1, text: (textData.text || '').trim() }];
+    }
+    
+    // If still empty, log the actual structure for debugging
+    if (formattedVerses.length === 0) {
+      console.warn('Could not parse verses from CDN response:', JSON.stringify(textData).substring(0, 500));
+    }
 
     // 5. Generate audio URL (using a reliable audio Bible CDN)
     const audioUrl = `https://cdn.global-scriptures.com/audio/${langCode}/${cdnBookName}/${chapter}.mp3`;

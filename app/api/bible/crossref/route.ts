@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic'; // Required for dynamic request handling
+
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const verseId = searchParams.get('verseId'); // Expecting format like 'JHN.3.16'
+    const url = new URL(request.url);
+    const verseId = url.searchParams.get('verseId'); // Expecting format like 'JHN.3.16'
 
     if (!verseId) {
       return NextResponse.json({ error: 'Verse ID is required' }, { status: 400 });

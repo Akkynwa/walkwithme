@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/Card';
 import Sidebar from '@/app/layout-components/Sidebar';
 
 interface QuietSession {

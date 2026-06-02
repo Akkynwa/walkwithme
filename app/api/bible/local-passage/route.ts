@@ -66,11 +66,30 @@ export async function GET(request: Request) {
 
     const textData = await response.json();
 
-    // Parse verses
-    const formattedVerses = textData.verses?.map((v: any) => ({
-      number: v.number || v.verse,
-      text: (v.text || v.content || '').trim()
-    })) || [];
+    // Parse verses - handle multiple response formats from CDN
+    let formattedVerses: any[] = [];
+    
+    if (Array.isArray(textData.verses)) {
+      formattedVerses = textData.verses.map((v: any) => ({
+        number: v.verse || v.number || 1,
+        text: (v.text || v.content || '').trim()
+      }));
+    } else if (textData.book && Array.isArray(textData.chapters)) {
+      const chapter = textData.chapters[0];
+      if (chapter && Array.isArray(chapter.verses)) {
+        formattedVerses = chapter.verses.map((v: any) => ({
+          number: v.verse || v.number,
+          text: (v.text || v.content || '').trim()
+        }));
+      }
+    } else if (Array.isArray(textData)) {
+      formattedVerses = textData.map((v: any) => ({
+        number: v.verse || v.number,
+        text: (v.text || v.content || '').trim()
+      }));
+    } else if (textData.text) {
+      formattedVerses = [{ number: 1, text: (textData.text || '').trim() }];
+    }
 
     // Audio URL
     const audioUrl = `https://cdn.global-scriptures.com/audio/${langCode}/${cdnBookName}/${chapter}.mp3`;
