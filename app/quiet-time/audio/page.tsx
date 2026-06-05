@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { DownloadButton } from '@/components/audio/DownloadButton';
+import Image from 'next/image';
 
 const BIBLE_VERSIONS = [
   { id: 'de4e12af7f29f59f-01', name: 'KJV', lang: 'English' },
@@ -26,20 +27,15 @@ export default function QuietTimeAudioPage() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [scriptureText, setScriptureText] = useState("Loading the Word...");
   
-  // Audio Engine State
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
-
-  // --- CONNECTED TO JOURNAL ROUTE STATES ---
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [noteContent, setNoteContent] = useState('');
   const [isSavingNote, setIsSavingNote] = useState(false);
   const [isLoadingNote, setIsLoadingNote] = useState(false);
 
-  // Compute a unified reference tag to group/identify the journal context
   const passageReference = `${book} ${chapter}`;
 
-  // Fetch Audio Stream Context
   const fetchSanctuaryAudio = useCallback(async () => {
     setIsLoadingAudio(true);
     setAudioUrl(null); 
@@ -55,7 +51,6 @@ export default function QuietTimeAudioPage() {
     }
   }, [book, chapter, version]);
 
-  // Pull existing log content directly from your established journal route on passage transition
   useEffect(() => {
     async function fetchScripture() {
       setScriptureText("The Lord is my shepherd; I shall not want. He makes me to lie down in green pastures...");
@@ -64,11 +59,8 @@ export default function QuietTimeAudioPage() {
     async function fetchJournalContext() {
       setIsLoadingNote(true);
       try {
-        // Querying your active journal route matching this reference
         const res = await fetch(`/api/journal?reference=${encodeURIComponent(passageReference)}&type=quiet_time`);
         const data = await res.json();
-        
-        // Extract content depending on your journal schema layout (e.g., body, content, or text)
         setNoteContent(data.content || data.body || '');
       } catch (err) {
         console.error("Failed to query journal pipeline:", err);
@@ -82,7 +74,6 @@ export default function QuietTimeAudioPage() {
     fetchJournalContext();
   }, [book, chapter, version, passageReference, fetchSanctuaryAudio]);
 
-  // Submit/Upsert the entry to your journals database route
   const saveStudyNotes = async () => {
     setIsSavingNote(true);
     try {
@@ -92,7 +83,7 @@ export default function QuietTimeAudioPage() {
         body: JSON.stringify({ 
           reference: passageReference,
           type: 'quiet_time',
-          content: noteContent, // Adjust key if your route accepts 'body'
+          content: noteContent,
           title: `Reflections on ${passageReference}`
         })
       });
@@ -105,56 +96,69 @@ export default function QuietTimeAudioPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F4F1EA] font-serif overflow-x-hidden selection:bg-[#D4AF37]/20 relative">
+    <div className="relative flex min-h-screen overflow-x-hidden">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
 
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.35] mix-blend-multiply z-0"
-        style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/paper-fibers.png")` }}
-      />
-
-      <main className="relative z-10 lg:ml-64 flex-1 px-6 md:px-12 py-12 max-w-5xl mx-auto pb-32">
+      <main className="relative z-10 lg:ml-56 flex-1 px-6 md:px-10 py-8 max-w-5xl mx-auto pb-20">
         
-        {/* SELECTOR BAR */}
-        <section className="mb-10 bg-white/80 backdrop-blur-md border border-[#D4CDBA]/60 p-4 rounded-3xl flex flex-wrap lg:flex-nowrap items-center gap-4 shadow-[0_10px_30px_rgba(60,56,48,0.02)]">
-          <div className="flex items-center gap-3 bg-[#FDFBF7] px-4 py-2 rounded-2xl border border-[#D4CDBA]/30 flex-1">
-            <span className="material-symbols-outlined text-[#3C3830] text-xl">search</span>
+        {/* Selector Bar */}
+        <section className="mb-8 bg-white/40 backdrop-blur-xl border border-white/60 p-3 rounded-xl flex flex-wrap lg:flex-nowrap items-center gap-3 shadow-lg">
+          <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 flex-1">
+            <span className="material-symbols-outlined text-amber-600 text-[16px]">menu_book</span>
             <select 
               value={book} 
               onChange={(e) => setBook(e.target.value)}
-              className="bg-transparent text-sm font-sans font-bold text-[#3C3830] outline-none w-full appearance-none cursor-pointer"
+              className="bg-transparent text-xs font-sans font-semibold text-gray-800 outline-none w-full appearance-none cursor-pointer"
             >
               {BOOKS.map(b => <option key={b} value={b}>{b}</option>)}
             </select>
           </div>
 
-          <div className="flex items-center gap-2 bg-[#FDFBF7] px-4 py-2 rounded-2xl border border-[#D4CDBA]/30 w-32">
-            <span className="text-[10px] font-sans font-black text-[#7C7565] uppercase">Ch</span>
+          <div className="flex items-center gap-1 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 w-28">
+            <span className="text-[8px] font-sans font-black text-amber-600 uppercase">Ch</span>
             <input 
               type="number" 
               value={chapter}
               onChange={(e) => setChapter(e.target.value)}
-              className="bg-transparent text-sm font-sans font-bold text-[#3C3830] w-full outline-none"
+              className="bg-transparent text-xs font-sans font-semibold text-gray-800 w-full outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-3 bg-[#FDFBF7] px-4 py-2 rounded-2xl border border-[#D4CDBA]/30 w-48">
-            <span className="material-symbols-outlined text-[#7C7565] text-xl">language</span>
+          <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 flex-1">
+            <span className="material-symbols-outlined text-amber-600 text-[16px]">language</span>
             <select 
               value={version} 
               onChange={(e) => setVersion(e.target.value)}
-              className="bg-transparent text-sm font-sans font-bold text-[#3C3830] outline-none w-full appearance-none cursor-pointer"
+              className="bg-transparent text-xs font-sans font-semibold text-gray-800 outline-none w-full appearance-none cursor-pointer"
             >
               {BIBLE_VERSIONS.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
             </select>
           </div>
 
-          <div className="flex items-center gap-2 px-4 border-l border-[#D4CDBA]/40">
-            <span className="material-symbols-outlined text-sm text-[#7C7565]">speed</span>
+          <div className="flex items-center gap-1 px-2 border-l border-gray-200">
+            <span className="material-symbols-outlined text-amber-600 text-[14px]">speed</span>
             <select 
               value={playbackSpeed}
               onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
-              className="bg-transparent text-xs font-sans font-bold text-[#3C3830] outline-none cursor-pointer"
+              className="bg-transparent text-[10px] font-sans font-bold text-gray-700 outline-none cursor-pointer"
             >
               <option value={0.8}>0.8x</option>
               <option value={1}>1.0x</option>
@@ -163,14 +167,14 @@ export default function QuietTimeAudioPage() {
           </div>
         </section>
 
-        {/* HERO AUDIO PLAYER */}
-        <section className="mb-16 flex flex-col items-center">
-          <div className="relative w-full max-w-4xl">
+        {/* Hero Audio Player */}
+        <section className="mb-12 flex flex-col items-center">
+          <div className="relative w-full max-w-3xl">
             {isLoadingAudio && (
-              <div className="absolute inset-0 z-20 bg-[#FDFBF7]/60 backdrop-blur-sm rounded-[3rem] flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-[10px] font-sans font-black uppercase tracking-widest text-[#3C3830]">Preparing Sanctuary...</p>
+              <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-[8px] font-sans font-black uppercase tracking-wider text-gray-600">Preparing Sanctuary...</p>
                 </div>
               </div>
             )}
@@ -185,37 +189,41 @@ export default function QuietTimeAudioPage() {
             />
           </div>
           
-          <div className="mt-8 flex gap-8">
+          <div className="mt-6 flex gap-6">
             {audioUrl && <DownloadButton audioUrl={audioUrl} title={`${book}_${chapter}`} />}
-            <button className="group flex flex-col items-center gap-2 transition-all">
-                <div className="w-12 h-12 rounded-full border border-[#D4CDBA] bg-white/80 flex items-center justify-center text-[#3C3830] group-hover:bg-[#3C3830] group-hover:text-white transition-all shadow-sm">
-                    <span className="material-symbols-outlined text-xl">bookmark</span>
-                </div>
-                <span className="text-[10px] font-sans font-bold text-[#7C7565] uppercase tracking-widest">Save Passage</span>
+            <button className="group flex flex-col items-center gap-1 transition-all">
+              <div className="w-10 h-10 rounded-full border border-gray-300 bg-white/60 flex items-center justify-center text-gray-600 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600 transition-all shadow-sm">
+                <span className="material-symbols-outlined text-[18px]">bookmark_border</span>
+              </div>
+              <span className="text-[8px] font-sans font-bold text-gray-500 uppercase tracking-wider">Save</span>
             </button>
           </div>
         </section>
 
-        {/* SCRIPTURE TEXT CARD */}
-        <section className="bg-white/80 backdrop-blur-xl border border-[#D4CDBA]/30 p-8 md:p-16 rounded-[2.5rem] shadow-[0_30px_70px_rgba(60,56,48,0.04)] relative overflow-hidden">
-          <div className="absolute top-8 right-12 opacity-5 select-none pointer-events-none">
-             <span className="text-[12rem] font-black">{chapter}</span>
+        {/* Scripture Text Card */}
+        <section className="bg-white/40 backdrop-blur-xl border border-white/60 p-8 md:p-12 rounded-2xl shadow-xl relative overflow-hidden">
+          <div className="absolute top-6 right-8 opacity-5 select-none pointer-events-none">
+             <span className="text-[8rem] font-black text-gray-800">{chapter}</span>
           </div>
           
           <div className="max-w-2xl relative z-10">
-            <h2 className="text-3xl font-bold text-[#3C3830] mb-8">{book} {chapter}</h2>
-            <p className="text-2xl text-[#3C3830] leading-[1.9] italic">
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-8 h-px bg-amber-400/40" />
+              <span className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Scripture Reading</span>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">{book} {chapter}</h2>
+            <p className="text-xl text-gray-700 leading-relaxed italic">
               "{scriptureText}"
             </p>
             
-            <div className="mt-12 flex gap-4">
+            <div className="mt-10 flex gap-4">
               <button 
                 onClick={() => setIsNotesOpen(true)}
-                className="bg-gradient-to-r from-[#D4AF37] to-[#AA8414] text-white px-10 py-4 rounded-xl text-xs font-sans font-black uppercase tracking-widest hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all"
+                className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-lg text-[9px] font-sans font-black uppercase tracking-wider hover:shadow-lg hover:shadow-amber-500/25 transition-all"
               >
                 Study Notes
               </button>
-              <button className="bg-white border border-[#D4CDBA] text-[#3C3830] px-10 py-4 rounded-xl text-xs font-sans font-black uppercase tracking-widest hover:bg-[#FDFBF7] transition-all">
+              <button className="bg-white/50 border border-gray-200 text-gray-700 px-8 py-3 rounded-lg text-[9px] font-sans font-black uppercase tracking-wider hover:bg-white/80 transition-all">
                 Share Verse
               </button>
             </div>
@@ -223,72 +231,83 @@ export default function QuietTimeAudioPage() {
         </section>
       </main>
 
-      {/* --- SLIDE-OUT PANEL COUPLING JOURNAL ROUTE --- */}
-      <div className={`fixed inset-y-0 right-0 w-full max-w-md bg-white border-l border-[#D4CDBA]/60 shadow-[-20px_0_60px_rgba(60,56,48,0.08)] z-50 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${isNotesOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="h-full flex flex-col p-8 justify-between relative">
+      {/* Slide-out Panel for Journal Notes */}
+      <div className={`fixed inset-y-0 right-0 w-full max-w-md bg-white/95 backdrop-blur-xl border-l border-white/60 shadow-2xl z-50 transition-transform duration-500 ease-out ${isNotesOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="h-full flex flex-col p-6 justify-between">
           
           <div>
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#D4CDBA]/40">
-              <div className="flex flex-col">
-                <span className="text-[9px] font-sans font-black uppercase tracking-[0.2em] text-[#D4AF37]">Journal Link Sync</span>
-                <h3 className="text-xl font-bold text-[#3C3830]">{book} {chapter} Notes</h3>
+            <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-200">
+              <div>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="material-symbols-outlined text-amber-500 text-[14px]">edit_note</span>
+                  <span className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-600">Journal Sync</span>
+                </div>
+                <h3 className="text-lg font-serif font-bold text-gray-800">{book} {chapter} Notes</h3>
               </div>
               <button 
                 onClick={() => setIsNotesOpen(false)}
-                className="w-8 h-8 rounded-full border border-[#D4CDBA]/40 flex items-center justify-center text-[#7C7565] hover:bg-gray-50 transition-colors"
+                className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
               >
-                <span className="material-symbols-outlined text-sm">close</span>
+                <span className="material-symbols-outlined text-[14px]">close</span>
               </button>
             </div>
 
-            <div className="p-4 bg-[#FDFBF7] rounded-2xl border border-[#D4CDBA]/30 mb-6 relative min-h-[76px] flex flex-col justify-center">
+            <div className="p-3 bg-amber-50/50 rounded-xl border border-amber-100 mb-5 relative min-h-[70px]">
               {isLoadingNote ? (
-                <div className="flex items-center gap-2 justify-center py-2 animate-pulse">
-                  <div className="w-3 h-3 rounded-full bg-[#D4AF37] animate-ping" />
-                  <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-[#7C7565]">Syncing Journal...</span>
+                <div className="flex items-center gap-2 justify-center py-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                  <span className="text-[8px] font-sans font-bold uppercase tracking-wider text-gray-500">Syncing Journal...</span>
                 </div>
               ) : (
                 <>
-                  <h4 className="text-[10px] font-sans font-black uppercase tracking-widest text-[#3C3830] mb-1">Passage Context</h4>
-                  <p className="text-xs text-[#7C7565] italic line-clamp-2">"{scriptureText}"</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="material-symbols-outlined text-amber-500 text-[10px]">menu_book</span>
+                    <h4 className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-700">Passage Context</h4>
+                  </div>
+                  <p className="text-[9px] text-gray-600 italic line-clamp-2">"{scriptureText}"</p>
                 </>
               )}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-[10px] font-sans font-black uppercase tracking-widest text-[#7C7565]">Divine Prompts & Reflections</label>
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-amber-500 text-[12px]">notes</span>
+                <label className="text-[7px] font-sans font-black uppercase tracking-wider text-gray-500">Reflections & Insights</label>
+              </div>
               <textarea 
                 value={noteContent}
                 disabled={isLoadingNote}
                 onChange={(e) => setNoteContent(e.target.value)}
                 placeholder={isLoadingNote ? "Waiting for journal sync..." : "Record structural insights or revelation notes here..."}
-                className="w-full h-64 p-4 rounded-2xl bg-[#FAFAFA] border border-[#D4CDBA]/40 text-sm text-[#3C3830] outline-none font-sans focus:border-[#D4AF37] transition-all resize-none leading-relaxed disabled:opacity-50"
+                className="w-full h-56 p-3 rounded-xl bg-white/50 border border-gray-200 text-xs text-gray-700 outline-none font-sans focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all resize-none leading-relaxed disabled:opacity-50 placeholder:text-gray-400"
               />
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#D4CDBA]/40 flex items-center justify-between">
-            <span className="text-[10px] font-sans text-gray-400 italic">
+          <div className="pt-4 border-t border-gray-200 flex items-center justify-between">
+            <span className="text-[8px] font-sans text-gray-400 italic">
               {noteContent.length > 0 ? `${noteContent.length} characters logged` : 'Empty sheet'}
             </span>
             <button 
               onClick={saveStudyNotes}
               disabled={isSavingNote || isLoadingNote}
-              className="px-8 py-3 bg-[#3C3830] hover:bg-[#524B3F] text-white font-sans font-black text-xs tracking-widest uppercase rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-md"
+              className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-sans font-black text-[8px] tracking-wider uppercase rounded-lg transition-all disabled:opacity-50 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02]"
             >
               {isSavingNote ? (
                 <>
-                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Syncing...
                 </>
               ) : (
-                'Save Entry'
+                <>
+                  <span className="material-symbols-outlined text-[12px]">save</span>
+                  Save Entry
+                </>
               )}
             </button>
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

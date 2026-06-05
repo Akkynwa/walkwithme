@@ -12,38 +12,50 @@ datasource db {
 }
 
 model User {
-  id                   String                @id @default(cuid())
-  email                String                @unique
-  emailVerified        DateTime?
-  name                 String?
-  image                String?               @db.Text // Text type safely stores large base64 data strings
-  bio                  String?               @db.Text // Holds your spiritual objectives and focus metrics
-  password             String?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  passwordResetToken   String?   @unique
-  passwordResetExpires DateTime?
-  emailNotifications Boolean   @default(true)
-  pushNotifications  Boolean   @default(true)
-  dailyReminder      Boolean   @default(true)
-  prayerReminder     Boolean   @default(true)
-  newContent         Boolean   @default(true)
-  messages Message[]
+  id                    String                @id @default(cuid())
+  email                 String                @unique
+  emailVerified         DateTime?
+  name                  String?
+  image                 String?               @db.Text
+  bio                   String?               @db.Text
+  password              String?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  passwordResetToken    String?               @unique
+  passwordResetExpires  DateTime?
+  emailNotifications    Boolean               @default(true)
+  pushNotifications     Boolean               @default(true)
+  dailyReminder         Boolean               @default(true)
+  prayerReminder        Boolean               @default(true)
+  newContent            Boolean               @default(true)
 
-  
-  // Relationships
-  accounts             Account[]
-  sessions             Session[]
-  journalEntries       JournalEntry[]
-  prayers              Prayer[]
-  quietTimeSessions    QuietTimeSession[]
-  communityMemberships CommunityMembership[]
-  userPreferences      UserPreferences?
-  streakData           StreakData?
-  discussions          Discussion[]          // Added relation map
-  replies              Reply[]               // Added relation map
-  auditLogs            AuditLog[]            // Added relation map
-  
+  // --- COHORT & WORKSPACE RELATIONS ---
+  shares                CommunityShare[]      @relation("UserShares")
+  amens                 Amen[]                @relation("UserAmens")
+  prayerRequests        PrayerRequest[]       @relation("UserPrayerRequests")
+  intercessions         Intercession[]        @relation("UserIntercessions")
+  cohortMember          CohortMember?         @relation("UserCohortMember")
+  cohortMessages        CohortMessage[]       @relation("UserCohortMessages")
+
+  // --- DYNAMIC COMMUNITY FELLOWSHIP GROUPS ---
+  groupMemberships      GroupMember[]         @relation("UserGroupMemberships")
+  createdGroups         CommunityGroup[]      @relation("UserCreatedGroups")
+
+  // --- LEGACY & SYSTEM RELATIONS ---
+  accounts              Account[]
+  sessions              Session[]
+  journalEntries        JournalEntry[]
+  prayers               Prayer[]              
+  quietTimeSessions     QuietTimeSession[]
+  communityMemberships  CommunityMembership[]
+  userPreferences       UserPreferences?
+  streakData            StreakData?
+  discussions           Discussion[]
+  replies               Reply[]
+  auditLogs             AuditLog[]
+  messages              Message[]             
+currentStreak     Int       @default(0)
+  longestStreak     Int       @default(0)
   @@index([email])
 }
 
@@ -78,10 +90,10 @@ model Session {
 }
 
 model VerificationToken {
-  id          String   @id @default(cuid()) // Recommended best practice explicit identifier
-  identifier  String
-  token       String   @unique
-  expires     DateTime
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
   
   @@unique([identifier, token])
 }
@@ -90,12 +102,12 @@ model UserPreferences {
   id                  String   @id @default(cuid())
   userId              String   @unique
   language            String   @default("en")
-  theme               String   @default("light") // Matches 'light' | 'dark' | 'system' parameters
-  fontSize            Int      @default(2)       // Stores your 1 to 5 context reader text scale
+  theme               String   @default("light")
+  fontSize            Int      @default(2)      
   
   // Bible Sub-Preferences fields
   bibleTranslation    String   @default("KJV")
-  readingMode         String   @default("verse") // 'verse', 'passage', 'chapter'
+  readingMode         String   @default("verse")
   showCrossReferences Boolean  @default(true)
   showCommentary      Boolean  @default(true)
   
@@ -135,7 +147,7 @@ model Prayer {
   title       String
   description String    @db.Text
   category    String
-  status      String    @default("pending") // pending, answered, archived
+  status      String    @default("pending")
   answeredAt  DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -148,8 +160,8 @@ model Prayer {
 model QuietTimeSession {
   id        String   @id @default(cuid())
   userId    String
-  type      String   // reading, reflection, audio, summary
-  duration  Int      // in minutes
+  type      String   
+  duration  Int      
   scripture String?
   notes     String?  @db.Text
   createdAt DateTime @default(now())
@@ -172,17 +184,37 @@ model Community {
 }
 
 model CommunityGroup {
-  id          String   @id @default(cuid())
-  communityId String
+  id          String        @id @default(cuid())
+  communityId String?       // Made optional so groups can exist inside a parent organization or standalone
   name        String
-  description String   @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  description String        @db.Text
+  category    String        // 'Bible Study', 'Meditation', 'Prayer', etc.
+  image       String
+  isFeatured  Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  creatorId   String
   
-  community   Community    @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  // Unified Relational Fields
+  community   Community?    @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  creator     User          @relation("UserCreatedGroups", fields: [creatorId], references: [id], onDelete: Cascade)
+  members     GroupMember[]
   discussions Discussion[]
   
   @@index([communityId])
+  @@index([category])
+}
+
+model GroupMember {
+  id        String         @id @default(cuid())
+  userId    String
+  groupId   String
+  joinedAt  DateTime       @default(now())
+  
+  user      User           @relation("UserGroupMemberships", fields: [userId], references: [id], onDelete: Cascade)
+  group     CommunityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
 }
 
 model CommunityMembership {
@@ -204,28 +236,28 @@ model Discussion {
   groupId   String
   title     String
   content   String   @db.Text
-  authorId  String   // Changed author to authorId for User relational mapping
+  authorId  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  group   CommunityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  replies Reply[]
+  group     CommunityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replies   Reply[]
   
   @@index([groupId])
   @@index([authorId])
 }
 
 model Reply {
-  id           String   @id @default(cuid())
+  id           String     @id @default(cuid())
   discussionId String
-  authorId     String   // Changed author to authorId for User relational mapping
-  content      String   @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  authorId     String   
+  content      String     @db.Text
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   
-  discussion Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
-  user       User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   
   @@index([discussionId])
   @@index([authorId])
@@ -253,38 +285,136 @@ model AuditLog {
   
   @@index([userId, createdAt])
 }
+
 model Message {
   id        String   @id @default(cuid())
   content   String   @db.Text
-  role      String   // 'user' or 'assistant'
+  role      String   
   createdAt DateTime @default(now())
-  
-  // Link to your existing User model
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
+
 model Testimony {
   id         String   @id @default(cuid())
   author     String
   location   String
   content    String   @db.Text
-  isApproved Boolean  @default(false) // Gives you admin control over what shows up
+  isApproved Boolean  @default(false) 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@map("testimonies") // Keeps table naming clean in PostgreSQL/MySQL
+  @@map("testimonies") 
 }
+
 model UserPathProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  nodeId      String    
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, nodeId]) 
+  @@map("user_path_progress")
+}
+
+model CommunityShare {
   id          String   @id @default(cuid())
   userId      String
-  nodeId      String   // Maps to the unique ID of the path node
-  isCompleted Boolean  @default(false)
-  completedAt DateTime?
+  book        String
+  chapter     Int
+  content     String   @db.Text
+  isAnonymous Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([userId, nodeId]) // Ensures a user only has one entry per milestone
-  @@map("user_path_progress")
+  user        User     @relation("UserShares", fields: [userId], references: [id], onDelete: Cascade)
+  amens       Amen[]
+
+  @@index([userId])
+}
+
+model Amen {
+  id               String         @id @default(cuid())
+  communityShareId String
+  userId           String
+  createdAt        DateTime       @default(now())
+
+  communityShare   CommunityShare @relation(fields: [communityShareId], references: [id], onDelete: Cascade)
+  user             User           @relation("UserAmens", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([communityShareId, userId])
+  @@index([userId])
+}
+
+model PrayerRequest {
+  id           String        @id @default(cuid())
+  userId       String
+  content      String        @db.Text
+  isAnonymous  Boolean       @default(false)
+  status       PrayerStatus  @default(ACTIVE)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  user         User          @relation("UserPrayerRequests", fields: [userId], references: [id], onDelete: Cascade)
+  intercessors Intercession[]
+
+  @@index([userId])
+}
+
+enum PrayerStatus {
+  ACTIVE
+  ANSWERED
+}
+
+model Intercession {
+  id              String        @id @default(cuid())
+  prayerRequestId String
+  userId          String
+  createdAt       DateTime      @default(now())
+
+  prayerRequest   PrayerRequest @relation(fields: [prayerRequestId], references: [id], onDelete: Cascade)
+  user            User          @relation("UserIntercessions", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([prayerRequestId, userId])
+  @@index([userId])
+}
+
+model Cohort {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  createdAt DateTime        @default(now())
+  
+  members   CohortMember[]
+  messages  CohortMessage[]
+}
+
+model CohortMember {
+  id        String   @id @default(cuid())
+  cohortId  String
+  userId    String   @unique
+  createdAt DateTime @default(now())
+
+  cohort    Cohort   @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserCohortMember", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([cohortId])
+}
+
+model CohortMessage {
+  id        String   @id @default(cuid())
+  cohortId  String
+  userId    String
+  text      String   @db.Text
+  createdAt DateTime @default(now())
+
+  cohort    Cohort   @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserCohortMessages", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([cohortId])
+  @@index([userId])
 }

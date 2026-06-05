@@ -3,8 +3,19 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-// Master definitions array for your nodes
-const MASTER_NODES = [
+// 🌟 FORCE DYNAMIC: Prevents build-time static caching of user-specific pathways
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+interface PathNode {
+  id: string;
+  title: string;
+  desc: string;
+  icon: string;
+  position: 'center' | 'left' | 'right';
+}
+
+const MASTER_NODES: PathNode[] = [
   { id: 'path_1', title: 'Read Psalm 23', desc: 'A reflection on divine protection and guidance.', icon: 'check_circle', position: 'center' },
   { id: 'path_2', title: '10-Minute Morning Meditation', desc: '10 minutes of silent presence and breathing.', icon: 'air', position: 'right' },
   { id: 'path_3', title: '7-Day Gratitude Challenge', desc: 'Begin an intentional journey of identifying daily blessings.', icon: 'auto_awesome', position: 'left' },
@@ -15,20 +26,28 @@ const MASTER_NODES = [
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized credentials payload' }, { status: 401 });
     }
 
-    // 1. Grab all completions for this specific user
-    const userProgress = await prisma.userPathProgress.findMany({
-      where: { userId: session.user.id }
-    });
+    const userId = session.user.id;
 
-    const completedSet = new Set(
-      userProgress.filter(p => p.isCompleted).map(p => p.nodeId)
-    );
+    // 1. Parallel Execution: Pull progress maps and user profile records simultaneously
+    const [userProgress, userProfile] = await Promise.all([
+      prisma.userPathProgress.findMany({
+        where: { userId, isCompleted: true },
+        select: { nodeId: true, createdAt: true } // Pruned fields to reduce DB engine I/O overhead
+      }),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { currentStreak: true, longestStreak: true }
+      })
+    ]);
 
-    // 2. Map structures sequentially enforcing lock dependencies
+    // 2. Generate lookup set for active progress matching
+    const completedSet = new Set(userProgress.map(p => p.nodeId));
+
+    // 3. Sequentially process state transitions & lock mechanisms
     const processedNodes = MASTER_NODES.map((node, index) => {
       const isCompleted = completedSet.has(node.id);
       
@@ -37,7 +56,6 @@ export async function GET() {
       if (isCompleted) {
         status = 'completed';
       } else if (index === 0 || completedSet.has(MASTER_NODES[index - 1].id)) {
-        // First node is automatically active, others require previous index validation completion
         status = 'active';
       }
 
@@ -48,16 +66,20 @@ export async function GET() {
       };
     });
 
-    // 3. Spool actual profile stats for the header metrics
+    // 4. Calculate unique milestone days safely (Grouping matching date configurations)
+    const uniqueDaysCount = new Set(
+      userProgress.map(p => new Date(p.createdAt).toDateString())
+    ).size;
+
     const overallStats = {
-      currentStreak: session.user?.currentStreak || 0,
-      longestStreak: session.user?.longestStreak || 0,
-      totalDays: userProgress.filter(p => p.isCompleted).length
+      currentStreak: userProfile?.currentStreak ?? 0,
+      longestStreak: userProfile?.longestStreak ?? 0,
+      totalDays: uniqueDaysCount // Represents actual calendar dates engaged, rather than raw node length
     };
 
     return NextResponse.json({ success: true, nodes: processedNodes, stats: overallStats });
   } catch (error) {
-    console.error('Failed to parse path progress map:', error);
-    return NextResponse.json({ error: 'Internal Server error' }, { status: 500 });
+    console.error('CRITICAL: Failed to parse path progress map:', error);
+    return NextResponse.json({ error: 'Internal runtime exception' }, { status: 500 });
   }
 }

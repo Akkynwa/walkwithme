@@ -1,11 +1,6 @@
-// page.tsx or AIChatPage.tsx
-import SpiritualWalker from './SpiritualWalker'; // If this is a default export
+// app/ai/chat/page.tsx
+import SpiritualWalker from './SpiritualWalker';
 
 export default function AIChatPage() {
-  return (
-    <div>
-       <SpiritualWalker /> 
-       {/* If SpiritualWalker was imported incorrectly, this fails */}
-    </div>
-  );
+  return <SpiritualWalker />;
 }

@@ -21,7 +21,6 @@ export default function ProfileSettingsPage() {
     joinedDate: ''
   });
 
-  // --- Read Persisted Configuration on Mount ---
   useEffect(() => {
     async function loadProfileData() {
       try {
@@ -50,7 +49,6 @@ export default function ProfileSettingsPage() {
     loadProfileData();
   }, []);
 
-  // --- Handle Avatar Image Selection & Base64 Generation ---
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -79,7 +77,7 @@ export default function ProfileSettingsPage() {
         body: JSON.stringify({ 
           name: profile.name, 
           bio: profile.bio,
-          image: profile.image // Pass base64 back to server destination
+          image: profile.image
         }),
       });
 
@@ -96,148 +94,195 @@ export default function ProfileSettingsPage() {
   };
 
   return (
-    <main className="lg:ml-64 min-h-screen bg-background text-on-background transition-colors duration-500 pb-20">
-      <div className="max-w-[850px] mx-auto px-6 md:px-12 pt-12">
-        <Sidebar />
-        <Header />
-        
-        {loading ? (
-          <div className="flex items-center justify-center py-32">
-            <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/40 animate-pulse">
-              Syncing Profile Parameters...
-            </span>
-          </div>
-        ) : (
-          <form onSubmit={handleSave} className="space-y-12">
-            
-            {/* Header Identity Display */}
-            <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
-                
-                {/* Image Upload Core Wrapper */}
-                <div className="relative group">
-                  <input 
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-surface-container-high cursor-pointer relative group"
-                  >
-                    {profile.image ? (
-                      <Image
-                        src={profile.image} 
-                        alt="Profile avatar" 
-                        className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
-                        width={128}
-                        height={128}  
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-on-surface-variant/40 bg-gray-100">
-                        <span className="material-symbols-outlined text-5xl">account_circle</span>
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
+      <Sidebar />
+      <Header />
+
+      <main className="relative z-10 lg:ml-56 min-h-screen pb-20">
+        <div className="max-w-3xl mx-auto px-6 md:px-10 pt-20">
+          
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-32 gap-3">
+              <div className="w-6 h-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-[8px] font-black uppercase tracking-wider text-gray-500 animate-pulse">
+                Syncing Profile Parameters...
+              </span>
+            </div>
+          ) : (
+            <form onSubmit={handleSave} className="space-y-8">
+              
+              {/* Header Identity Display */}
+              <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                  
+                  {/* Image Upload Core Wrapper */}
+                  <div className="relative group">
+                    <input 
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white/50 cursor-pointer relative group"
+                    >
+                      {profile.image ? (
+                        <Image
+                          src={profile.image} 
+                          alt="Profile avatar" 
+                          className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
+                          width={112}
+                          height={112}  
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 bg-amber-50">
+                          <span className="material-symbols-outlined text-5xl">account_circle</span>
+                        </div>
+                      )}
+                      
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
+                        <span className="text-[8px] text-white font-black uppercase tracking-wider">Change</span>
                       </div>
-                    )}
-                    
-                    {/* Hover overlay design hint */}
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="text-[10px] text-white font-black uppercase tracking-widest">Change</span>
                     </div>
+                    
+                    <button 
+                      type="button" 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute bottom-1 right-1 bg-gradient-to-r from-amber-600 to-amber-700 p-1.5 rounded-full text-white shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">photo_camera</span>
+                    </button>
                   </div>
                   
-                  <button 
-                    type="button" 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-1 right-1 bg-primary p-2 rounded-full text-on-primary shadow-lg hover:scale-110 transition-transform"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">photo_camera</span>
-                  </button>
-                </div>
-                
-                <div className="space-y-2">
-                  <h2 className="text-3xl md:text-4xl text-on-surface font-serif tracking-tight font-bold">
-                    {profile.name}
-                  </h2>
-                  <div className="flex flex-wrap gap-3 items-center">
-                    {profile.joinedDate && (
-                      <p className="text-xs font-semibold text-on-surface-variant/70 flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-                        {profile.joinedDate}
-                      </p>
-                    )}
-                    <span className="px-3 py-1 bg-primary-fixed text-on-primary-fixed rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                      <span className="material-symbols-outlined text-[14px] fill-1">eco</span>
-                      {profile.streak} Day Streak
-                    </span>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl md:text-3xl font-serif tracking-tight font-bold text-gray-800">
+                      {profile.name}
+                    </h2>
+                    <div className="flex flex-wrap gap-3 items-center">
+                      {profile.joinedDate && (
+                        <p className="text-[10px] font-semibold text-gray-500 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+                          {profile.joinedDate}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-100 rounded-full shadow-sm">
+                        <span className="material-symbols-outlined text-amber-600 text-[12px]">local_fire_department</span>
+                        <span className="text-[9px] font-bold text-amber-700">{profile.streak} Day Streak</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Identity Form Sections */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-3 border-b border-outline-variant/30 pb-4">
-                <span className="material-symbols-outlined text-primary">badge</span>
-                <h3 className="text-xl md:text-2xl font-serif font-bold text-on-surface">Identity Parameters</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-1">Full Name</label>
-                  <input 
-                    type="text"
-                    required
-                    value={profile.name}
-                    onChange={(e) => setProfile({...profile, name: e.target.value})}
-                    className="w-full px-5 py-4 bg-surface-container-low border border-outline-variant/20 focus:ring-2 focus:ring-primary/20 rounded-2xl text-sm text-on-surface transition-all font-medium"
+              {/* Identity Form Sections */}
+              <section className="space-y-5">
+                <div className="flex items-center gap-2 border-b border-gray-200/50 pb-3">
+                  <span className="material-symbols-outlined text-amber-600 text-[18px]">badge</span>
+                  <h3 className="text-lg md:text-xl font-serif font-semibold text-gray-800">Identity Parameters</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-amber-500 text-[12px]">person</span>
+                      <label className="text-[7px] font-black uppercase tracking-wider text-gray-500">Full Name</label>
+                    </div>
+                    <input 
+                      type="text"
+                      required
+                      value={profile.name}
+                      onChange={(e) => setProfile({...profile, name: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-white/50 border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 rounded-lg text-sm text-gray-800 transition-all font-medium outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-amber-500 text-[12px]">email</span>
+                      <label className="text-[7px] font-black uppercase tracking-wider text-gray-500">Email Address</label>
+                    </div>
+                    <input 
+                      type="email"
+                      disabled
+                      value={profile.email}
+                      className="w-full px-4 py-2.5 bg-white/30 border border-gray-200 rounded-lg text-sm text-gray-500 cursor-not-allowed font-medium"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-amber-500 text-[12px]">edit_note</span>
+                    <label className="text-[7px] font-black uppercase tracking-wider text-gray-500">Spiritual Bio</label>
+                  </div>
+                  <textarea 
+                    rows={3}
+                    value={profile.bio}
+                    onChange={(e) => setProfile({...profile, bio: e.target.value})}
+                    className="w-full px-4 py-2.5 bg-white/50 border border-gray-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 rounded-lg text-sm text-gray-800 transition-all resize-none font-medium leading-relaxed outline-none"
+                    placeholder="Express your spiritual objectives or daily focus metrics..."
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-1">Email Address</label>
-                  <input 
-                    type="email"
-                    disabled
-                    value={profile.email}
-                    className="w-full px-5 py-4 bg-surface-container-low/50 border border-outline-variant/10 rounded-2xl text-sm text-on-surface-variant/60 cursor-not-allowed font-medium"
-                  />
-                </div>
+              </section>
+
+              {/* Actions Panel */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200/50">
+                <button 
+                  type="submit"
+                  disabled={saving}
+                  className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg font-black text-[8px] uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                >
+                  {saving ? (
+                    <span className="flex items-center gap-2">
+                      <span className="material-symbols-outlined animate-spin text-[12px]">sync</span>
+                      Syncing...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[12px]">save</span>
+                      Save All Changes
+                    </span>
+                  )}
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+                  className="w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-600 rounded-lg font-black text-[8px] uppercase tracking-wider hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all"
+                >
+                  Sign Out
+                </button>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-1">Spiritual Bio</label>
-                <textarea 
-                  rows={3}
-                  value={profile.bio}
-                  onChange={(e) => setProfile({...profile, bio: e.target.value})}
-                  className="w-full px-5 py-4 bg-surface-container-low border border-outline-variant/20 focus:ring-2 focus:ring-primary/20 rounded-2xl text-sm text-on-surface transition-all resize-none font-medium leading-relaxed"
-                  placeholder="Express your spiritual objectives or daily focus metrics..."
-                />
-              </div>
-            </section>
+            </form>
+          )}
+        </div>
 
-            {/* Actions Panel */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6">
-              <button 
-                type="submit"
-                disabled={saving}
-                className="w-full md:w-auto px-10 py-4 bg-primary text-on-primary rounded-2xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-xs font-black uppercase tracking-widest"
-              >
-                {saving ? 'Syncing...' : 'Save All Changes'}
-              </button>
-              <button 
-                type="button"
-                onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-                className="w-full md:w-auto px-10 py-4 border border-outline/30 text-on-surface-variant rounded-2xl font-bold hover:bg-error/5 hover:text-error hover:border-error transition-all text-xs font-black uppercase tracking-widest"
-              >
-                Sign Out
-              </button>
-            </div>
-
-          </form>
-        )}
-      </div>
-    </main>
+        {/* Decorative Footer */}
+        <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+          <span className="material-symbols-outlined text-amber-400 text-sm">account_circle</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+        </div>
+      </main>
+    </div>
   );
 }

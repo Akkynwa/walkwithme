@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
+import Image from 'next/image';
 
 export default function ReflectionPage() {
   const { status } = useSession();
@@ -19,7 +20,6 @@ export default function ReflectionPage() {
     intention: ''
   });
 
-  // Today's Date Formatting
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -41,7 +41,6 @@ export default function ReflectionPage() {
     try {
       setIsSaving(true);
       
-      // Combine the reflection fields into a single structured content block
       const combinedContent = `
 What stood out:
 ${formData.standingOut}
@@ -78,7 +77,7 @@ ${formData.intention}
   };
 
   const moods = [
-    { icon: 'nature', label: 'Peaceful' },
+    { icon: 'spa', label: 'Peaceful' },
     { icon: 'explore', label: 'Seeking' },
     { icon: 'favorite', label: 'Grateful' },
     { icon: 'bedtime', label: 'Tired' },
@@ -87,56 +86,94 @@ ${formData.intention}
   if (status === 'loading') return null;
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] font-serif">
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
       <MainHeader />
 
-      <main className="lg:ml-64 p-6 md:p-12 pt-28 max-w-[1200px] mx-auto animate-in fade-in duration-700">
+      <main className="relative z-10 lg:ml-56 p-6 md:p-10 pt-20 max-w-6xl mx-auto w-full animate-in fade-in duration-700">
         
         {/* Header */}
-        <header className="mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] font-sans text-[10px] font-black mb-4 uppercase tracking-[0.2em]">
-            <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+        <header className="mb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-sans text-[8px] font-black mb-4 uppercase tracking-wider">
+            <span className="material-symbols-outlined text-[12px]">calendar_today</span>
             <span>{today}</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif text-[#3C3830] mb-3">Daily Reflection</h2>
-          <p className="text-[#7C7565] italic border-l-2 border-[#D4AF37] pl-4 max-w-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-px bg-amber-400/40" />
+            <span className="text-[9px] font-black text-amber-600 uppercase tracking-[0.2em]">Daily Practice</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-2">Daily Reflection</h2>
+          <p className="text-sm text-gray-600 italic border-l-2 border-amber-400 pl-4 max-w-xl">
             Take a moment of stillness to process today's word and align your spirit.
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left Column: Context Area */}
-          <aside className="lg:col-span-4 lg:sticky lg:top-28 h-fit space-y-6">
-            <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
-              <div className="flex items-center gap-2 mb-6 text-[#D4AF37]">
-                <span className="material-symbols-outlined text-xl">auto_awesome</span>
-                <span className="font-sans text-[10px] font-black uppercase tracking-[0.2em]">Guided Stillness</span>
+          <aside className="lg:col-span-4 lg:sticky lg:top-24 h-fit space-y-5">
+            <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-6 shadow-lg">
+              <div className="flex items-center gap-2 mb-5 text-amber-600">
+                <span className="material-symbols-outlined text-[18px]">self_improvement</span>
+                <span className="font-sans text-[8px] font-black uppercase tracking-wider">Guided Stillness</span>
               </div>
-              <p className="text-lg text-[#3C3830] leading-relaxed italic mb-6">
+              <p className="text-base text-gray-700 leading-relaxed italic mb-5">
                 "Be still, and know that I am God."
               </p>
               
-              <div className="border-t border-gray-50 pt-6">
-                <h4 className="font-sans text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Reflection Tip</h4>
-                <p className="text-sm text-[#7C7565] leading-relaxed">
+              <div className="border-t border-gray-200/50 pt-5">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <span className="material-symbols-outlined text-amber-500 text-[12px]">tips_and_updates</span>
+                  <h4 className="font-sans text-[7px] font-black text-gray-500 uppercase tracking-wider">Reflection Tip</h4>
+                </div>
+                <p className="text-[10px] text-gray-600 leading-relaxed">
                   Don't rush. Let the thoughts flow naturally. This is your personal space for growth.
                 </p>
               </div>
 
               {/* Ambient Breathe Component */}
-              <div className="mt-10 flex flex-col items-center justify-center p-8 bg-gray-50/50 rounded-2xl group">
-                <div className="w-12 h-12 bg-primary rounded-full opacity-20 animate-ping absolute"></div>
-                <div className="w-12 h-12 bg-primary rounded-full shadow-lg shadow-primary/20 mb-4 relative z-10 transition-transform duration-1000 scale-110 group-hover:scale-125"></div>
-                <p className="font-sans text-[10px] font-black text-gray-400 uppercase tracking-widest">Breathe.</p>
+              <div className="mt-8 flex flex-col items-center justify-center p-6 bg-amber-50/30 rounded-xl group">
+                <div className="relative">
+                  <div className="w-10 h-10 bg-amber-500 rounded-full opacity-20 animate-ping absolute"></div>
+                  <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full shadow-lg shadow-amber-500/20 mb-3 relative z-10 transition-transform duration-1000 scale-110 group-hover:scale-125"></div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-amber-500 text-[12px]">air</span>
+                  <p className="font-sans text-[7px] font-black text-gray-500 uppercase tracking-wider">Breathe</p>
+                </div>
               </div>
+            </div>
+
+            {/* Scripture Card */}
+            <div className="bg-white/30 backdrop-blur-sm border border-white/50 rounded-xl p-4 text-center">
+              <p className="text-[9px] font-serif italic text-gray-600 leading-relaxed">
+                "Let the words of my mouth and the meditation of my heart be acceptable in your sight."
+              </p>
+              <p className="text-[7px] font-black text-amber-600 uppercase tracking-wider mt-2">— Psalm 19:14</p>
             </div>
           </aside>
 
           {/* Right Column: Dynamic Form */}
           <section className="lg:col-span-8">
-            <form onSubmit={handleSave} className="space-y-12">
+            <form onSubmit={handleSave} className="space-y-8">
               
               <ReflectionField 
                 label="What stood out to you in today's reading?" 
@@ -161,51 +198,66 @@ ${formData.intention}
               />
 
               {/* Mood Selector */}
-              <div className="py-8 border-y border-gray-100 flex flex-wrap items-center gap-8">
-                <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">Your Heart State</span>
-                <div className="flex gap-4">
+              <div className="py-6 border-y border-gray-200/50 flex flex-wrap items-center gap-6">
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-amber-500 text-[14px]">favorite</span>
+                  <span className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Heart State</span>
+                </div>
+                <div className="flex gap-3">
                   {moods.map((mood) => (
                     <button
                       key={mood.label}
                       type="button"
                       onClick={() => setSelectedMood(mood.label)}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                         selectedMood === mood.label 
-                          ? 'bg-primary text-white scale-110 shadow-lg' 
-                          : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                          ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white scale-110 shadow-md' 
+                          : 'bg-white/50 text-gray-500 hover:bg-amber-100'
                       }`}
                       title={mood.label}
                     >
-                      <span className="material-symbols-outlined text-lg">{mood.icon}</span>
+                      <span className="material-symbols-outlined text-[16px]">{mood.icon}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Form Actions */}
-              <div className="flex flex-col sm:flex-row items-center justify-end gap-8 pt-4">
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-6 pt-6">
                 <button 
                   type="button" 
                   onClick={() => router.back()}
-                  className="text-[10px] font-black text-gray-300 uppercase tracking-widest hover:text-red-400 transition-colors"
+                  className="text-[8px] font-black text-gray-400 uppercase tracking-wider hover:text-red-500 transition-colors"
                 >
                   Discard Draft
                 </button>
                 <button 
                   type="submit" 
                   disabled={isSaving}
-                  className="w-full sm:w-auto bg-primary text-white px-12 py-5 rounded-full text-[11px] font-black tracking-[0.2em] uppercase hover:shadow-2xl hover:shadow-primary/30 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-700 text-white px-10 py-3.5 rounded-lg text-[9px] font-black tracking-wider uppercase hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSaving ? (
-                    <span className="material-symbols-outlined animate-spin text-sm">sync</span>
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-[14px]">sync</span>
+                      <span>Preserving...</span>
+                    </>
                   ) : (
-                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                    <>
+                      <span className="material-symbols-outlined text-[14px]">self_improvement</span>
+                      <span>Seal Reflection</span>
+                    </>
                   )}
-                  {isSaving ? 'Preserving...' : 'Seal Reflection'}
                 </button>
               </div>
             </form>
           </section>
+        </div>
+
+        {/* Decorative Footer */}
+        <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+          <span className="material-symbols-outlined text-amber-400 text-sm">edit_note</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
         </div>
       </main>
     </div>
@@ -231,7 +283,7 @@ function ReflectionField({
 }) {
   return (
     <div className="group">
-      <label className="block text-2xl font-serif text-[#3C3830] mb-4 group-focus-within:text-primary transition-colors duration-500">
+      <label className="block text-xl md:text-2xl font-serif text-gray-800 mb-3 group-focus-within:text-amber-600 transition-colors duration-500">
         {label}
       </label>
       <div className="relative">
@@ -240,9 +292,9 @@ function ReflectionField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-transparent border-none focus:ring-0 border-b border-gray-100 focus:border-primary transition-all duration-700 text-lg italic text-[#3C3830] placeholder:text-gray-200 p-0 py-4 resize-none leading-relaxed"
-        ></textarea>
-        <div className="absolute bottom-0 left-0 h-[1px] bg-primary w-0 group-focus-within:w-full transition-all duration-1000 ease-out"></div>
+          className="w-full bg-transparent border-none focus:ring-0 border-b border-gray-200 focus:border-amber-500 transition-all duration-700 text-base italic text-gray-700 placeholder:text-gray-300 p-0 py-3 resize-none leading-relaxed outline-none"
+        />
+        <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-amber-500 to-amber-600 w-0 group-focus-within:w-full transition-all duration-700 ease-out rounded-full"></div>
       </div>
     </div>
   );

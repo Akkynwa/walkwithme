@@ -4,7 +4,6 @@ const nextConfig = {
   swcMinify: true,
   
   images: {
-    // Consolidated both into one array
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,6 +14,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ui-avatars.com',
         pathname: '/api/**',
+      },
+      // Expanded Google patterns to catch all variations
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'googleusercontent.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'googleusercontent.com',
+        pathname: '/**',
       },
     ],
     formats: ['image/avif', 'image/webp'],
@@ -40,6 +55,9 @@ const nextConfig = {
       fs: false,
       path: false,
       crypto: false,
+      http: false,
+      https: false,
+      querystring: false,
     };
     return config;
   },

@@ -9,18 +9,24 @@ interface ParallelBibleProps {
 
 export function ParallelBible({ verses, translations }: ParallelBibleProps) {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Informational Header Section */}
-      <div className="bg-white/40 backdrop-blur-md border border-white/60 p-6 rounded-[2rem] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-xl shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h3 className="font-display text-lg text-[#3C3830] font-black tracking-tight mb-1">Parallel Study</h3>
-          <p className="text-xs font-medium text-primary/60 uppercase tracking-widest">
-            Comparing {translations.length} Translations
-          </p>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="material-symbols-outlined text-amber-500 text-[14px]">auto_stories</span>
+            <h3 className="font-serif text-base text-gray-800 font-bold tracking-tight">Parallel Study</h3>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-amber-500 text-[10px]">compare_arrows</span>
+            <p className="text-[8px] font-medium text-amber-600 uppercase tracking-wider">
+              Comparing {translations.length} Translations
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           {translations.map((t) => (
-            <span key={t} className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black rounded-full uppercase">
+            <span key={t} className="px-2.5 py-0.5 bg-amber-100 text-amber-700 text-[7px] font-black rounded-full uppercase tracking-wider">
               {t}
             </span>
           ))}
@@ -28,17 +34,17 @@ export function ParallelBible({ verses, translations }: ParallelBibleProps) {
       </div>
 
       {/* Parallel Grid Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200/50 rounded-[2.5rem] overflow-hidden border border-gray-200/50 shadow-inner">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/30 rounded-xl overflow-hidden border border-white/60 shadow-lg">
         {translations.map((translation, index) => (
           <div 
             key={translation} 
-            className={`bg-[#FDFBF7]/80 backdrop-blur-sm p-6 md:p-8 ${index === 0 ? 'md:border-r border-gray-200/50' : ''}`}
+            className={`bg-white/40 backdrop-blur-sm p-5 md:p-6 ${index === 0 ? 'md:border-r border-white/40' : ''}`}
           >
             {/* Sticky Translation Label */}
-            <div className="sticky top-16 z-10 mb-6 py-2">
-              <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <h4 className="font-display text-sm text-[#3C3830] font-black uppercase tracking-tighter">
+            <div className="sticky top-16 z-10 mb-5 py-1">
+              <div className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-white/60">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <h4 className="font-serif text-[9px] text-gray-800 font-black uppercase tracking-wider">
                   {translation}
                 </h4>
               </div>
@@ -53,6 +59,16 @@ export function ParallelBible({ verses, translations }: ParallelBibleProps) {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Decorative Footer Note */}
+      <div className="text-center pt-2">
+        <div className="inline-flex items-center gap-1.5">
+          <span className="material-symbols-outlined text-amber-400 text-[10px]">info</span>
+          <p className="text-[6px] text-gray-400 uppercase tracking-wider">
+            Scroll to compare translations side by side
+          </p>
+        </div>
       </div>
     </div>
   );

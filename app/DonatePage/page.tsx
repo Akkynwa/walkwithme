@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 // Constants
 const DONATION_AMOUNTS = [2000, 5000, 10000, 25000];
@@ -36,7 +37,6 @@ export default function DonatePage() {
     setIsLoading(true);
 
     try {
-      // Lazy load Paystack Inline JS to avoid SSR window errors
       const PaystackModule = await import('@paystack/inline-js');
       const PaystackPop = PaystackModule.default;
       const popup = new PaystackPop();
@@ -44,10 +44,8 @@ export default function DonatePage() {
       popup.newTransaction({
         key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '',
         email: userEmail,
-        // Paystack expects amount in kobo (multiply Naira by 100)
         amount: numericalAmount * 100,
         currency: 'NGN',
-        // Channels explicitly configured to allow Card, Bank Transfer, USSD, etc.
         channels: ['card', 'bank_transfer', 'ussd', 'qr'],
         metadata: {
           custom_fields: [
@@ -85,48 +83,76 @@ export default function DonatePage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFF]">
+    <div className="relative flex min-h-screen bg-gradient-to-br from-blue-50/30 via-white/40 to-indigo-50/30">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
       <Sidebar />
       <MainHeader />
 
-      <div className="flex-1 lg:ml-64 pt-28 h-screen flex overflow-hidden">
+      <div className="relative z-10 flex-1 lg:ml-56 pt-20 h-screen flex overflow-hidden">
         
         {/* LEFT COLUMN: Production Giving Form */}
-        <main className="flex-1 overflow-y-auto px-6 md:px-12 pb-20 custom-scrollbar">
-          <header className="mb-12">
-            <h1 className="text-4xl font-serif text-[#3C3830] mb-3">Support the Vision</h1>
-            <p className="text-[#7C7565] italic border-l-2 border-[#D4AF37] pl-4 max-w-xl">
-              Your contribution keeps the Sanctuary sanctuary focused, running on high-speed infrastructure, and entirely ad-free.
+        <main className="flex-1 overflow-y-auto px-6 md:px-10 pb-20 custom-scrollbar">
+          <header className="mb-8">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-px bg-gray-400/40" />
+              <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Support the Vision</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-serif text-gray-800 mb-3">Contribute to the Sanctuary</h1>
+            <p className="text-sm text-gray-600 italic border-l-2 border-indigo-400 pl-4 max-w-xl">
+              Your contribution keeps the Sanctuary focused, running on high-speed infrastructure, and entirely ad-free.
             </p>
           </header>
 
-          <form onSubmit={handlePaystackPayment} className="bg-white border border-gray-100 rounded-[32px] p-8 md:p-12 shadow-sm max-w-2xl">
+          <form onSubmit={handlePaystackPayment} className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl p-6 md:p-8 shadow-2xl max-w-2xl">
             {/* Frequency Toggle */}
-            <div className="flex bg-gray-50 p-1.5 rounded-2xl mb-10 w-fit">
+            <div className="flex bg-white/30 p-1 rounded-xl mb-8 w-fit">
               <button 
                 type="button"
                 onClick={() => setFrequency('once')}
-                className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${frequency === 'once' ? 'bg-white text-[#3C3830] shadow-sm' : 'text-gray-400'}`}
+                className={`px-6 py-2 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${
+                  frequency === 'once' 
+                    ? 'bg-white text-gray-800 shadow-sm' 
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
               >
                 One-Time
               </button>
               <button 
                 type="button"
                 onClick={() => setFrequency('monthly')}
-                className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${frequency === 'monthly' ? 'bg-white text-[#3C3830] shadow-sm' : 'text-gray-400'}`}
+                className={`px-6 py-2 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${
+                  frequency === 'monthly' 
+                    ? 'bg-white text-gray-800 shadow-sm' 
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
               >
                 Monthly Sowing
               </button>
             </div>
 
             {/* Quick Amount Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
               {DONATION_AMOUNTS.map((val) => (
                 <button
                   key={val}
                   type="button"
                   onClick={() => setAmount(val)}
-                  className={`py-6 rounded-2xl border-2 transition-all font-serif text-lg ${Number(amount) === val ? 'border-[#D4AF37] bg-[#D4AF37]/5 text-[#3C3830]' : 'border-gray-50 text-gray-400 hover:border-gray-200'}`}
+                  className={`py-5 rounded-xl border-2 transition-all font-serif text-base ${
+                    Number(amount) === val 
+                      ? 'border-indigo-500 bg-indigo-500/10 text-gray-800' 
+                      : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600'
+                  }`}
                 >
                   ₦{val.toLocaleString()}
                 </button>
@@ -134,18 +160,20 @@ export default function DonatePage() {
             </div>
 
             {/* Input Amount Fields */}
-            <div className="space-y-6 mb-10">
+            <div className="space-y-5 mb-8">
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Contribution Amount (NGN)</label>
+                <label className="block text-[9px] font-black uppercase tracking-wider text-gray-500 mb-2">
+                  Contribution Amount (NGN)
+                </label>
                 <div className="relative">
-                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-serif text-gray-400">₦</span>
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-serif text-gray-400">₦</span>
                   <input 
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Enter custom amount"
                     required
-                    className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-5 pl-12 pr-6 text-xl font-serif focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/5 focus:bg-white transition-all"
+                    className="w-full bg-white/50 border border-gray-200 rounded-xl py-4 pl-12 pr-5 text-base font-serif focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all"
                   />
                 </div>
               </div>
@@ -153,14 +181,16 @@ export default function DonatePage() {
               {/* Dynamic Email Field fallback if session isn't loaded */}
               {!session?.user?.email && (
                 <div className="animate-in fade-in duration-300">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Email Address for Secure Receipt</label>
+                  <label className="block text-[9px] font-black uppercase tracking-wider text-gray-500 mb-2">
+                    Email Address for Receipt
+                  </label>
                   <input 
                     type="email"
                     value={customEmail}
                     onChange={(e) => setCustomEmail(e.target.value)}
                     placeholder="you@example.com"
                     required={!session?.user?.email}
-                    className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-4 px-6 text-sm focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/5 focus:bg-white transition-all"
+                    className="w-full bg-white/50 border border-gray-200 rounded-xl py-3 px-5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all"
                   />
                 </div>
               )}
@@ -170,7 +200,7 @@ export default function DonatePage() {
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full py-6 bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-white rounded-full text-[11px] font-black tracking-[0.3em] uppercase hover:shadow-xl hover:shadow-[#D4AF37]/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+              className="w-full py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-[10px] font-black tracking-[0.2em] uppercase hover:shadow-xl hover:shadow-indigo-500/25 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <>
@@ -180,59 +210,73 @@ export default function DonatePage() {
               ) : (
                 <>
                   <span>Proceed to Payment</span>
-                  <span className="text-xs">➔</span>
+                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
                 </>
               )}
             </button>
             
-            <p className="text-center text-[10px] text-gray-400 uppercase tracking-widest mt-8 flex items-center justify-center gap-2">
-              🔒 Cards, Transfers, USSD processed securely via Paystack
+            <p className="text-center text-[8px] text-gray-400 uppercase tracking-wider mt-6 flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-[12px]">lock</span>
+              Cards, Transfers, USSD processed securely via Paystack
             </p>
           </form>
         </main>
 
         {/* RIGHT COLUMN: Value Assertions */}
-        <aside className="w-96 hidden xl:flex flex-col bg-gray-50/50 p-8 space-y-8 overflow-y-auto border-l border-gray-100">
-          <h3 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">Where it goes</h3>
+        <aside className="w-96 hidden xl:flex flex-col bg-white/30 backdrop-blur-sm p-6 space-y-6 overflow-y-auto border-l border-white/40">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-px bg-gray-400/40" />
+            <h3 className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Where it goes</h3>
+          </div>
           
           <div className="space-y-6">
-            <ImpactCard 
-              emoji="🗄️" 
-              title="Secure, Private Compute" 
-              desc="Fuels the isolated database structures protecting your private journals and streaming configurations."
-            />
-            <ImpactCard 
-              emoji="✨" 
-              title="Advanced Spiritual LLMs" 
-              desc="Powers fine-tuning loops for context-accurate cross-referencing and contextual wisdom outputs."
-            />
+            <div className="group">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                  <span className="material-symbols-outlined text-indigo-600 text-[16px]">database</span>
+                </div>
+                <h4 className="font-serif font-semibold text-gray-800 text-sm">Secure, Private Compute</h4>
+              </div>
+              <p className="text-[10px] text-gray-600 leading-relaxed pl-11">
+                Fuels the isolated database structures protecting your private journals and streaming configurations.
+              </p>
+            </div>
+
+            <div className="group">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                  <span className="material-symbols-outlined text-indigo-600 text-[16px]">psychology</span>
+                </div>
+                <h4 className="font-serif font-semibold text-gray-800 text-sm">Advanced Spiritual AI</h4>
+              </div>
+              <p className="text-[10px] text-gray-600 leading-relaxed pl-11">
+                Powers fine-tuning loops for context-accurate cross-referencing and contextual wisdom outputs.
+              </p>
+            </div>
+
+            <div className="group">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                  <span className="material-symbols-outlined text-indigo-600 text-[16px]">cloud</span>
+                </div>
+                <h4 className="font-serif font-semibold text-gray-800 text-sm">Global Infrastructure</h4>
+              </div>
+              <p className="text-[10px] text-gray-600 leading-relaxed pl-11">
+                Ensures fast, reliable access to the Sanctuary from anywhere in the world.
+              </p>
+            </div>
           </div>
 
-          <div className="mt-auto p-6 bg-[#3C3830] rounded-[24px] text-white">
-            <p className="text-sm italic font-serif leading-relaxed opacity-80 mb-4">
+          <div className="mt-auto p-5 bg-gradient-to-br from-indigo-900 to-indigo-800 rounded-2xl text-white">
+            <p className="text-xs italic font-serif leading-relaxed text-white/80 mb-3">
               "Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion."
             </p>
-            <p className="text-[10px] font-black tracking-widest uppercase text-[#D4AF37]">
+            <p className="text-[8px] font-black tracking-wider uppercase text-indigo-300">
               — 2 Corinthians 9:7
             </p>
           </div>
         </aside>
-
       </div>
-    </div>
-  );
-}
-
-function ImpactCard({ emoji, title, desc }: { emoji: string, title: string, desc: string }) {
-  return (
-    <div>
-      <div className="flex items-center gap-3 mb-2">
-        <span className="text-lg">{emoji}</span>
-        <h4 className="font-serif font-bold text-[#3C3830]">{title}</h4>
-      </div>
-      <p className="text-xs text-[#7C7565] leading-relaxed pl-8 border-l border-gray-200 ml-2">
-        {desc}
-      </p>
     </div>
   );
 }

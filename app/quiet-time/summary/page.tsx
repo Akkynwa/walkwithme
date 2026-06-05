@@ -3,10 +3,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/app/layout-components/Sidebar';
+import Image from 'next/image';
 
 interface QuietSession {
   id: string;
-  date: string; // ISO format: YYYY-MM-DD
+  date: string;
   durationMinutes: number;
   bookRead?: string;
 }
@@ -16,7 +17,6 @@ export default function QuietTimeSummaryPage() {
   const [sessions, setSessions] = useState<QuietSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load sessions from API or LocalStorage on mount
   useEffect(() => {
     const loadSessions = async () => {
       setIsLoading(true);
@@ -25,7 +25,6 @@ export default function QuietTimeSummaryPage() {
         if (saved) {
           setSessions(JSON.parse(saved));
         } else {
-          // Fallback / Mock data tailored to current time paradigm
           const mockData: QuietSession[] = [
             { id: '1', date: '2026-06-02', durationMinutes: 25, bookRead: 'John' },
             { id: '2', date: '2026-06-01', durationMinutes: 20, bookRead: 'John' },
@@ -43,25 +42,18 @@ export default function QuietTimeSummaryPage() {
     loadSessions();
   }, []);
 
-  // Dynamic Calculations (Memoized for performance)
   const stats = useMemo(() => {
     if (sessions.length === 0) return { total: 0, streak: 0, avg: 0, thisMonth: 0 };
 
     const total = sessions.length;
-    
-    // Average Duration
     const totalMinutes = sessions.reduce((acc, s) => acc + s.durationMinutes, 0);
     const avg = Math.round(totalMinutes / total);
-
-    // This Month's count
     const currentMonth = new Date().getMonth();
     const thisMonth = sessions.filter(s => new Date(s.date).getMonth() === currentMonth).length;
 
-    // Streak Logic (Checking consecutive days)
     let streak = 0;
     const sortedDates = [...new Set(sessions.map(s => s.date))].sort().reverse();
     const today = new Date().toISOString().split('T')[0];
-    
     let checkDate = new Date(today);
     
     for (let i = 0; i < sortedDates.length; i++) {
@@ -78,126 +70,175 @@ export default function QuietTimeSummaryPage() {
   }, [sessions]);
 
   const displayStats = [
-    { label: 'Total Sessions', value: stats.total.toString(), color: 'text-[#3C3830]' },
-    { label: 'Current Streak', value: `${stats.streak} Days`, color: 'text-[#D4AF37]' },
-    { label: 'Avg Duration', value: `${stats.avg} Min`, color: 'text-[#8B0000]' },
-    { label: 'This Month', value: `${stats.thisMonth} Units`, color: 'text-[#7C7565]' },
+    { label: 'Total Sessions', value: stats.total.toString(), icon: 'menu_book' },
+    { label: 'Current Streak', value: `${stats.streak} Days`, icon: 'local_fire_department' },
+    { label: 'Avg Duration', value: `${stats.avg} Min`, icon: 'schedule' },
+    { label: 'This Month', value: `${stats.thisMonth} Units`, icon: 'calendar_today' },
   ];
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F4F1EA] flex items-center justify-center font-serif">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-[10px] font-sans font-black uppercase tracking-widest text-[#7C7565]">Consulting the Ledger...</p>
+      <div className="relative flex items-center justify-center min-h-screen">
+        <div className="fixed inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+            alt="Peaceful sanctuary background"
+            fill
+            className="object-cover scale-110 blur-xl opacity-30"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+        </div>
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-[9px] font-sans font-black uppercase tracking-wider text-gray-500">Consulting the Ledger...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F4F1EA] font-serif overflow-x-hidden selection:bg-[#D4AF37]/20 relative">
+    <div className="relative flex min-h-screen overflow-x-hidden">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
 
-      {/* Textured background overlay to match open book canvas */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.35] mix-blend-multiply z-0"
-        style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/paper-fibers.png")` }}
-      />
-
-      <main className="relative z-10 lg:ml-64 flex-1 px-6 md:px-12 py-12 max-w-5xl mx-auto pb-32">
+      <main className="relative z-10 lg:ml-56 flex-1 px-6 md:px-10 py-8 max-w-5xl mx-auto pb-20">
         
-        {/* --- PREMIUM BACK BUTTON & HEADER HEADER --- */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-[#D4CDBA]/40 pb-8">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-10 pb-6 border-b border-gray-200/50">
           <div className="flex items-center gap-4">
-            {/* Architectural Navigation Arrow */}
             <button 
               onClick={() => router.push('/quiet-time')}
-              className="w-12 h-12 rounded-2xl border border-[#D4CDBA] bg-white/80 backdrop-blur-md flex items-center justify-center text-[#3C3830] hover:bg-[#3C3830] hover:text-white transition-all duration-300 shadow-sm group"
+              className="w-10 h-10 rounded-xl border border-gray-200 bg-white/40 backdrop-blur-sm flex items-center justify-center text-gray-600 hover:bg-amber-600 hover:text-white hover:border-amber-600 transition-all duration-300 shadow-sm group"
               title="Return to Lobby"
             >
-              <span className="material-symbols-outlined text-xl group-hover:-translate-x-0.5 transition-transform">
+              <span className="material-symbols-outlined text-lg group-hover:-translate-x-0.5 transition-transform">
                 arrow_back
               </span>
             </button>
             
             <div>
-              <span className="text-[9px] font-sans font-black uppercase tracking-[0.3em] text-[#D4AF37] mb-1 block">
-                Spiritual Ledger
-              </span>
-              <h1 className="text-3xl font-bold text-[#3C3830] tracking-tight">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-px bg-amber-400/40" />
+                <span className="text-[8px] font-sans font-black uppercase tracking-wider text-amber-600">
+                  Spiritual Ledger
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-serif font-bold text-gray-800 tracking-tight">
                 Quiet Time Summary
               </h1>
             </div>
           </div>
 
-          <div className="text-left md:text-right font-sans text-xs text-[#7C7565]">
-            Metrics active for <span className="font-bold text-[#3C3830]">Lagos Sanctuary Node</span>
+          <div className="text-left md:text-right font-sans text-[9px] text-gray-500">
+            Metrics active for <span className="font-bold text-amber-700">Sanctuary Node</span>
           </div>
         </div>
 
-        {/* --- LUXURY STAT CARDS --- */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {displayStats.map((stat, idx) => (
             <div 
               key={idx} 
-              className="bg-white/80 backdrop-blur-md border border-[#D4CDBA]/40 p-6 rounded-2xl shadow-[0_12px_40px_rgba(60,56,48,0.02)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(60,56,48,0.06)] relative overflow-hidden group"
+              className="bg-white/40 backdrop-blur-sm border border-white/60 p-5 rounded-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg relative overflow-hidden group"
             >
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-transparent group-hover:bg-[#D4AF37]/30 transition-colors" />
-              <p className="text-[10px] font-sans font-black text-[#7C7565] uppercase tracking-widest mb-3">
-                {stat.label}
-              </p>
-              <p className={`text-3xl font-black ${stat.color} tracking-tight`}>
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-400 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-2 mb-2">
+                <span className="material-symbols-outlined text-amber-500 text-[16px]">{stat.icon}</span>
+                <p className="text-[7px] font-sans font-black text-gray-500 uppercase tracking-wider">
+                  {stat.label}
+                </p>
+              </div>
+              <p className={`text-2xl md:text-3xl font-black text-gray-800 tracking-tight`}>
                 {stat.value}
               </p>
             </div>
           ))}
         </div>
 
-        {/* --- RECENT ACTIVITY LEDGER SHEET --- */}
-        <div className="bg-white/90 backdrop-blur-xl border border-[#D4CDBA]/50 p-8 md:p-12 rounded-[2.5rem] shadow-[0_30px_70px_rgba(60,56,48,0.03)] relative overflow-hidden">
+        {/* Recent Activity Ledger Sheet */}
+        <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-6 md:p-8 shadow-lg relative overflow-hidden">
           
-          <div className="flex justify-between items-center mb-8 pb-4 border-b border-[#D4CDBA]/30">
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#D4AF37]">history_edu</span>
-              <h3 className="text-xl font-bold text-[#3C3830]">Chronological Activity</h3>
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200/50">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-amber-600 text-[20px]">history_edu</span>
+              <h3 className="text-base md:text-lg font-serif font-semibold text-gray-800">Chronological Activity</h3>
             </div>
-            <button className="text-[10px] font-sans font-black text-[#D4AF37] uppercase tracking-widest hover:text-[#AA8414] transition-colors">
+            <button className="text-[7px] font-sans font-black text-amber-600 uppercase tracking-wider hover:text-amber-700 transition-colors">
               View Extended History
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {sessions.length > 0 ? (
               sessions.slice(0, 10).map((session) => (
                 <div 
                   key={session.id} 
-                  className="flex justify-between items-center p-5 bg-[#FDFBF7] rounded-xl border border-[#D4CDBA]/30 transition-all duration-300 hover:border-[#D4AF37]/40 hover:bg-white"
+                  className="flex justify-between items-center p-4 bg-white/50 rounded-lg border border-white/60 transition-all duration-300 hover:border-amber-200 hover:bg-white/70"
                 >
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-bold text-[#3C3830]">
-                      {new Date(session.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                    </span>
-                    <span className="text-[10px] font-sans uppercase font-black text-[#7C7565] tracking-widest">
-                      {session.bookRead ? `Exegesis: ${session.bookRead}` : 'Integration Liturgy'}
-                    </span>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-amber-500 text-[12px]">calendar_today</span>
+                      <span className="text-xs font-semibold text-gray-800">
+                        {new Date(session.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-gray-400 text-[10px]">menu_book</span>
+                      <span className="text-[8px] font-sans uppercase font-bold text-gray-500 tracking-wider">
+                        {session.bookRead ? `Study: ${session.bookRead}` : 'Integration Liturgy'}
+                      </span>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div className="flex flex-col items-end">
-                      <span className="text-[#3C3830] font-bold text-sm">{session.durationMinutes} min</span>
-                      <span className="text-[9px] font-sans font-black uppercase text-[#D4AF37] tracking-wider">Sync Complete</span>
+                      <div className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-amber-500 text-[10px]">schedule</span>
+                        <span className="text-gray-700 font-bold text-xs">{session.durationMinutes} min</span>
+                      </div>
+                      <span className="text-[7px] font-sans font-black uppercase text-amber-600 tracking-wider">Sync Complete</span>
                     </div>
-                    <span className="material-symbols-outlined text-xs text-[#D4AF37]/60">verified</span>
+                    <span className="material-symbols-outlined text-xs text-amber-500">check_circle</span>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-center py-12 font-sans text-xs text-[#7C7565] italic bg-[#FDFBF7] rounded-2xl border border-dashed border-[#D4CDBA]/60">
-                No recorded sessions inside the ledger. Begin your journey inside the modules.
-              </p>
+              <div className="text-center py-16 bg-white/30 rounded-xl border border-dashed border-amber-200">
+                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center mx-auto mb-3">
+                  <span className="material-symbols-outlined text-amber-400 text-xl">history_edu</span>
+                </div>
+                <p className="text-[10px] font-sans text-gray-500 italic">
+                  No recorded sessions in the ledger.
+                </p>
+                <p className="text-[8px] text-gray-400 mt-1">Begin your journey in the modules.</p>
+              </div>
             )}
           </div>
+        </div>
+
+        {/* Decorative Footer */}
+        <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+          <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
         </div>
       </main>
     </div>

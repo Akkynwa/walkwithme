@@ -7,6 +7,7 @@ import { Select } from '@/components/ui/Select';
 import { BIBLE_TRANSLATIONS } from '@/lib/constants';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function BiblePreferencesPage() {
   const router = useRouter();
@@ -64,54 +65,90 @@ export default function BiblePreferencesPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFF] relative overflow-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <div className="absolute top-[10%] right-[5%] w-[400px] h-[400px] rounded-full bg-primary/5 blur-[120px]"></div>
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
       </div>
 
       <Sidebar />
 
-      <main className="flex-1 lg:ml-64 pt-24 px-6 md:px-10 pb-32 max-w-3xl mx-auto w-full z-10 relative">
-        <header className="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+      <main className="relative z-10 flex-1 lg:ml-56 pt-20 px-6 md:px-10 pb-16 max-w-3xl mx-auto w-full">
+        <header className="mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-1 h-1 rounded-full bg-primary"></span>
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Scripture Reading</span>
+            <div className="w-6 h-px bg-amber-400/40" />
+            <span className="text-[8px] font-black uppercase tracking-wider text-amber-600">Scripture Reading</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-serif text-[#3C3830] tracking-tight">
-            Bible <span className="italic font-serif text-primary">Preferences</span>
+          <h1 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-tight">
+            Bible <span className="italic font-serif text-amber-600">Preferences</span>
           </h1>
+          <p className="text-sm text-gray-500 italic border-l-2 border-amber-400 pl-4 mt-2">
+            Customize your scripture reading experience.
+          </p>
         </header>
 
         {loading ? (
-          <div className="py-20 text-center animate-pulse text-[10px] font-black uppercase tracking-widest text-gray-400">
-            Preparing your study tools...
+          <div className="py-20 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-6 h-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-[8px] font-black uppercase tracking-wider text-gray-500">Preparing your study tools...</p>
+            </div>
           </div>
         ) : (
-          <form onSubmit={handleSave} className="space-y-6">
-            <Card className="border-gray-100/60 bg-white/70 backdrop-blur-md p-6 rounded-[24px] space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Select
-                  label="Primary Translation"
-                  value={preferences.defaultTranslation}
-                  onChange={e => setPreferences({ ...preferences, defaultTranslation: e.target.value })}
-                  options={translationOptions}
-                  className="rounded-xl border-gray-100 text-xs"
-                />
-                <Select
-                  label="Viewing Format"
-                  value={preferences.readingMode}
-                  onChange={e => setPreferences({ ...preferences, readingMode: e.target.value })}
-                  options={[
-                    { value: 'verse', label: 'Verse by Verse' },
-                    { value: 'passage', label: 'Grouped Passages' },
-                    { value: 'chapter', label: 'Full Chapter' },
-                  ]}
-                  className="rounded-xl border-gray-100 text-xs"
-                />
+          <form onSubmit={handleSave} className="space-y-5">
+            <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-6 space-y-5 shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-amber-500 text-[14px]">translate</span>
+                    <label className="text-[7px] font-black text-amber-600 uppercase tracking-wider">Primary Translation</label>
+                  </div>
+                  <select
+                    value={preferences.defaultTranslation}
+                    onChange={e => setPreferences({ ...preferences, defaultTranslation: e.target.value })}
+                    className="w-full bg-white/50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                  >
+                    {translationOptions.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-amber-500 text-[14px]">view_agenda</span>
+                    <label className="text-[7px] font-black text-amber-600 uppercase tracking-wider">Viewing Format</label>
+                  </div>
+                  <select
+                    value={preferences.readingMode}
+                    onChange={e => setPreferences({ ...preferences, readingMode: e.target.value })}
+                    className="w-full bg-white/50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                  >
+                    <option value="verse">Verse by Verse</option>
+                    <option value="passage">Grouped Passages</option>
+                    <option value="chapter">Full Chapter</option>
+                  </select>
+                </div>
               </div>
 
-              <div className="pt-4 border-t border-gray-100/50 space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#3C3830] mb-4">Study Tools</p>
+              <div className="pt-4 border-t border-gray-200/50 space-y-2">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <span className="material-symbols-outlined text-amber-500 text-[14px]">menu_book</span>
+                  <p className="text-[7px] font-black text-amber-600 uppercase tracking-wider">Study Tools</p>
+                </div>
                 
                 {[
                   { key: 'showCrossReferences', label: 'Cross-References', icon: 'link', desc: 'Display related verses in the margins.' },
@@ -120,44 +157,60 @@ export default function BiblePreferencesPage() {
                   <div 
                     key={tool.key}
                     onClick={() => setPreferences(prev => ({ ...prev, [tool.key]: !prev[tool.key as keyof typeof preferences] }))}
-                    className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50/50 transition-colors cursor-pointer border border-transparent hover:border-gray-100"
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-white/50 transition-colors cursor-pointer border border-transparent hover:border-amber-200"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-gray-400">
-                        <span className="material-symbols-outlined text-lg">{tool.icon}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500">
+                        <span className="material-symbols-outlined text-[16px]">{tool.icon}</span>
                       </div>
                       <div>
-                        <p className="text-[12px] font-bold text-[#3C3830]">{tool.label}</p>
-                        <p className="text-[10px] text-[#7C7565] opacity-70">{tool.desc}</p>
+                        <p className="text-[10px] font-bold text-gray-700">{tool.label}</p>
+                        <p className="text-[8px] text-gray-500">{tool.desc}</p>
                       </div>
                     </div>
-                    <div className={`w-10 h-5 rounded-full transition-colors relative ${preferences[tool.key as keyof typeof preferences] ? 'bg-primary' : 'bg-gray-200'}`}>
-                      <div className={`absolute top-0.5 left-0.5 bg-white w-4 h-4 rounded-full shadow-sm transition-transform ${preferences[tool.key as keyof typeof preferences] ? 'translate-x-5' : 'translate-x-0'}`} />
+                    <div className={`w-8 h-4 rounded-full transition-colors relative ${preferences[tool.key as keyof typeof preferences] ? 'bg-amber-600' : 'bg-gray-300'}`}>
+                      <div className={`absolute top-0.5 left-0.5 bg-white w-3 h-3 rounded-full shadow-sm transition-transform ${preferences[tool.key as keyof typeof preferences] ? 'translate-x-4' : 'translate-x-0'}`} />
                     </div>
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
 
-            <div className="flex items-center gap-3">
-              <Button 
+            <div className="flex items-center gap-3 pt-2">
+              <button 
                 type="submit" 
                 disabled={saving}
-                className="bg-primary hover:bg-primary-dark text-white rounded-full text-[10px] font-black uppercase tracking-widest px-10 py-3 shadow-lg shadow-primary/10"
+                className="bg-gradient-to-r from-amber-600 to-amber-700 hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] text-white rounded-lg text-[8px] font-black uppercase tracking-wider px-8 py-2.5 transition-all disabled:opacity-50"
               >
-                {saving ? 'Saving...' : 'Apply Preferences'}
-              </Button>
-              <Button 
+                {saving ? (
+                  <span className="flex items-center gap-2">
+                    <span className="material-symbols-outlined animate-spin text-[12px]">sync</span>
+                    Saving...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[12px]">save</span>
+                    Apply Preferences
+                  </span>
+                )}
+              </button>
+              <button 
                 type="button" 
-                variant="outline" 
                 onClick={() => router.push('/settings')}
-                className="bg-white text-[#3C3830] rounded-full text-[10px] font-black uppercase tracking-widest px-10 py-3 border-gray-200"
+                className="bg-white/50 backdrop-blur-sm border border-gray-200 text-gray-600 rounded-lg text-[8px] font-black uppercase tracking-wider px-6 py-2.5 hover:bg-white/80 transition-all"
               >
                 Cancel
-              </Button>
+              </button>
             </div>
           </form>
         )}
+
+        {/* Decorative Footer */}
+        <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+          <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+        </div>
       </main>
     </div>
   );

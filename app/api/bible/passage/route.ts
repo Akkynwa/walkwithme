@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { convertBookToCDNFormat, getCDNVersion } from '@/lib/bible-utils';
 
-const BIBLE_API_CDN = 'https://cdn.jsdelivr.net/gh/wldeh/bible-api';
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const book = searchParams.get('book');
@@ -15,73 +13,91 @@ export async function GET(request: Request) {
   }
 
   try {
-    // 1. Convert book abbreviation to CDN format (GEN -> genesis)
-    const cdnBookName = convertBookToCDNFormat(book);
+    // Build API.Bible endpoint
+    const apiKey = process.env.NEXT_PUBLIC_BIBLE_API_KEY;
+    const baseUrl = process.env.NEXT_PUBLIC_BIBLE_API_URL || 'https://api.scripture.api.bible/v1';
     
-    // 2. Get CDN version code (maps version ID to CDN format)
-    const cdnVersion = versionId ? getCDNVersion(langCode, versionId) : `${langCode}-asv`;
+    // API.Bible Bible IDs mapping
+    const bibleIds: Record<string, Record<string, string>> = {
+      en: {
+        'de4e12af7f29f59f-01': 'de4e12af7f29f59f-01', // KJV
+        '06125ad3d5662098-01': '06125ad3d5662098-01', // NIV
+      },
+      fr: {
+        '01b17f8a70e2842c-01': '01b17f8a70e2842c-01', // French
+      },
+      es: {
+        '592420522e16040d-01': '592420522e16040d-01', // Spanish
+      },
+      de: {
+        'b17e01658803510c-01': 'b17e01658803510c-01', // German
+      },
+    };
 
-    // 3. Fetch the chapter from CDN API
-    const chapterUrl = `${BIBLE_API_CDN}/bibles/${cdnVersion}/books/${cdnBookName}/chapters/${chapter}.json`;
+    const bibleId = bibleIds[langCode]?.[versionId] || versionId || 'de4e12af7f29f59f-01';
+    const passage = `${book} ${chapter}`;
     
+    const chapterUrl = `${baseUrl}/bibles/${bibleId}/passages/${encodeURIComponent(passage)}?content-type=text`;
+
     const textRes = await fetch(chapterUrl, {
       headers: {
+        'api-key': apiKey || '',
         'Content-Type': 'application/json',
       },
     });
 
     if (!textRes.ok) {
-      console.error(`Failed to fetch from CDN: ${chapterUrl}`, textRes.status);
+      console.error(`Failed to fetch from API.Bible: ${chapterUrl}`, textRes.status);
       throw new Error(`Failed to fetch chapter: ${textRes.statusText}`);
     }
 
     const textData = await textRes.json();
 
-    // 4. Parse verses from the CDN response
-    // The CDN API may return different formats - handle all variations
+    // Parse verses from API.Bible response
     let formattedVerses: any[] = [];
     
-    if (Array.isArray(textData.verses)) {
-      // Format: { verses: [{ verse: 1, text: "..." }] }
-      formattedVerses = textData.verses.map((v: any) => ({
-        number: v.verse || v.number || 1,
-        text: (v.text || v.content || '').trim()
-      }));
-    } else if (textData.book && Array.isArray(textData.chapters)) {
-      // Format: { book: "...", chapters: [{ verses: [...] }] }
-      const chapter = textData.chapters[0];
-      if (chapter && Array.isArray(chapter.verses)) {
-        formattedVerses = chapter.verses.map((v: any) => ({
-          number: v.verse || v.number,
-          text: (v.text || v.content || '').trim()
-        }));
+    if (textData.data && textData.data.content) {
+      // Extract verses from the content
+      const content = textData.data.content;
+      const verseRegex = /\{(\d+)\}/g;
+      let match;
+      let lastIndex = 0;
+      
+      while ((match = verseRegex.exec(content)) !== null) {
+        const verseNum = parseInt(match[1]);
+        const verseStart = match.index + match[0].length;
+        const nextMatch = verseRegex.exec(content);
+        const verseEnd = nextMatch ? nextMatch.index : content.length;
+        verseRegex.lastIndex = nextMatch ? nextMatch.index : content.length;
+        
+        const verseText = content.substring(verseStart, verseEnd).trim();
+        if (verseText) {
+          formattedVerses.push({
+            number: verseNum,
+            text: verseText
+          });
+        }
       }
-    } else if (Array.isArray(textData)) {
-      // Format: direct array of verses
-      formattedVerses = textData.map((v: any) => ({
-        number: v.verse || v.number,
-        text: (v.text || v.content || '').trim()
-      }));
-    } else if (textData.text) {
-      // Fallback: single verse returned
-      formattedVerses = [{ number: 1, text: (textData.text || '').trim() }];
-    }
-    
-    // If still empty, log the actual structure for debugging
-    if (formattedVerses.length === 0) {
-      console.warn('Could not parse verses from CDN response:', JSON.stringify(textData).substring(0, 500));
+
+      // If no verses found with regex, return the whole content as verse 1
+      if (formattedVerses.length === 0) {
+        formattedVerses = [{
+          number: 1,
+          text: content.trim()
+        }];
+      }
     }
 
-    // 5. Generate audio URL (using a reliable audio Bible CDN)
-    const audioUrl = `https://cdn.global-scriptures.com/audio/${langCode}/${cdnBookName}/${chapter}.mp3`;
+    // 5. Generate audio URL
+    const audioUrl = `https://cdn.global-scriptures.com/audio/${langCode}/${convertBookToCDNFormat(book)}/${chapter}.mp3`;
 
     return NextResponse.json({
       success: true,
-      passage: textData.reference || `${book} ${chapter}`,
+      passage: textData.data?.reference || `${book} ${chapter}`,
       verses: formattedVerses,
       audio: audioUrl,
       language: langCode,
-      version: cdnVersion
+      version: versionId
     });
 
   } catch (e) {
@@ -91,5 +107,116 @@ export async function GET(request: Request) {
       error: "Failed to retrieve passage",
       details: e instanceof Error ? e.message : "Unknown error"
     }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { book, chapter, lang = 'en', versionId } = body;
+
+    if (!book || !chapter) {
+      return NextResponse.json(
+        { error: "Missing parameters: book and chapter are required" },
+        { status: 400 }
+      );
+    }
+
+    // Build API.Bible endpoint
+    const apiKey = process.env.NEXT_PUBLIC_BIBLE_API_KEY;
+    const baseUrl = process.env.NEXT_PUBLIC_BIBLE_API_URL || 'https://api.scripture.api.bible/v1';
+    
+    // API.Bible Bible IDs mapping
+    const bibleIds: Record<string, Record<string, string>> = {
+      en: {
+        'de4e12af7f29f59f-01': 'de4e12af7f29f59f-01', // KJV
+        '06125ad3d5662098-01': '06125ad3d5662098-01', // NIV
+      },
+      fr: {
+        '01b17f8a70e2842c-01': '01b17f8a70e2842c-01', // French
+      },
+      es: {
+        '592420522e16040d-01': '592420522e16040d-01', // Spanish
+      },
+      de: {
+        'b17e01658803510c-01': 'b17e01658803510c-01', // German
+      },
+    };
+
+    const bibleId = bibleIds[lang]?.[versionId] || versionId || 'de4e12af7f29f59f-01';
+    const passage = `${book} ${chapter}`;
+    
+    const chapterUrl = `${baseUrl}/bibles/${bibleId}/passages/${encodeURIComponent(passage)}?content-type=text`;
+
+    const textRes = await fetch(chapterUrl, {
+      headers: {
+        'api-key': apiKey || '',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!textRes.ok) {
+      console.error(`Failed to fetch from API.Bible: ${chapterUrl}`, textRes.status);
+      throw new Error(`Failed to fetch chapter: ${textRes.statusText}`);
+    }
+
+    const textData = await textRes.json();
+
+    // Parse verses from API.Bible response
+    let formattedVerses: any[] = [];
+    
+    if (textData.data && textData.data.content) {
+      // Extract verses from the content
+      const content = textData.data.content;
+      const verseRegex = /\{(\d+)\}/g;
+      let match;
+      
+      while ((match = verseRegex.exec(content)) !== null) {
+        const verseNum = parseInt(match[1]);
+        const verseStart = match.index + match[0].length;
+        const nextMatch = verseRegex.exec(content);
+        const verseEnd = nextMatch ? nextMatch.index : content.length;
+        verseRegex.lastIndex = nextMatch ? nextMatch.index : content.length;
+        
+        const verseText = content.substring(verseStart, verseEnd).trim();
+        if (verseText) {
+          formattedVerses.push({
+            number: verseNum,
+            text: verseText
+          });
+        }
+      }
+
+      // If no verses found with regex, return the whole content as verse 1
+      if (formattedVerses.length === 0) {
+        formattedVerses = [{
+          number: 1,
+          text: content.trim()
+        }];
+      }
+    }
+
+    // Generate audio URL
+    const audioUrl = `https://cdn.global-scriptures.com/audio/${lang}/${convertBookToCDNFormat(book)}/${chapter}.mp3`;
+
+    return NextResponse.json({
+      success: true,
+      passage: textData.data?.reference || `${book} ${chapter}`,
+      verses: formattedVerses,
+      audio: audioUrl,
+      language: lang,
+      version: versionId
+    });
+
+  } catch (e) {
+    console.error("POST API Route Error:", e);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to retrieve passage",
+        details: e instanceof Error ? e.message : "Unknown error"
+      },
+      { status: 500 }
+    );
   }
 }

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../layout-components/Sidebar';
 import Header from '../layout-components/Header';
+import Image from 'next/image';
 
 const modules = [
   {
@@ -12,32 +13,36 @@ const modules = [
     desc: 'Begin with centering sounds, high-fidelity frequencies, or guided prayer.',
     path: '/quiet-time/audio',
     icon: 'graphic_eq',
-    color: 'bg-[#FDFBF7] text-[#8B0000] border-[#EAE5D8]',
-    hoverColor: 'group-hover:bg-[#8B0000] group-hover:text-white',
+    color: 'from-amber-500/10 to-amber-600/5',
+    iconColor: 'text-amber-600',
+    borderHover: 'group-hover:border-amber-300',
   },
   {
     title: 'Scripture Reading',
     desc: "Engage deeply with today's dynamic, curated passage matrix.",
     path: '/quiet-time/reading',
     icon: 'menu_book',
-    color: 'bg-[#FDFBF7] text-[#D4AF37] border-[#EAE5D8]',
-    hoverColor: 'group-hover:bg-[#D4AF37] group-hover:text-white',
+    color: 'from-amber-500/10 to-amber-600/5',
+    iconColor: 'text-amber-600',
+    borderHover: 'group-hover:border-amber-300',
   },
   {
     title: 'Heart Reflection',
     desc: 'Journal your personal thoughts, divine prompts, and revelations.',
     path: '/quiet-time/reflection',
     icon: 'edit_note',
-    color: 'bg-[#FDFBF7] text-[#3C3830] border-[#EAE5D8]',
-    hoverColor: 'group-hover:bg-[#3C3830] group-hover:text-white',
+    color: 'from-amber-500/10 to-amber-600/5',
+    iconColor: 'text-amber-600',
+    borderHover: 'group-hover:border-amber-300',
   },
   {
     title: 'Daily Summary',
     desc: 'Review metrics, track your active streak, and seal your session insights.',
     path: '/quiet-time/summary',
     icon: 'task_alt',
-    color: 'bg-[#FDFBF7] text-[#7C7565] border-[#EAE5D8]',
-    hoverColor: 'group-hover:bg-[#7C7565] group-hover:text-white',
+    color: 'from-amber-500/10 to-amber-600/5',
+    iconColor: 'text-amber-600',
+    borderHover: 'group-hover:border-amber-300',
   },
 ];
 
@@ -45,100 +50,119 @@ export default function QuietTimeLobby() {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen bg-[#F4F1EA] font-serif selection:bg-[#D4AF37]/20">
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
       
-      <div className="flex-1 lg:ml-64 relative">
+      <div className="flex-1 lg:ml-56 relative">
         <Header />
 
-        {/* Textured background overlay to match the open book canvas */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-[0.4] mix-blend-multiply z-0"
-          style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/paper-fibers.png")` }}
-        />
-
-        <main className="relative z-10 pt-28 pb-16 px-6 md:px-12 max-w-5xl mx-auto">
+        <main className="relative z-10 pt-20 pb-16 px-6 md:px-10 max-w-5xl mx-auto">
           
-          {/* --- SACRED HERO HEADER --- */}
-          <header className="mb-14 text-center md:text-left relative">
-            <span className="text-[10px] font-sans font-black uppercase tracking-[0.3em] text-[#D4AF37] mb-2 block">
-              The Sanctuary Ecosystem
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-[#3C3830] tracking-tight mb-4">
+          {/* Sacred Hero Header */}
+          <header className="mb-12 text-center md:text-left relative">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+              <div className="w-8 h-px bg-amber-400/40" />
+              <span className="text-[8px] font-sans font-black uppercase tracking-wider text-amber-600">
+                The Sanctuary Ecosystem
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-800 tracking-tight mb-3">
               Quiet Time Sanctuary
             </h1>
-            <div className="w-12 h-[2px] bg-[#D4AF37] mb-4 md:mx-0 mx-auto rounded-full" />
-            <p className="text-[#7C7565] max-w-xl font-sans text-sm leading-relaxed">
+            <div className="w-12 h-0.5 bg-gradient-to-r from-amber-500 to-amber-600 mb-5 mx-auto md:mx-0 rounded-full" />
+            <p className="text-gray-600 max-w-xl font-sans text-sm leading-relaxed">
               Find your absolute center. Follow the architectural sequence below to complete your daily ritual and sync with your spiritual ledger.
             </p>
           </header>
 
-          {/* --- ARCHITECTURAL JOURNEY GRID --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Architectural Journey Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {modules.map((mod, idx) => (
               <Link 
                 key={mod.path} 
                 href={mod.path}
-                className="group relative bg-white/80 backdrop-blur-md border border-[#D4CDBA]/40 p-8 rounded-[2rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[0_15px_45px_rgba(60,56,48,0.02)] hover:shadow-[0_30px_70px_rgba(60,56,48,0.08)] hover:-translate-y-1.5"
+                className={`group relative bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1 hover:bg-white/60 ${mod.borderHover}`}
               >
-                {/* Subtle internal border accent on hover */}
-                <div className="absolute inset-3 rounded-[1.5rem] border border-transparent group-hover:border-[#D4AF37]/10 transition-all pointer-events-none" />
-
-                <div className="flex items-start justify-between relative z-10">
+                <div className="flex items-start justify-between">
                   {/* Icon Frame */}
-                  <div className={`p-4 rounded-2xl border ${mod.color} ${mod.hoverColor} mb-8 transition-all duration-500 shadow-sm group-hover:shadow-md`}>
-                    <span className="material-symbols-outlined text-2xl">
+                  <div className={`p-3 rounded-lg bg-gradient-to-br ${mod.color} border border-white/60 mb-5 transition-all duration-500 group-hover:shadow-md`}>
+                    <span className={`material-symbols-outlined text-[22px] ${mod.iconColor}`}>
                       {mod.icon}
                     </span>
                   </div>
-                  {/* Big Stylized Sequence Number */}
-                  <span className="text-5xl font-black italic text-[#EAE5D8]/50 group-hover:text-[#D4AF37]/15 transition-colors duration-500 select-none">
+                  {/* Sequence Number */}
+                  <span className="text-4xl font-black italic text-gray-300/30 group-hover:text-amber-400/20 transition-colors duration-500 select-none">
                     0{idx + 1}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-bold text-[#3C3830] mb-3 tracking-wide">
+                <h3 className="text-lg font-serif font-bold text-gray-800 mb-2 tracking-wide">
                   {mod.title}
                 </h3>
-                <p className="font-sans text-xs leading-relaxed text-[#7C7565] mb-8 max-w-sm">
+                <p className="font-sans text-[10px] leading-relaxed text-gray-600 mb-5 max-w-sm">
                   {mod.desc}
                 </p>
 
                 {/* Micro-Interaction CTA */}
-                <div className="flex items-center text-[10px] font-sans font-black uppercase tracking-[0.2em] text-[#D4AF37] translate-x-[-4px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                <div className="flex items-center text-[8px] font-sans font-black uppercase tracking-wider text-amber-600 -translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                   Enter Module 
-                  <span className="material-symbols-outlined ml-2 text-xs font-bold">arrow_forward</span>
+                  <span className="material-symbols-outlined ml-1 text-[12px]">arrow_forward</span>
                 </div>
               </Link>
             ))}
           </div>
 
-          {/* --- PREMIUM CALL TO ACTION BLOCK --- */}
-          <div 
-            className="mt-14 p-10 rounded-[2.5rem] bg-[#3C3830] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_30px_60px_-15px_rgba(60,56,48,0.4)] relative overflow-hidden border border-[#524B3F]"
-          >
+          {/* Premium Call to Action Block */}
+          <div className="mt-10 p-6 md:p-8 rounded-xl bg-gradient-to-br from-amber-700 to-amber-800 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
             {/* Background Light Spill */}
-            <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -left-16 -top-16 w-64 h-64 bg-[#8B0000]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -left-16 -top-16 w-64 h-64 bg-black/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 text-center md:text-left">
-              <span className="text-[9px] font-sans font-black uppercase tracking-[0.3em] text-[#D4AF37] mb-2 block">
-                Recommended Flow
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold mb-2 tracking-tight">Ready to align?</h2>
-              <p className="font-sans text-xs text-[#EAE5D8]/70 max-w-sm leading-relaxed">
+              <div className="flex items-center justify-center md:justify-start gap-1.5 mb-2">
+                <span className="material-symbols-outlined text-amber-300 text-[14px]">self_improvement</span>
+                <span className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-200">
+                  Recommended Flow
+                </span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-serif font-bold mb-1 tracking-tight">Ready to align?</h2>
+              <p className="font-sans text-[10px] text-amber-100/80 max-w-sm leading-relaxed">
                 We recommend processing via the default liturgy matrix. Start with Ambient Audio to calm cognitive noise.
               </p>
             </div>
             
             <button 
               onClick={() => router.push('/quiet-time/audio')}
-              className="relative z-10 px-10 py-4 bg-gradient-to-r from-[#D4AF37] to-[#AA8414] text-white rounded-xl font-sans font-black text-xs tracking-[0.15em] hover:brightness-110 shadow-lg shadow-[#D4AF37]/20 transition-all active:scale-[0.98] whitespace-nowrap"
+              className="relative z-10 px-8 py-3 bg-white text-amber-700 rounded-lg font-sans font-black text-[9px] tracking-wider hover:bg-amber-50 hover:scale-[1.02] shadow-lg transition-all active:scale-[0.98] whitespace-nowrap"
             >
               START LITURGY
             </button>
           </div>
 
+          {/* Decorative Footer */}
+          <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+            <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+          </div>
         </main>
       </div>
     </div>

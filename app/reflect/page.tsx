@@ -111,7 +111,7 @@ ${formData.intention}
           <aside className="lg:col-span-4 lg:sticky lg:top-28 h-fit space-y-6">
             <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
               <div className="flex items-center gap-2 mb-6 text-[#D4AF37]">
-                <span className="material-symbols-outlined text-xl">auto_awesome</span>
+                <span className="material-symbols-outlined text-xl">self_improvement</span>
                 <span className="font-sans text-[10px] font-black uppercase tracking-[0.2em]">Guided Stillness</span>
               </div>
               <p className="text-lg text-[#3C3830] leading-relaxed italic mb-6">
@@ -199,7 +199,7 @@ ${formData.intention}
                   {isSaving ? (
                     <span className="material-symbols-outlined animate-spin text-sm">sync</span>
                   ) : (
-                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                    <span className="material-symbols-outlined text-sm">self_improvement</span>
                   )}
                   {isSaving ? 'Preserving...' : 'Seal Reflection'}
                 </button>

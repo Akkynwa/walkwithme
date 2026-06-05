@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
 import Header from '@/app/layout-components/Header';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 interface JournalEntry {
   id: string;
@@ -64,127 +65,195 @@ export default function JournalPage() {
     }
   };
 
+  const getMoodIcon = (mood?: string) => {
+    const moodMap: Record<string, string> = {
+      Peaceful: 'spa',
+      Grateful: 'favorite',
+      Hopeful: 'wb_sunny',
+      Reflective: 'auto_stories',
+      Challenged: 'terrain',
+      Joyful: 'celebration'
+    };
+    return moodMap[mood || 'Reflective'] || 'auto_stories';
+  };
+
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FDFDFF]">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="font-serif italic text-primary/60">Opening your sanctuary...</p>
+      <div className="relative flex items-center justify-center min-h-screen">
+        <div className="fixed inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+            alt="Peaceful sanctuary background"
+            fill
+            className="object-cover scale-110 blur-xl opacity-30"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+        </div>
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center animate-pulse mb-4">
+            <span className="material-symbols-outlined text-indigo-500 text-2xl animate-spin">sync</span>
+          </div>
+          <p className="font-serif italic text-gray-500 text-sm">Opening your sanctuary...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFF]">
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-indigo-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-200/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
       <Header />
 
-      <main className="flex-1 lg:ml-64 pt-28 pb-20 px-6 md:px-12 max-w-[1400px] mx-auto w-full">
+      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-7xl mx-auto w-full">
         
-        {/* --- REFINED HEADER SECTION --- */}
-        <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+        {/* Header Section */}
+        <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <div>
-            <h1 className="text-4xl md:text-5xl font-serif text-[#3C3830] mb-3 tracking-tight">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-px bg-gray-400/40" />
+              <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Written Legacy</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-serif text-gray-800 mb-2 tracking-tight">
               Spiritual Journal
             </h1>
-            <p className="text-[#7C7565] italic font-serif border-l-2 border-[#D4AF37] pl-4">
+            <p className="text-sm text-gray-600 italic border-l-2 border-indigo-400 pl-4">
               Documenting your walk of faith, one day at a time.
             </p>
           </div>
 
-          {/* --- NEW ACTION BUTTONS --- */}
-          <div className="flex flex-wrap gap-3">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2">
             <Link
               href="/journal/history"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-full text-[10px] font-black tracking-widest text-[#3C3830] hover:bg-gray-50 transition-all uppercase"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg text-[9px] font-black tracking-wider text-gray-700 hover:bg-white/60 hover:border-indigo-300 transition-all uppercase"
             >
-              <span className="material-symbols-outlined text-sm">history</span>
-              Journal History
+              <span className="material-symbols-outlined text-[14px]">history</span>
+              History
             </Link>
             <Link
               href="/reflect"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-full text-[10px] font-black tracking-widest text-[#3C3830] hover:bg-gray-50 transition-all uppercase"
+              className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg text-[9px] font-black tracking-wider text-gray-700 hover:bg-white/60 hover:border-indigo-300 transition-all uppercase"
             >
-              <span className="material-symbols-outlined text-sm">self_improvement</span>
+              <span className="material-symbols-outlined text-[14px]">self_improvement</span>
               Meditation
             </Link>
             <Link
               href="/journal/create"
-              className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-full text-[10px] font-black tracking-widest hover:shadow-lg hover:shadow-primary/20 transition-all uppercase"
+              className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg text-[9px] font-black tracking-wider hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] transition-all uppercase"
             >
-              <span className="material-symbols-outlined text-sm">add_notes</span>
+              <span className="material-symbols-outlined text-[14px]">add</span>
               New Entry
             </Link>
           </div>
         </section>
 
-        {/* --- ENTRIES GRID --- */}
+        {/* Entries Grid */}
         {entries.length === 0 ? (
-          <div className="h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-gray-100 rounded-3xl bg-gray-50/50">
-            <span className="material-symbols-outlined text-5xl text-gray-300 mb-4 font-light">edit_note</span>
-            <p className="text-[#7C7565] font-serif italic mb-6">The pages are empty, waiting for your first word.</p>
-            <Link href="/journal/create" className="text-primary font-black text-[11px] tracking-[0.2em] uppercase border-b-2 border-primary pb-1">
+          <div className="h-[400px] flex flex-col items-center justify-center bg-white/30 backdrop-blur-sm border-2 border-dashed border-indigo-200 rounded-2xl">
+            <div className="w-16 h-16 rounded-xl bg-indigo-100 flex items-center justify-center mb-4">
+              <span className="material-symbols-outlined text-indigo-400 text-3xl">edit_note</span>
+            </div>
+            <p className="text-gray-500 font-serif italic mb-5">The pages are empty, waiting for your first word.</p>
+            <Link href="/journal/create" className="text-indigo-600 font-black text-[10px] tracking-wider uppercase border-b-2 border-indigo-600 pb-1 hover:text-indigo-700 transition-colors">
               Begin Writing
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className="group relative bg-white border border-gray-100 rounded-2xl p-8 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-1 flex flex-col"
+                className="group relative bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl p-5 transition-all duration-300 hover:bg-white/60 hover:shadow-xl hover:-translate-y-0.5 flex flex-col"
               >
-                {/* DATE & MOOD BADGE */}
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-[10px] font-black tracking-[0.15em] text-[#D4AF37] uppercase">
-                    {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
-                  </span>
-                  {entry.mood && (
-                    <span className="px-3 py-1 bg-primary/5 text-primary text-[9px] font-black rounded-full uppercase tracking-tighter">
-                      {entry.mood}
+                {/* Date & Mood Badge */}
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-indigo-400 text-[12px]">calendar_today</span>
+                    <span className="text-[8px] font-black tracking-wider text-indigo-600 uppercase">
+                      {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
                     </span>
+                  </div>
+                  {entry.mood && (
+                    <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full">
+                      <span className="material-symbols-outlined text-indigo-500 text-[10px]">{getMoodIcon(entry.mood)}</span>
+                      <span className="text-[7px] font-bold text-indigo-600 uppercase tracking-tighter">{entry.mood}</span>
+                    </div>
                   )}
                 </div>
 
+                {/* Content */}
                 <div className="flex-1">
-                  <h3 className="text-xl font-serif text-[#3C3830] mb-3 group-hover:text-primary transition-colors line-clamp-1">
+                  <h3 className="text-base font-serif font-semibold text-gray-800 mb-2 group-hover:text-indigo-700 transition-colors line-clamp-1">
                     {entry.title}
                   </h3>
-                  <p className="text-[#7C7565] text-sm leading-relaxed line-clamp-4 font-serif italic opacity-80 mb-6">
-                    "{entry.content}"
+                  <p className="text-[11px] text-gray-600 leading-relaxed line-clamp-3 font-serif italic mb-4">
+                    {entry.content}
                   </p>
                 </div>
 
-                {/* TAGS */}
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {entry.tags.map((tag, idx) => (
-                    <span key={idx} className="text-[10px] text-gray-400 font-medium italic">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
+                {/* Tags */}
+                {entry.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {entry.tags.slice(0, 3).map((tag, idx) => (
+                      <span key={idx} className="text-[8px] text-gray-400 font-medium">
+                        #{tag}
+                      </span>
+                    ))}
+                    {entry.tags.length > 3 && (
+                      <span className="text-[8px] text-gray-400">+{entry.tags.length - 3}</span>
+                    )}
+                  </div>
+                )}
 
-                {/* CARD ACTIONS */}
-                <div className="flex items-center gap-4 pt-6 border-t border-gray-50">
+                {/* Card Actions */}
+                <div className="flex items-center gap-4 pt-4 border-t border-gray-200/50">
                   <Link
                     href={`/journal/${entry.id}`}
-                    className="text-[10px] font-black tracking-[0.2em] text-[#3C3830] uppercase hover:text-primary transition-colors flex items-center gap-1"
+                    className="text-[9px] font-black tracking-wider text-gray-600 uppercase hover:text-indigo-700 transition-colors flex items-center gap-0.5"
                   >
-                    Read <span className="material-symbols-outlined text-xs">arrow_right_alt</span>
+                    Read
+                    <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
                   </Link>
                   <button
                     onClick={() => handleDelete(entry.id)}
                     disabled={deleting === entry.id}
-                    className="ml-auto text-gray-300 hover:text-red-400 transition-colors"
+                    className="ml-auto text-gray-400 hover:text-red-500 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-lg">
+                    <span className="material-symbols-outlined text-[16px]">
                       {deleting === entry.id ? 'sync' : 'delete'}
                     </span>
                   </button>
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Decorative Footer */}
+        {entries.length > 0 && (
+          <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-indigo-400" />
+            <span className="material-symbols-outlined text-indigo-400 text-sm">edit_note</span>
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-indigo-400" />
           </div>
         )}
       </main>

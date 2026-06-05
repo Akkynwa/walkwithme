@@ -1,10 +1,9 @@
 import { OpenAI } from 'openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db'; // Adjust path based on your Prisma setup
+import { prisma } from '@/lib/prisma'; // Adjust path based on your Prisma setup
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
@@ -65,7 +64,7 @@ export async function POST(req: Request) {
       onStart: async () => {
         if (!userId) return;
         // Fire-and-forget: background thread execution keeps token rendering unblocked
-        db.message.create({
+        prisma.message.create({
           data: {
             content: lastUserMessage,
             role: 'user',
@@ -76,7 +75,7 @@ export async function POST(req: Request) {
       onCompletion: async (completion) => {
         if (!userId) return;
         // Fire-and-forget: stores final response in background safely
-        db.message.create({
+        prisma.message.create({
           data: {
             content: completion,
             role: 'assistant',

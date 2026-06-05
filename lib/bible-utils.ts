@@ -76,39 +76,47 @@ export const BOOK_ABBREVIATIONS: Record<string, string> = {
 };
 
 /**
+ * High-performance inverted lookup index compiled once at runtime
+ */
+const CDN_TO_ABBREVIATION: Record<string, string> = Object.entries(BOOK_ABBREVIATIONS).reduce(
+  (acc, [abbr, cdnName]) => {
+    acc[cdnName] = abbr;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
+/**
  * Convert book abbreviation (e.g., 'GEN') to CDN API format (e.g., 'genesis')
  */
 export function convertBookToCDNFormat(bookCode: string): string {
-  return BOOK_ABBREVIATIONS[bookCode.toUpperCase()] || bookCode.toLowerCase();
+  if (!bookCode) return '';
+  return BOOK_ABBREVIATIONS[bookCode.trim().toUpperCase()] || bookCode.toLowerCase();
 }
 
 /**
- * Convert CDN API book format to abbreviation
+ * Convert CDN API book format to abbreviation with O(1) efficiency
  */
 export function convertCDNFormatToAbbreviation(book: string): string {
-  const upperBook = book.toUpperCase();
-  for (const [abbr, cdnFormat] of Object.entries(BOOK_ABBREVIATIONS)) {
-    if (cdnFormat.toUpperCase() === upperBook) {
-      return abbr;
-    }
-  }
-  return upperBook;
+  if (!book) return '';
+  const cleanBook = book.trim().toLowerCase();
+  return CDN_TO_ABBREVIATION[cleanBook] || cleanBook.toUpperCase();
 }
 
 /**
- * Get Bible version mapping for different APIs
- * Maps custom version IDs to CDN API version codes
+ * Bible version mapping for different APIs
+ * Maps API.Bible hashes to CDN API version codes
  */
 export const VERSION_MAPPING: Record<string, Record<string, string>> = {
   en: {
     'de4e12af7f29f59f-01': 'en-kjv', // KJV
-    '06125ad3d5662098-01': 'en-asv', // NIV alternative (using ASV for CDN)
+    '06125ad3d5662098-01': 'en-asv', // ASV (Fallback option)
   },
   fr: {
     '01b17f8a70e2842c-01': 'fr-lsg', // French LSG
   },
   es: {
-    '592420522e16040d-01': 'es-rvr', // Spanish
+    '592420522e16040d-01': 'es-rvr', // Spanish Reina Valera
   },
   de: {
     'b17e01658803510c-01': 'de-elberfelder', // German
@@ -119,5 +127,27 @@ export const VERSION_MAPPING: Record<string, Record<string, string>> = {
  * Get CDN version code from language and version ID
  */
 export function getCDNVersion(langCode: string, versionId: string): string {
-  return VERSION_MAPPING[langCode]?.[versionId] || `${langCode}-asv`;
+  const cleanLang = langCode.toLowerCase();
+  return VERSION_MAPPING[cleanLang]?.[versionId] || `${cleanLang}-asv`;
+}
+
+/**
+ * Construct safe query endpoints using the configuration found in your .env configuration
+ */
+export function buildBibleEndpoint(params: {
+  langCode: string;
+  versionId: string;
+  bookCode: string;
+  chapter: number | string;
+  verse?: number | string;
+}): string {
+  const baseUrl = process.env.NEXT_PUBLIC_BIBLE_API_URL || 'https://cdn.jsdelivr.net/gh/wldeh/bible-api';
+  const version = getCDNVersion(params.langCode, params.versionId);
+  const book = convertBookToCDNFormat(params.bookCode);
+  
+  // Build standard path pattern for the keyless Bible CDN architecture
+  if (params.verse) {
+    return `${baseUrl}/bibles/${version}/books/${book}/chapters/${params.chapter}/verses/${params.verse}.json`;
+  }
+  return `${baseUrl}/bibles/${version}/books/${book}/chapters/${params.chapter}.json`;
 }

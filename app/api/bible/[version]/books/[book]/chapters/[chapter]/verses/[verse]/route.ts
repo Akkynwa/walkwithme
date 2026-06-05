@@ -2,24 +2,13 @@ import { NextResponse } from 'next/server';
 
 const BIBLE_API_CDN = 'https://cdn.jsdelivr.net/gh/wldeh/bible-api';
 
-/**
- * GET /api/bible/[version]/books/[book]/chapters/[chapter]/verses/[verse]
- * Retrieves a specific verse from the Bible
- * 
- * Parameters:
- * - version: Bible version (e.g., en-asv, en-kjv)
- * - book: Book name (e.g., genesis, exodus)
- * - chapter: Chapter number
- * - verse: Verse number
- */
 export async function GET(
   _request: Request,
   { params }: { params: { version: string; book: string; chapter: string; verse: string } }
 ) {
   try {
-    const { version, book, chapter, verse } = params;
+    const { version, book, chapter, verse } = await params;
 
-    // Validate parameters
     if (!version || !book || !chapter || !verse) {
       return NextResponse.json(
         {
@@ -30,19 +19,26 @@ export async function GET(
       );
     }
 
-    const url = `${BIBLE_API_CDN}/bibles/${version}/books/${book}/chapters/${chapter}/verses/${verse}.json`;
+    // Sanitize parameters for seamless static asset resolution
+    const cleanVersion = version.toLowerCase().trim();
+    const cleanBook = book.toLowerCase().trim();
+    const cleanChapter = chapter.trim();
+    const cleanVerse = verse.trim();
+
+    const url = `${BIBLE_API_CDN}/bibles/${cleanVersion}/books/${cleanBook}/chapters/${cleanChapter}/verses/${cleanVerse}.json`;
 
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
       },
+      next: { revalidate: 604800 } // Cache individual verses long-term
     });
 
     if (!response.ok) {
       return NextResponse.json(
         {
           success: false,
-          error: `Failed to fetch verse: ${response.statusText}`,
+          error: `Failed to fetch verse: ${response.statusText}. Check reference indexes.`,
         },
         { status: response.status }
       );

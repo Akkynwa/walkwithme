@@ -5,6 +5,7 @@ import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
 import { DEVOTIONALS } from '../../data/devotionals';
 import Image from 'next/image';
+import DevotionalCard from '@/components/DevotionalCard'; // Adjust path as needed
 
 export default function DevotionalPage() {
   const [filter, setFilter] = useState('All');
@@ -15,32 +16,59 @@ export default function DevotionalPage() {
     : DEVOTIONALS.filter(d => d.category === filter);
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFF] text-[#1A1C1E]">
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
       
-      <main className="flex-1 lg:ml-64 pt-28 pb-20 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
+      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-7xl mx-auto w-full">
         <MainHeader />
 
-        {/* --- HEADER SECTION --- */}
-        <header className="mb-16 text-center md:text-left">
-          <h1 className="text-4xl md:text-5xl font-serif text-[#3C3830] mb-4 tracking-tight">
+        {/* Header Section */}
+        <header className="mb-12 text-center md:text-left">
+          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+            <div className="w-8 h-px bg-amber-400/40" />
+            <span className="text-[8px] font-sans font-black uppercase tracking-wider text-amber-600">
+              Daily Reading
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-gray-800 mb-3 tracking-tight">
             The Daily Sanctuary
           </h1>
-          <p className="text-[#7C7565] italic font-serif text-lg border-l-2 border-[#D4AF37] pl-6 py-1">
-            &quot;Thy word is a lamp unto my feet, and a light unto my path.&quot;
-          </p>
+          <div className="flex items-center gap-3 justify-center md:justify-start">
+            <div className="w-10 h-0.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full" />
+            <p className="text-gray-600 italic font-serif text-base">
+              "Thy word is a lamp unto my feet"
+            </p>
+          </div>
         </header>
 
-        {/* --- CATEGORY FILTER --- */}
-        <div className="flex items-center gap-3 mb-12 overflow-x-auto pb-4 scrollbar-hide">
+        {/* Category Filter */}
+        <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-3 scrollbar-hide">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-6 py-2.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase transition-all whitespace-nowrap
+              className={`px-4 py-1.5 rounded-full text-[8px] font-black tracking-wider uppercase transition-all whitespace-nowrap
                 ${filter === cat 
-                  ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                  : 'bg-white border border-gray-100 text-gray-400 hover:border-primary/30 hover:text-primary'
+                  ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md shadow-amber-500/20' 
+                  : 'bg-white/40 backdrop-blur-sm border border-white/60 text-gray-500 hover:border-amber-300 hover:text-amber-600'
                 }`}
             >
               {cat}
@@ -48,68 +76,38 @@ export default function DevotionalPage() {
           ))}
         </div>
 
-        {/* --- DEVOTIONAL GRID --- */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-16 gap-x-10">
+        {/* Devotional Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 gap-y-12">
           {filteredDevotionals.map((item) => (
-            <a 
-              key={item.id} 
-              href={item.url} 
-              target="_blank" 
-              className="group relative flex flex-col items-center text-center"
-            >
-              {/* BRANDING GLOW AURA */}
-              <div 
-                className="absolute -top-4 w-32 h-32 opacity-0 group-hover:opacity-20 blur-[50px] transition-opacity duration-700 rounded-full pointer-events-none"
-                style={{ backgroundColor: item.themeColor || '#D4AF37' }}
-              />
-
-              {/* BOOK COVER CONTAINER */}
-              <div className="relative aspect-[2/3] w-full max-w-[200px] overflow-hidden rounded-md shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-l-[6px] border-black/20 transform transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:rotate-1 group-hover:shadow-[0_30px_70px_rgba(0,0,0,0.25)]">
-                <Image
-                  src={item.cover}
-                  alt={item.title}
-                  fill
-                  className="object-cover grayscale-[0.2] sepia-[0.1] contrast-[1.1] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
-                />
-                
-                {/* OVERLAY GRADIENT */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/10 p-4 flex flex-col justify-end">
-                   <span className="text-[8px] font-black text-[#D4AF37] tracking-[0.3em] uppercase mb-1">
-                     {item.category}
-                   </span>
-                </div>
-
-                {/* LIGHTING EFFECT (SPINE) */}
-                <div className="absolute inset-y-0 left-0 w-4 bg-gradient-to-r from-black/30 via-transparent to-transparent pointer-events-none" />
-              </div>
-
-              {/* BOOK INFO */}
-              <div className="mt-6 space-y-1">
-                <h3 className="font-serif text-[15px] font-bold text-[#3C3830] leading-snug group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-[10px] font-black text-[#7C7565]/60 uppercase tracking-[0.25em]">
-                  {item.author}
-                </p>
-              </div>
-
-              {/* ACTION INDICATOR */}
-              <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                <div className="flex items-center gap-2 text-[9px] font-bold text-primary uppercase tracking-widest">
-                  <span>Open Devotional</span>
-                  <span className="material-symbols-outlined text-xs">arrow_right_alt</span>
-                </div>
-              </div>
-            </a>
+            <DevotionalCard key={item.id} item={item} />
           ))}
+        </div>
+
+        {/* Empty State */}
+        {filteredDevotionals.length === 0 && (
+          <div className="text-center py-20 bg-white/30 backdrop-blur-sm border border-dashed border-amber-200 rounded-xl mt-8">
+            <div className="w-14 h-14 rounded-xl bg-amber-100 flex items-center justify-center mx-auto mb-3">
+              <span className="material-symbols-outlined text-amber-400 text-2xl">menu_book</span>
+            </div>
+            <p className="text-sm text-gray-500 font-serif italic">No devotionals found in this category.</p>
+            <button 
+              onClick={() => setFilter('All')}
+              className="mt-3 px-4 py-1.5 bg-amber-600 text-white rounded-lg text-[8px] font-black uppercase tracking-wider hover:bg-amber-700 transition-colors"
+            >
+              View All
+            </button>
+          </div>
+        )}
+
+        {/* Decorative Footer */}
+        <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+          <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
         </div>
       </main>
 
-      {/* --- ADD CUSTOM CSS FOR PERSPECTIVE --- */}
       <style jsx global>{`
-        .perspective-1000 {
-          perspective: 1000px;
-        }
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }

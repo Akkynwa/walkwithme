@@ -20,15 +20,17 @@ export function AIChatInput({
 }: AIChatInputProps) {
   
   return (
-    <div className="max-w-[800px] mx-auto w-full">
+    <div className="max-w-3xl mx-auto w-full">
       <form onSubmit={handleSubmit} className="relative group">
-        {/* Adjusted ring color to use Sanctuary sage green opacity */}
-        <div className="flex items-center gap-3 bg-white/70 backdrop-blur-xl p-2 pl-6 rounded-[2rem] shadow-xl shadow-black/[0.01] border border-white focus-within:ring-4 ring-[#4d6054]/5 transition-all duration-500">
+        {/* Input Container with Glass Effect */}
+        <div className="flex items-center gap-2 bg-white/50 backdrop-blur-xl p-1.5 pl-4 rounded-xl shadow-lg border border-white/60 focus-within:ring-2 focus-within:ring-amber-500/30 transition-all duration-500">
           
-          {/* Spiritual Icon - Updated to match Sanctuary brand colors */}
-          <span className={`text-xl transition-colors duration-500 ${isLoading ? 'text-[#4d6054] animate-pulse' : 'text-[#434844]/30'}`}>
-            {isLoading ? '✦' : '✎'}
-          </span>
+          {/* Spiritual Icon */}
+          <div className={`transition-all duration-500 ${isLoading ? 'opacity-100' : 'opacity-60'}`}>
+            <span className={`material-symbols-outlined text-[18px] transition-colors duration-500 ${isLoading ? 'text-amber-600 animate-pulse' : 'text-amber-500'}`}>
+              {isLoading ? 'sync' : 'self_improvement'}
+            </span>
+          </div>
 
           <input
             type="text"
@@ -36,36 +38,36 @@ export function AIChatInput({
             value={input}
             onChange={handleInputChange}
             disabled={isLoading}
-            className="flex-1 bg-transparent border-none focus:ring-0 text-[#161c22] py-4 text-[15px] font-medium placeholder:text-[#434844]/30"
+            className="flex-1 bg-transparent border-none focus:ring-0 text-gray-800 py-3 text-sm font-medium placeholder:text-gray-400 outline-none"
           />
 
-          {/* Premium Submit Button - Restyled to Sanctuary Sage Green */}
+          {/* Premium Submit Button */}
           <button 
             type="submit"
             disabled={isLoading || !input.trim()}
             className={`
-              relative w-12 h-12 flex items-center justify-center rounded-2xl transition-all duration-300
+              relative w-9 h-9 flex items-center justify-center rounded-lg transition-all duration-300
               ${isLoading 
-                ? 'bg-[#4d6054]/10 text-[#4d6054]' 
-                : 'bg-[#4d6054] text-white hover:bg-[#4d6054]/90 shadow-lg shadow-[#4d6054]/10 active:scale-90'
+                ? 'bg-amber-100 text-amber-500' 
+                : 'bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:shadow-lg hover:shadow-amber-500/25 active:scale-95'
               }
-              disabled:opacity-20 disabled:grayscale
+              disabled:opacity-30 disabled:cursor-not-allowed
             `}
           >
             {isLoading ? (
-              <div className="flex gap-0.5">
-                <span className="w-1 h-1 bg-[#4d6054] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                <span className="w-1 h-1 bg-[#4d6054] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                <span className="w-1 h-1 bg-[#4d6054] rounded-full animate-bounce"></span>
+              <div className="flex gap-0.5 items-center justify-center">
+                <span className="w-1 h-1 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                <span className="w-1 h-1 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                <span className="w-1 h-1 bg-amber-500 rounded-full animate-bounce"></span>
               </div>
             ) : (
-              <span className="text-lg">↗</span>
+              <span className="material-symbols-outlined text-[16px]">arrow_upward</span>
             )}
           </button>
         </div>
 
-        {/* Floating Hint - Typography colors realigned to Sanctuary's palette */}
-        <p className={`text-center mt-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#434844]/40 transition-opacity duration-700 ${input.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
+        {/* Floating Hint */}
+        <p className={`text-center mt-2 text-[7px] font-black uppercase tracking-wider text-gray-400 transition-opacity duration-700 ${input.length > 0 ? 'opacity-100' : 'opacity-0'}`}>
           Press Enter to speak
         </p>
       </form>

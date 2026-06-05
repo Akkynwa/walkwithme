@@ -33,37 +33,67 @@ export function TestimonyScroll() {
 
   return (
     <section className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between px-2">
-        <h3 className="text-[10px] font-black text-[#4d6054] uppercase tracking-[0.2em]">
-          Voices of the Sanctuary
-        </h3>
-        <button className="text-[9px] font-bold text-[#e0a96d] uppercase tracking-widest hover:underline">
-          Share your shift
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-px bg-gray-400/40" />
+          <h3 className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">
+            Voices of the Sanctuary
+          </h3>
+        </div>
+        <button className="text-[8px] font-bold text-indigo-500 uppercase tracking-wider hover:text-indigo-600 transition-colors">
+          Share Reflection
         </button>
       </div>
 
-      <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+      {/* Testimonies Container */}
+      <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
         {loading ? (
-          // Sleek pulse skeleton loader while fetching data
+          // Elegant skeleton loader
           <div className="space-y-3">
             <div className="h-24 w-full bg-white/40 animate-pulse rounded-2xl" />
             <div className="h-24 w-full bg-white/40 animate-pulse rounded-2xl" />
           </div>
         ) : testimonies.length === 0 ? (
-          <p className="text-xs text-center text-gray-400 font-serif italic py-4">No reflections shared yet.</p>
+          <div className="text-center py-8">
+            <span className="material-symbols-outlined text-gray-300 text-3xl">forum</span>
+            <p className="text-xs text-gray-400 font-serif mt-2">No reflections shared yet.</p>
+            <p className="text-[10px] text-gray-300 mt-1">Be the first to share</p>
+          </div>
         ) : (
           testimonies.map((t) => (
-            <div key={t.id} className="bg-white/60 backdrop-blur-sm border border-white p-5 rounded-[24px] shadow-sm hover:shadow-md transition-all">
-              <p className="text-sm font-serif italic text-[#434844] leading-relaxed mb-4">
+            <div 
+              key={t.id} 
+              className="group bg-white/40 backdrop-blur-sm border border-white/60 rounded-2xl p-5 shadow-sm hover:shadow-md hover:bg-white/60 transition-all duration-300"
+            >
+              {/* Testimony Content */}
+              <p className="text-sm font-serif text-gray-700 leading-relaxed mb-4">
                 "{t.content}"
               </p>
-              <div className="flex items-center justify-between border-t border-[#4d6054]/5 pt-3">
-                <span className="text-[11px] font-bold text-[#161c22]">{t.author}</span>
-                <span className="text-[9px] text-[#4d6054]/40 uppercase font-black tracking-widest">{t.location}</span>
+              
+              {/* Author Info */}
+              <div className="flex items-center justify-between border-t border-gray-200/50 pt-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-indigo-500 text-[12px]">person</span>
+                  </div>
+                  <span className="text-[11px] font-semibold text-gray-800">{t.author}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-gray-300 text-[10px]">location_on</span>
+                  <span className="text-[8px] text-gray-400 uppercase tracking-wider font-medium">{t.location}</span>
+                </div>
               </div>
             </div>
           ))
         )}
+      </div>
+
+      {/* Subtle footer note */}
+      <div className="text-center pt-2">
+        <p className="text-[7px] text-gray-300 uppercase tracking-[0.2em]">
+          A community of faith
+        </p>
       </div>
     </section>
   );

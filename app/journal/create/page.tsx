@@ -7,13 +7,14 @@ import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
 import Header from '@/app/layout-components/Header';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 const MOOD_OPTIONS = [
-  { label: 'Peaceful', icon: 'scuba_diving' },
+  { label: 'Peaceful', icon: 'spa' },
   { label: 'Grateful', icon: 'favorite' },
   { label: 'Hopeful', icon: 'wb_sunny' },
   { label: 'Reflective', icon: 'auto_stories' },
-  { label: 'Challenged', icon: 'mountain_flag' },
+  { label: 'Challenged', icon: 'terrain' },
   { label: 'Joyful', icon: 'celebration' }
 ];
 
@@ -63,54 +64,83 @@ export default function CreateJournalPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFF]">
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-indigo-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-200/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
+      </div>
+
       <Sidebar />
       <Header />
 
-      <main className="flex-1 lg:ml-64 pt-28 pb-20 px-6 md:px-12 max-w-[1000px] mx-auto w-full">
-        {/* --- HEADER --- */}
-        <section className="mb-12">
-          <Link href="/journal" className="flex items-center gap-2 text-gray-400 hover:text-[#D4AF37] transition-colors mb-6 group">
-            <span className="material-symbols-rounded text-sm group-hover:-translate-x-1 transition-transform" style={{ fontVariationSettings: "'wght' 300" }}>arrow_back</span>
-            <span className="text-[10px] font-black tracking-widest uppercase">Back to Library</span>
+      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-3xl mx-auto w-full">
+        {/* Header */}
+        <section className="mb-10">
+          <Link href="/journal" className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-colors mb-5 group">
+            <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            <span className="text-[9px] font-black tracking-wider uppercase">Back to Library</span>
           </Link>
-          <h1 className="text-4xl font-serif text-[#3C3830] tracking-tight">New Reflection</h1>
-          <p className="text-[#7C7565] italic font-serif mt-2 border-l-2 border-[#D4AF37] pl-4">
+          
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-px bg-gray-400/40" />
+            <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">New Entry</span>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-serif text-gray-800 tracking-tight">Write a Reflection</h1>
+          <p className="text-sm text-gray-600 italic border-l-2 border-indigo-400 pl-4 mt-2">
             Pour your heart out; this space is yours.
           </p>
         </section>
 
-        {/* --- FORM --- */}
-        <form onSubmit={handleSubmit} className="space-y-10">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-8">
           
           {/* Title Input */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">Entry Title</label>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-indigo-500 text-[14px]">title</span>
+              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">Entry Title</label>
+            </div>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Give this moment a name..."
-              className="w-full bg-transparent border-b border-gray-200 py-4 text-2xl font-serif text-[#3C3830] placeholder:text-gray-200 focus:outline-none focus:border-[#D4AF37] transition-all"
+              className="w-full bg-transparent border-b border-gray-200 py-3 text-xl md:text-2xl font-serif text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-indigo-500 transition-all"
             />
           </div>
 
-          {/* Mood Selector (Tactile Chips) */}
-          <div className="space-y-4">
-            <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">Current Heart State</label>
-            <div className="flex flex-wrap gap-3">
+          {/* Mood Selector */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-indigo-500 text-[14px]">favorite</span>
+              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">Current Heart State</label>
+            </div>
+            <div className="flex flex-wrap gap-2">
               {MOOD_OPTIONS.map((mood) => (
                 <button
                   key={mood.label}
                   type="button"
                   onClick={() => setFormData({ ...formData, mood: mood.label })}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[11px] font-bold transition-all border ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold transition-all border ${
                     formData.mood === mood.label 
-                      ? 'bg-[#D4AF37] border-[#D4AF37] text-white shadow-lg shadow-[#D4AF37]/20 scale-105' 
-                      : 'bg-white border-gray-100 text-gray-400 hover:border-[#D4AF37]/30'
+                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-500/20 scale-105' 
+                      : 'bg-white/50 border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-600'
                   }`}
                 >
-                  <span className="material-symbols-rounded text-sm" style={{ fontVariationSettings: "'wght' 300" }}>{mood.icon}</span>
+                  <span className="material-symbols-outlined text-[14px]">{mood.icon}</span>
                   {mood.label}
                 </button>
               ))}
@@ -119,45 +149,68 @@ export default function CreateJournalPage() {
 
           {/* Content Textarea */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">The Reflection</label>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-indigo-500 text-[14px]">edit_note</span>
+              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">The Reflection</label>
+            </div>
             <textarea
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="What is God speaking to you today?"
+              placeholder="What is speaking to your heart today?"
               rows={10}
-              className="w-full p-8 bg-gray-50/50 border border-gray-100 rounded-2xl text-lg font-serif italic text-[#3C3830] placeholder:text-gray-300 focus:outline-none focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/5 transition-all resize-none leading-relaxed"
+              className="w-full p-5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl text-base font-serif italic text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all resize-none leading-relaxed"
             />
           </div>
 
           {/* Tags */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">Keywords (Separated by commas)</label>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-indigo-500 text-[14px]">local_offer</span>
+              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">Keywords (Separated by commas)</label>
+            </div>
             <input
               type="text"
               value={formData.tags}
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-              placeholder="e.g. Grace, breakthrough, Lagos morning"
-              className="w-full bg-transparent border-b border-gray-100 py-3 text-sm text-[#7C7565] focus:outline-none focus:border-[#D4AF37] transition-all"
+              placeholder="Grace, breakthrough, morning reflection"
+              className="w-full bg-transparent border-b border-gray-200 py-2 text-sm text-gray-600 focus:outline-none focus:border-indigo-500 transition-all"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-6 pt-10">
+          <div className="flex flex-col sm:flex-row items-center gap-4 pt-8">
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 md:flex-none px-12 py-4 bg-[#D4AF37] text-white rounded-full text-[11px] font-black tracking-[0.2em] uppercase hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-[10px] font-black tracking-wider uppercase hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] transition-all disabled:opacity-50"
             >
-              {loading ? 'Preserving...' : 'Seal Entry'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="material-symbols-outlined animate-spin text-[14px]">sync</span>
+                  Preserving...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="material-symbols-outlined text-[14px]">save</span>
+                  Seal Entry
+                </span>
+              )}
             </button>
             <Link
               href="/journal"
-              className="text-[10px] font-black text-gray-300 uppercase tracking-widest hover:text-red-400 transition-colors"
+              className="text-[9px] font-bold text-gray-400 uppercase tracking-wider hover:text-red-500 transition-colors"
             >
               Discard Changes
             </Link>
           </div>
         </form>
+
+        {/* Decorative Footer */}
+        <div className="mt-16 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-indigo-400" />
+          <span className="material-symbols-outlined text-indigo-400 text-sm">edit_note</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-indigo-400" />
+        </div>
       </main>
     </div>
   );

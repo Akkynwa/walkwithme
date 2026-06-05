@@ -6,11 +6,12 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 interface Prayer {
   id: string;
   title: string;
-  description: string; // Changed from 'request' to match your Prisma schema
+  description: string;
   status: 'pending' | 'answered' | 'archived';
   answered: boolean;
   answer?: string;
@@ -32,7 +33,7 @@ export default function PrayerDetailPage() {
   
   const [formData, setFormData] = useState({
     title: '',
-    description: '', // Synced with DB field name
+    description: '',
     status: 'pending' as 'pending' | 'answered' | 'archived',
     answer: '',
   });
@@ -44,13 +45,12 @@ export default function PrayerDetailPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Handle the case where the API might return the object directly or wrapped
         const prayerData = data.prayer || data; 
         
         setPrayer(prayerData);
         setFormData({
           title: prayerData.title || '',
-          description: prayerData.description || '', // Mapping from DB 'description'
+          description: prayerData.description || '',
           status: prayerData.status || 'pending',
           answer: prayerData.answer || '',
         });
@@ -81,7 +81,6 @@ export default function PrayerDetailPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          // If status is answered, we ensure the backend knows
           answered: formData.status === 'answered'
         }),
       });
@@ -92,7 +91,7 @@ export default function PrayerDetailPage() {
         const updatedPrayer = data.prayer || data;
         setPrayer(updatedPrayer);
         setIsEditing(false);
-        toast.success('Your journal has been updated.');
+        toast.success('Your prayer record has been updated.');
       } else {
         toast.error(data.error || 'Failed to update');
       }
@@ -105,48 +104,73 @@ export default function PrayerDetailPage() {
 
   if (loading || !prayer) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#FDFDFF] space-y-3 opacity-60">
-        <div className="w-6 h-6 border-2 border-primary/20 border-b-primary rounded-full animate-spin"></div>
-        <p className="text-[11px] font-black text-[#7C7565] uppercase tracking-widest">Entering Prayer Altar...</p>
+      <div className="relative flex items-center justify-center min-h-screen">
+        <div className="fixed inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+            alt="Peaceful sanctuary background"
+            fill
+            className="object-cover scale-110 blur-xl opacity-30"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+        </div>
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-amber-600/20 border-t-amber-600 rounded-full animate-spin"></div>
+          <p className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Entering Prayer Altar...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFF] relative overflow-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <div className="absolute top-[15%] right-[10%] w-[450px] h-[450px] rounded-full bg-primary/5 blur-[130px]"></div>
-        <div className="absolute bottom-[20%] left-[20%] w-[380px] h-[380px] rounded-full bg-[#D4AF37]/5 blur-[110px]"></div>
+    <div className="relative flex min-h-screen">
+      {/* Background Image */}
+      <div className="fixed inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
+          alt="Peaceful sanctuary background"
+          fill
+          className="object-cover scale-110 blur-xl opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
+      </div>
+
+      {/* Subtle Animated Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
       </div>
 
       <Sidebar />
 
-      <main className="flex-1 lg:ml-64 pt-24 px-6 md:px-10 pb-32 max-w-7xl mx-auto w-full z-10 relative">
-        <header className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6 animate-in fade-in duration-500">
-          <div className="flex items-center gap-5">
+      <main className="relative z-10 flex-1 lg:ml-56 pt-20 px-6 md:px-10 pb-16 max-w-6xl mx-auto w-full">
+        <header className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5 animate-in fade-in duration-500">
+          <div className="flex items-center gap-4">
             <Link 
               href="/prayers" 
-              className="p-3 bg-white border border-gray-100 rounded-full text-[#3C3830] hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 shadow-sm flex items-center justify-center group"
+              className="p-2.5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl text-gray-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-all duration-200 flex items-center justify-center group"
             >
-              <span className="material-symbols-outlined text-sm transition-transform group-hover:-translate-x-0.5">arrow_back</span>
+              <span className="material-symbols-outlined text-base transition-transform group-hover:-translate-x-0.5">arrow_back</span>
             </Link>
-            <div className="space-y-0.5">
+            <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">{prayer.category || 'General'}</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-600"></div>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-600">{prayer.category || 'General'}</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-serif text-[#3C3830] tracking-tight">
-                Prayer <span className="font-serif italic text-primary">Inspection</span>
+              <h1 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-tight">
+                Prayer <span className="font-serif italic text-amber-600">Reflection</span>
               </h1>
             </div>
           </div>
 
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border flex items-center gap-2 ${
+            className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all shadow-sm flex items-center gap-2 ${
               isEditing 
-                ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100' 
-                : 'bg-white text-[#3C3830] border-gray-100 hover:bg-gray-50'
+                ? 'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100' 
+                : 'bg-white/40 backdrop-blur-sm text-gray-700 border border-white/60 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200'
             }`}
           >
             <span className="material-symbols-outlined text-xs">{isEditing ? 'close' : 'edit'}</span>
@@ -154,81 +178,106 @@ export default function PrayerDetailPage() {
           </button>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8">
-            <div className="bg-white border border-gray-100 p-6 md:p-10 rounded-[32px] shadow-sm transition-all">
+            <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-6 md:p-8 shadow-lg transition-all">
               
               {!isEditing ? (
-                <div className="space-y-8">
-                  <div className="flex items-center gap-3">
-                    <span className={`px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-wider ${
+                <div className="space-y-6">
+                  {/* Status and Date */}
+                  <div className="flex flex-wrap items-center gap-3 pb-4 border-b border-gray-200/50">
+                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider ${
                       prayer.status === 'answered' 
-                        ? 'bg-primary/5 text-primary' 
+                        ? 'bg-emerald-100 text-emerald-700' 
                         : prayer.status === 'archived'
-                        ? 'bg-gray-100 text-gray-500'
-                        : 'bg-amber-50 text-amber-700'
+                        ? 'bg-gray-100 text-gray-600'
+                        : 'bg-amber-100 text-amber-700'
                     }`}>
                       {prayer.status}
                     </span>
-                    <span className="text-gray-400 text-[11px]">
-                      Created {new Date(prayer.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-gray-400 text-[12px]">calendar_today</span>
+                      <span className="text-[10px] text-gray-500">
+                        {new Date(prayer.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-serif text-[#3C3830] font-bold leading-tight tracking-tight">
+                  {/* Title */}
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-serif text-gray-800 font-semibold leading-tight tracking-tight">
                       {prayer.title}
                     </h2>
                   </div>
                   
-                  <div className="bg-gray-50/50 p-6 md:p-8 rounded-[24px] border border-gray-100/50">
-                    <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Core Focus Statement</h3>
-                    <p className="text-base text-[#3C3830] leading-relaxed whitespace-pre-wrap font-serif italic">
+                  {/* Description Card */}
+                  <div className="bg-amber-50/30 backdrop-blur-sm p-6 rounded-xl border border-amber-100">
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <span className="material-symbols-outlined text-amber-500 text-[14px]">favorite</span>
+                      <h3 className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Petition Focus</h3>
+                    </div>
+                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-serif italic">
                       "{prayer.description}"
                     </p>
                   </div>
 
+                  {/* Answer Section */}
                   {prayer.answer && (
-                    <div className="bg-primary/[0.02] border border-primary/10 p-6 md:p-8 rounded-[24px] relative overflow-hidden animate-in fade-in duration-500">
-                      <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
-                        <span className="material-symbols-outlined text-7xl text-primary">auto_awesome</span>
+                    <div className="bg-emerald-50/30 backdrop-blur-sm border border-emerald-100 p-6 rounded-xl relative overflow-hidden animate-in fade-in duration-500">
+                      <div className="absolute top-3 right-3 opacity-10 pointer-events-none">
+                        <span className="material-symbols-outlined text-5xl text-emerald-600">self_improvement</span>
                       </div>
-                      <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-4">Fulfilled Manifestation</h3>
-                      <p className="text-base text-[#3C3830] leading-relaxed whitespace-pre-wrap">
+                      <div className="flex items-center gap-1.5 mb-3">
+                        <span className="material-symbols-outlined text-emerald-500 text-[14px]">celebration</span>
+                        <h3 className="text-[8px] font-black text-emerald-600 uppercase tracking-wider">Answered Manifestation</h3>
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
                         {prayer.answer}
                       </p>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="space-y-2">
-                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Entry Identifier (Title)</label>
+                <div className="space-y-5 animate-in fade-in duration-300">
+                  {/* Title Input */}
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-[8px] font-black text-amber-600 uppercase tracking-wider">
+                      <span className="material-symbols-outlined text-[12px]">title</span>
+                      Entry Title
+                    </label>
                     <input
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-5 py-3.5 text-sm text-[#3C3830] focus:ring-1 focus:ring-primary/20 focus:border-primary outline-none transition-all font-sans"
+                      className="w-full bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest">Petition Focus (Request)</label>
+                  {/* Description Textarea */}
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-[8px] font-black text-amber-600 uppercase tracking-wider">
+                      <span className="material-symbols-outlined text-[12px]">edit_note</span>
+                      Petition Focus
+                    </label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       rows={6}
-                      className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-5 py-3.5 text-sm text-[#3C3830] focus:ring-1 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none font-serif italic"
+                      className="w-full bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all resize-none font-serif italic"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest">State Placement</label>
+                  {/* Status Select */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-1.5 text-[8px] font-black text-amber-600 uppercase tracking-wider">
+                        <span className="material-symbols-outlined text-[12px]">flag</span>
+                        Status
+                      </label>
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                        className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-5 py-3.5 text-sm text-[#3C3830] outline-none focus:border-primary transition-all appearance-none"
+                        className="w-full bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                       >
                         <option value="pending">Pending</option>
                         <option value="answered">Answered</option>
@@ -237,25 +286,30 @@ export default function PrayerDetailPage() {
                     </div>
                   </div>
 
+                  {/* Answer Field (conditional) */}
                   {formData.status === 'answered' && (
-                    <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <label className="block text-[9px] font-black text-primary uppercase tracking-widest">The Manifestation Log (Testimony)</label>
+                    <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <label className="flex items-center gap-1.5 text-[8px] font-black text-emerald-600 uppercase tracking-wider">
+                        <span className="material-symbols-outlined text-[12px]">celebration</span>
+                        Manifestation Log
+                      </label>
                       <textarea
                         value={formData.answer}
                         onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                        placeholder="Detail how this journey found structural completion..."
-                        rows={5}
-                        className="w-full bg-primary/[0.01] border border-primary/20 rounded-xl px-5 py-3.5 text-sm text-[#3C3830] focus:ring-1 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                        placeholder="Detail how this prayer was answered..."
+                        rows={4}
+                        className="w-full bg-emerald-50/30 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
                       />
                     </div>
                   )}
 
+                  {/* Save Button */}
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="w-full bg-primary text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:opacity-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
-                    {saving && <div className="w-3 h-3 border-2 border-white/20 border-b-white rounded-full animate-spin"></div>}
+                    {saving && <div className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
                     <span>{saving ? 'Syncing...' : 'Commit Changes'}</span>
                   </button>
                 </div>
@@ -263,23 +317,47 @@ export default function PrayerDetailPage() {
             </div>
           </div>
 
-          <aside className="lg:col-span-4 space-y-6">
-            <div className="bg-white p-6 md:p-8 rounded-[28px] border border-gray-100 shadow-sm space-y-6">
-              <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Audit Timeline</h3>
-              <div className="space-y-5">
+          {/* Sidebar */}
+          <aside className="lg:col-span-4 space-y-5">
+            {/* Timeline Card */}
+            <div className="bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl p-5 shadow-sm">
+              <div className="flex items-center gap-1.5 mb-4">
+                <span className="material-symbols-outlined text-amber-500 text-[14px]">schedule</span>
+                <h3 className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Audit Timeline</h3>
+              </div>
+              <div className="space-y-4">
                 <TimelineItem icon="calendar_today" label="Created" date={prayer.createdAt} />
-                <TimelineItem icon="history" label="Last Mutation" date={prayer.updatedAt} />
+                <TimelineItem icon="history" label="Last Updated" date={prayer.updatedAt} />
               </div>
             </div>
 
-            <div className="bg-primary/[0.02] border border-primary/5 p-6 md:p-8 rounded-[28px] text-center relative overflow-hidden group">
-              <span className="material-symbols-outlined text-primary text-3xl mb-3 block opacity-80">spa</span>
-              <p className="text-[10px] font-black text-primary uppercase tracking-widest">Sovereign Silence</p>
-              <p className="text-[11px] text-[#7C7565] mt-1 italic font-serif">
-                Allow metrics and focus fields to settle naturally into architectural order.
+            {/* Inspiration Card */}
+            <div className="bg-amber-50/30 backdrop-blur-sm border border-amber-100 rounded-xl p-5 text-center relative overflow-hidden group">
+              <div className="absolute top-2 right-2 opacity-5 group-hover:opacity-10 transition-opacity">
+                <span className="material-symbols-outlined text-4xl text-amber-600">spa</span>
+              </div>
+              <span className="material-symbols-outlined text-amber-500 text-2xl mb-2 block">spa</span>
+              <p className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Sacred Silence</p>
+              <p className="text-[10px] text-gray-600 mt-1 italic font-serif leading-relaxed">
+                Allow your petitions to settle into divine order.
               </p>
             </div>
+
+            {/* Scripture Verse */}
+            <div className="bg-white/30 backdrop-blur-sm border border-white/40 rounded-xl p-4 text-center">
+              <p className="text-[9px] font-serif italic text-gray-600 leading-relaxed">
+                "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."
+              </p>
+              <p className="text-[7px] font-black text-amber-600 uppercase tracking-wider mt-2">— Philippians 4:6</p>
+            </div>
           </aside>
+        </div>
+
+        {/* Decorative Footer */}
+        <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
+          <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
         </div>
       </main>
     </div>
@@ -288,13 +366,13 @@ export default function PrayerDetailPage() {
 
 function TimelineItem({ icon, label, date }: { icon: string; label: string; date: string }) {
   return (
-    <div className="flex gap-4 items-start">
-      <div className="p-2 bg-gray-50 rounded-lg text-gray-400 flex items-center justify-center">
-        <span className="material-symbols-outlined text-base">{icon}</span>
+    <div className="flex gap-3 items-start">
+      <div className="p-1.5 bg-amber-50 rounded-lg text-amber-500 flex items-center justify-center">
+        <span className="material-symbols-outlined text-[14px]">{icon}</span>
       </div>
       <div className="space-y-0.5">
-        <p className="text-[9px] font-black text-gray-400 uppercase tracking-wider">{label}</p>
-        <p className="text-xs text-[#3C3830] font-sans font-medium">
+        <p className="text-[8px] font-black text-gray-500 uppercase tracking-wider">{label}</p>
+        <p className="text-[10px] text-gray-700 font-medium">
           {new Date(date).toLocaleString('en-US', { 
             month: 'short', 
             day: 'numeric', 
