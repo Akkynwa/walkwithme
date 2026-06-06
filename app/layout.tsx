@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
 import { AppSettingsProvider } from './context/AppSettingsContext';
