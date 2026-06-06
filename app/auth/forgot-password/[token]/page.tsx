@@ -79,7 +79,7 @@ export default function SetNewPasswordPage() {
         <div className="flex justify-center md:justify-start items-center px-6 py-6 md:px-12 max-w-7xl mx-auto">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/30">
-              <span className="material-symbols-outlined text-white text-[18px]">self_improvement</span>
+              <span className="material-symbols-outlined text-white text-[18px]">auto_awesome</span>
             </div>
             <h1 className="font-serif text-xl font-black text-gray-800 tracking-tight">
               WalkWithMe

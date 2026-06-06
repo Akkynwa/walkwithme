@@ -57,6 +57,7 @@ export default function CommunityPage() {
 
   useEffect(() => {
     syncWorkspaceData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleJoinToggle = (id: string, currentlyJoined: boolean) => {

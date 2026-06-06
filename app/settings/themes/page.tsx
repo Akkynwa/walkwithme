@@ -1,8 +1,6 @@
 'use client';
 
 import { useAppSettings } from '../../context/AppSettingsContext';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

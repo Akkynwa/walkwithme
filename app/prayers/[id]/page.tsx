@@ -225,7 +225,7 @@ export default function PrayerDetailPage() {
                   {prayer.answer && (
                     <div className="bg-emerald-50/30 backdrop-blur-sm border border-emerald-100 p-6 rounded-xl relative overflow-hidden animate-in fade-in duration-500">
                       <div className="absolute top-3 right-3 opacity-10 pointer-events-none">
-                        <span className="material-symbols-outlined text-5xl text-emerald-600">self_improvement</span>
+                        <span className="material-symbols-outlined text-5xl text-emerald-600">auto_awesome</span>
                       </div>
                       <div className="flex items-center gap-1.5 mb-3">
                         <span className="material-symbols-outlined text-emerald-500 text-[14px]">celebration</span>

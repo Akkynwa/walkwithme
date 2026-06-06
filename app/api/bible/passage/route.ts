@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { convertBookToCDNFormat, getCDNVersion } from '@/lib/bible-utils';
+import { convertBookToCDNFormat } from '@/lib/bible-utils';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -34,7 +34,9 @@ export async function GET(request: Request) {
       },
     };
 
-    const bibleId = bibleIds[langCode]?.[versionId] || versionId || 'de4e12af7f29f59f-01';
+    const bibleId = versionId
+      ? bibleIds[langCode]?.[versionId] || versionId
+      : 'de4e12af7f29f59f-01';
     const passage = `${book} ${chapter}`;
     
     const chapterUrl = `${baseUrl}/bibles/${bibleId}/passages/${encodeURIComponent(passage)}?content-type=text`;
@@ -61,7 +63,6 @@ export async function GET(request: Request) {
       const content = textData.data.content;
       const verseRegex = /\{(\d+)\}/g;
       let match;
-      let lastIndex = 0;
       
       while ((match = verseRegex.exec(content)) !== null) {
         const verseNum = parseInt(match[1]);

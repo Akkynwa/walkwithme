@@ -194,7 +194,7 @@ export default function BiblePage() {
               <div id="sanctuary-reader" className="bg-white/40 backdrop-blur-sm rounded-xl shadow-lg border border-white/60 overflow-hidden animate-in fade-in slide-in-from-bottom-2">
                 <div className="bg-white/30 px-5 py-2 flex justify-between items-center border-b border-white/40">
                   <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-amber-500 text-[10px]">self_improvement</span>
+                    <span className="material-symbols-outlined text-amber-500 text-[10px]">auto_awesome</span>
                     <span className="text-[7px] font-bold text-gray-500 uppercase tracking-wider">Scripture Passage</span>
                   </div>
                   <span className="material-symbols-outlined text-amber-500/30 text-sm">menu_book</span>

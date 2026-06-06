@@ -28,7 +28,7 @@ export function AIChatInput({
           {/* Spiritual Icon */}
           <div className={`transition-all duration-500 ${isLoading ? 'opacity-100' : 'opacity-60'}`}>
             <span className={`material-symbols-outlined text-[18px] transition-colors duration-500 ${isLoading ? 'text-amber-600 animate-pulse' : 'text-amber-500'}`}>
-              {isLoading ? 'sync' : 'self_improvement'}
+              {isLoading ? 'sync' : 'auto_awesome'}
             </span>
           </div>
 

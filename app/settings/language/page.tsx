@@ -1,9 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Select } from '@/components/ui/Select';
 import { LANGUAGES } from '@/lib/constants';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { useRouter } from 'next/navigation';

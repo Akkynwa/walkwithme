@@ -3,8 +3,8 @@ import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // Adjust path based on your Prisma setup
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-export const runtime = 'edge';
+import { authOptions } from "@/lib/auth";
+export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   try {

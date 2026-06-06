@@ -151,7 +151,7 @@ function AuthForm() {
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined text-[16px]">self_improvement</span>
+                  <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
                   Enter Sanctuary
                 </span>
               )}
@@ -319,7 +319,7 @@ export default function AuthPage() {
           {/* Logo */}
           <div className="flex items-center justify-center lg:justify-start gap-3">
             <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-700 rounded-2xl flex items-center justify-center shadow-xl shadow-amber-900/30">
-              <span className="material-symbols-outlined text-white text-2xl">self_improvement</span>
+              <span className="material-symbols-outlined text-white text-2xl">auto_awesome</span>
             </div>
             <h1 className="font-serif text-3xl md:text-4xl font-black text-gray-800 tracking-tight">WalkWithMe</h1>
           </div>

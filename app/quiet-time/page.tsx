@@ -138,7 +138,7 @@ export default function QuietTimeLobby() {
 
             <div className="relative z-10 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-1.5 mb-2">
-                <span className="material-symbols-outlined text-amber-300 text-[14px]">self_improvement</span>
+                <span className="material-symbols-outlined text-amber-300 text-[14px]">auto_awesome</span>
                 <span className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-200">
                   Recommended Flow
                 </span>

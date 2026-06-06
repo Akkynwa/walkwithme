@@ -1,6 +1,5 @@
 'use client';
 
-import { Card } from '@/components/ui/Card';
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
 import Image from 'next/image';

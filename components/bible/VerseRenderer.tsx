@@ -64,7 +64,7 @@ export function VerseRenderer({ verses, translation }: VerseRendererProps) {
       {/* FOOTER DECORATION */}
       <div className="flex items-center justify-center py-8">
         <div className="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/20"></div>
-        <span className="material-symbols-outlined text-amber-500/30 text-sm mx-3">self_improvement</span>
+        <span className="material-symbols-outlined text-amber-500/30 text-sm mx-3">auto_awesome</span>
         <div className="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/20"></div>
       </div>
     </div>

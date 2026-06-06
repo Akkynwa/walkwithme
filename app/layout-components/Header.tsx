@@ -86,7 +86,7 @@ export default function Header() {
         {/* BRAND SECTION - Mobile only */}
         <div className="flex items-center gap-3 lg:hidden">
           <div className="w-7 h-7 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
-            <span className="material-symbols-outlined text-white text-[16px]">self_improvement</span>
+            <span className="material-symbols-outlined text-white text-[16px]">auto_awesome</span>
           </div>
           <h1 className="text-sm text-gray-800 font-black tracking-tight">WalkWithMe</h1>
         </div>

@@ -120,7 +120,7 @@ export const SoulJournal = ({ isOpen, onClose, activeContext }: Props) => {
             disabled={loading || !note.trim()}
             className="col-span-4 h-12 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg font-black text-[8px] tracking-wider shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 hover:shadow-lg disabled:opacity-40"
           >
-            <span className="material-symbols-outlined text-[12px]">self_improvement</span>
+            <span className="material-symbols-outlined text-[12px]">auto_awesome</span>
             {loading ? (
               <span className="flex items-center gap-1">
                 <span className="material-symbols-outlined animate-spin text-[10px]">sync</span>
