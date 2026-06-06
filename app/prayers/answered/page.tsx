@@ -175,7 +175,7 @@ export default function AnsweredPrayersPage() {
         {prayers.length > 0 && (
           <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-            <span className="material-symbols-outlined text-amber-400 text-sm">auto_awesome</span>
+            <span className="material-symbols-outlined text-amber-400 text-sm">self_improvement</span>
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
           </div>
         )}

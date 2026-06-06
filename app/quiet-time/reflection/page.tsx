@@ -132,7 +132,7 @@ ${formData.intention}
           <aside className="lg:col-span-4 lg:sticky lg:top-24 h-fit space-y-5">
             <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-6 shadow-lg">
               <div className="flex items-center gap-2 mb-5 text-amber-600">
-                <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+                <span className="material-symbols-outlined text-[18px]">self_improvement</span>
                 <span className="font-sans text-[8px] font-black uppercase tracking-wider">Guided Stillness</span>
               </div>
               <p className="text-base text-gray-700 leading-relaxed italic mb-5">
@@ -243,7 +243,7 @@ ${formData.intention}
                     </>
                   ) : (
                     <>
-                      <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+                      <span className="material-symbols-outlined text-[14px]">self_improvement</span>
                       <span>Seal Reflection</span>
                     </>
                   )}

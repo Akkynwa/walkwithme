@@ -29,7 +29,7 @@ export default function NotificationsSettingsPage() {
     emailNotifications: { title: 'Email Digests', desc: 'Receive weekly summaries, notes, and activity highlights in your inbox.', icon: 'mail' },
     pushNotifications: { title: 'Push Alerts', desc: 'Get direct device updates for real-time interactions and reflections.', icon: 'notifications_active' },
     dailyReminder: { title: 'Daily Remembrance', desc: 'A morning nudge to sustain consistency along your spiritual path.', icon: 'alarm' },
-    prayerReminder: { title: 'Prayer Circle Alerts', desc: 'Immediate notification when someone requests or updates a prayer.', icon: 'auto_awesome' },
+    prayerReminder: { title: 'Prayer Circle Alerts', desc: 'Immediate notification when someone requests or updates a prayer.', icon: 'self_improvement' },
     newContent: { title: 'Sanctuary Releases', desc: 'Be notified when fresh text expansions, devotionals, or updates drop.', icon: 'menu_book' },
   };
 

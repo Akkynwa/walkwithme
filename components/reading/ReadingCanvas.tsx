@@ -159,7 +159,7 @@ export function ReadingCanvas({ book, chapter, onChapterChange }: ReadingCanvasP
               <header className="mb-6 flex justify-between items-end pb-3 border-b border-white/40">
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="material-symbols-outlined text-amber-500 text-[12px]">auto_awesome</span>
+                    <span className="material-symbols-outlined text-amber-500 text-[12px]">self_improvement</span>
                     <span className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-600">Living Bread</span>
                   </div>
                   <h2 className="text-[9px] font-sans font-black uppercase tracking-wider text-gray-600">{book.name} — {chapter}</h2>

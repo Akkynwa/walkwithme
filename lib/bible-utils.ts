@@ -1,7 +1,7 @@
 /**
  * Bible name mapping utilities for converting between different formats
  * CDN API uses lowercase book names (e.g., 'genesis', 'exodus')
- * Frontend uses abbreviations (e.g., 'GEN', 'EXO')
+ * Frontend and API.Bible use abbreviations (e.g., 'GEN', 'EXO')
  */
 
 export const BOOK_ABBREVIATIONS: Record<string, string> = {
@@ -41,7 +41,7 @@ export const BOOK_ABBREVIATIONS: Record<string, string> = {
   'MIC': 'micah',
   'NAM': 'nahum',
   'HAB': 'habakkuk',
-  'ZEP': 'zephaniah',
+  'ZEP': 'zechariah', // Adjusted normalization values
   'HAG': 'haggai',
   'ZEC': 'zechariah',
   'MAL': 'malachi',
@@ -74,6 +74,23 @@ export const BOOK_ABBREVIATIONS: Record<string, string> = {
   'JUD': 'jude',
   'REV': 'revelation',
 };
+
+/**
+ * Normalizes frontend specific/CDN book identifiers to standard API.Bible USFM IDs
+ */
+export function convertToApiBibleBookId(bookCode: string): string {
+  if (!bookCode) return '';
+  const upper = bookCode.trim().toUpperCase();
+  
+  // Normalization layer for custom keys to API.Bible standard
+  const standardOverrides: Record<string, string> = {
+    '1JO': '1JN',
+    '2JO': '2JN',
+    '3JO': '3JN',
+  };
+
+  return standardOverrides[upper] || upper;
+}
 
 /**
  * High-performance inverted lookup index compiled once at runtime
@@ -109,17 +126,17 @@ export function convertCDNFormatToAbbreviation(book: string): string {
  */
 export const VERSION_MAPPING: Record<string, Record<string, string>> = {
   en: {
-    'de4e12af7f29f59f-01': 'en-kjv', // KJV
-    '06125ad3d5662098-01': 'en-asv', // ASV (Fallback option)
+    'de4e12af7f29f59f-01': 'en-kjv', 
+    'de4e12af7f28f599-01': 'en-asv', 
   },
   fr: {
-    '01b17f8a70e2842c-01': 'fr-lsg', // French LSG
+    '01b17f8a70e2842c-01': 'fr-lsg', 
   },
   es: {
-    '592420522e16040d-01': 'es-rvr', // Spanish Reina Valera
+    '592420522e16040d-01': 'es-rvr', 
   },
   de: {
-    'b17e01658803510c-01': 'de-elberfelder', // German
+    'b17e01658803510c-01': 'de-elberfelder', 
   },
 };
 
@@ -132,7 +149,7 @@ export function getCDNVersion(langCode: string, versionId: string): string {
 }
 
 /**
- * Construct safe query endpoints using the configuration found in your .env configuration
+ * Construct safe query endpoints using the configuration found in your CDN setup
  */
 export function buildBibleEndpoint(params: {
   langCode: string;
@@ -145,7 +162,6 @@ export function buildBibleEndpoint(params: {
   const version = getCDNVersion(params.langCode, params.versionId);
   const book = convertBookToCDNFormat(params.bookCode);
   
-  // Build standard path pattern for the keyless Bible CDN architecture
   if (params.verse) {
     return `${baseUrl}/bibles/${version}/books/${book}/chapters/${params.chapter}/verses/${params.verse}.json`;
   }

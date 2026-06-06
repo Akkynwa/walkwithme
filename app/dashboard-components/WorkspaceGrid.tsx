@@ -7,7 +7,7 @@ const WORKSPACES = [
     desc: 'Deep theological reflection and spiritual guidance through conversational AI.',
     img: 'https://images.unsplash.com/photo-1507692049790-de58290a4334',
     href: '/ai/chat',
-    icon: 'auto_awesome'
+    icon: 'self_improvement'
   },
   {
     title: 'Dream Interpreter',

@@ -1,0 +1,795 @@
+{
+  "translations": [
+    {
+      "id": "de4e12af7f29f59f-01",
+      "dblId": "de4e12af7f29f59f",
+      "name": "King James Version",
+      "nameLocal": "King James Version",
+      "abbreviation": "KJV",
+      "abbreviationLocal": "KJV",
+      "description": "The Holy Bible",
+      "descriptionLocal": "The Holy Bible",
+      "language": {
+        "id": "eng",
+        "name": "English",
+        "nameLocal": "English",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "US", "name": "United States", "nameLocal": "United States" },
+        { "id": "GB", "name": "United Kingdom", "nameLocal": "United Kingdom" }
+      ],
+      "type": "text",
+      "updatedAt": "2024-06-29T06:09:38.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "06125ad3d5662098-01",
+      "dblId": "06125ad3d5662098",
+      "name": "New International Version",
+      "nameLocal": "New International Version",
+      "abbreviation": "NIV",
+      "abbreviationLocal": "NIV",
+      "description": "The Holy Bible",
+      "descriptionLocal": "The Holy Bible",
+      "language": {
+        "id": "eng",
+        "name": "English",
+        "nameLocal": "English",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "US", "name": "United States", "nameLocal": "United States" },
+        { "id": "GB", "name": "United Kingdom", "nameLocal": "United Kingdom" }
+      ],
+      "type": "text",
+      "updatedAt": "2024-06-29T06:09:38.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "1c825c8591183bb0-01",
+      "dblId": "1c825c8591183bb0",
+      "name": "Biblica® Open Marathi Contemporary Version",
+      "nameLocal": "Biblica® मराठी समकालीन स्वतंत्र संस्करण",
+      "abbreviation": "OMRCV",
+      "abbreviationLocal": "OMRCV",
+      "description": "Old Testament and New Testament",
+      "descriptionLocal": "जुना करार व नवीन करार",
+      "language": {
+        "id": "mar",
+        "name": "Marathi",
+        "nameLocal": "मराठी",
+        "script": "Devanagari",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-26T15:44:50.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "8c49129a458d4059-01",
+      "dblId": "8c49129a458d4059",
+      "name": "Indian Revised Version (IRV) - Marathi",
+      "nameLocal": "इंडियन रीवाइज्ड वर्जन (IRV) - मराठी",
+      "abbreviation": "IRVMar",
+      "abbreviationLocal": "IRVMar",
+      "description": "Marathi Protestant Bible",
+      "descriptionLocal": "मराठी प्रोटेस्टंट बायबल",
+      "language": {
+        "id": "mar",
+        "name": "Marathi",
+        "nameLocal": "मराठी",
+        "script": "Devanagari",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-29T21:36:08.000Z",
+      "audioBibles": [
+        {
+          "id": "ec1e42889cad4316-01",
+          "name": "Marathi Indian Revised Version (IRV)",
+          "nameLocal": "Marathi Indian Revised Version (IRV)",
+          "dblId": "ec1e42889cad4316"
+        }
+      ]
+    },
+    {
+      "id": "3fa4c85c95be3aa6-01",
+      "dblId": "3fa4c85c95be3aa6",
+      "name": "The Word of God in Contemporary Chichewa",
+      "nameLocal": "Mawu a Mulungu mu Chichewa Chalero",
+      "abbreviation": "CCL",
+      "abbreviationLocal": "CCL",
+      "description": "Bible",
+      "descriptionLocal": "Baibulo",
+      "language": {
+        "id": "nya",
+        "name": "Chichewa",
+        "nameLocal": "Nyanja",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "MW", "name": "Malawi", "nameLocal": "Malawi" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-18T02:21:51.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "800110289c624268-01",
+      "dblId": "800110289c624268",
+      "name": "Biblica® Open Nepali Contemporary Version",
+      "nameLocal": "Biblica® नेपाली समकालीन सर्वसुलभ संस्करण",
+      "abbreviation": "ONCV",
+      "abbreviationLocal": "ONCV",
+      "description": "Old Testament and New Testament",
+      "descriptionLocal": "पुरानो नियम र नयाँ नियम",
+      "language": {
+        "id": "npi",
+        "name": "Nepali",
+        "nameLocal": "नेपाली",
+        "script": "Devanagari",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "NP", "name": "Nepal", "nameLocal": "Nepal" },
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-29T14:23:21.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "38de522697cd8943-01",
+      "dblId": "38de522697cd8943",
+      "name": "Biblica® Open Punjabi Contemporary Version 2025",
+      "nameLocal": "Biblica® Open ਪੰਜਾਬੀ ਮੌਜੂਦਾ ਤਰਜਮਾ",
+      "abbreviation": "OPCV",
+      "abbreviationLocal": "OPCV",
+      "description": "Holy Bible",
+      "descriptionLocal": "ਪਵਿੱਤਰ ਬਾਈਬਲ",
+      "language": {
+        "id": "pan",
+        "name": "Panjabi, Eastern",
+        "nameLocal": "ਪੰਜਾਬੀ",
+        "script": "Gurmukhi",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-27T14:17:09.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "e2588ba61891daa5-01",
+      "dblId": "e2588ba61891daa5",
+      "name": "Indian Revised Version (IRV) Punjabi - 2019",
+      "nameLocal": "ਇੰਡਿਅਨ ਰਿਵਾਇਜ਼ਡ ਵਰਜ਼ਨ (IRV) - ਪੰਜਾਬੀ",
+      "abbreviation": "IRVPun",
+      "abbreviationLocal": "IRVPun",
+      "description": "Bible for all",
+      "descriptionLocal": "Bible for all",
+      "language": {
+        "id": "pan",
+        "name": "Panjabi, Eastern",
+        "nameLocal": "ਪੰਜਾਬੀ",
+        "script": "Gurmukhi",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-01T20:30:42.000Z",
+      "audioBibles": [
+        {
+          "id": "439ac17466ab4ae1-01",
+          "name": "Punjabi Indian Revised Version (IRV)",
+          "nameLocal": "ਇੰਡਿਅਨ ਰਿਵਾਇਜ਼ਡ ਵਰਜ਼ਨ (IRV) - ਪੰਜਾਬੀ",
+          "dblId": "439ac17466ab4ae1"
+        }
+      ]
+    },
+    {
+      "id": "7cd100148df29c08-01",
+      "dblId": "7cd100148df29c08",
+      "name": "Biblica® Open Persian Contemporary Bible",
+      "nameLocal": "ترجمۀ معاصر",
+      "abbreviation": "OPCB",
+      "abbreviationLocal": "OPCB",
+      "description": "Holy Bible",
+      "descriptionLocal": "کتاب‌مقدّس",
+      "language": {
+        "id": "pes",
+        "name": "Persian, Iranian",
+        "nameLocal": "فارسی",
+        "script": "Arabic",
+        "scriptDirection": "RTL"
+      },
+      "countries": [
+        { "id": "IR", "name": "Iran, Islamic Republic of", "nameLocal": "Iran, Islamic Republic of" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-29T12:00:33.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "fbb8b0e1943b417c-01",
+      "dblId": "fbb8b0e1943b417c",
+      "name": "Biblica® Open Polish Living New Testament 2016",
+      "nameLocal": "Biblica® Słowo Życia, otwarty dostęp 2016",
+      "abbreviation": "OPLNT",
+      "abbreviationLocal": "OPSZ",
+      "description": "The New Testament in easy to understand Polish",
+      "descriptionLocal": "Nowy Testament w łatwo zrozumiałym języku polskim",
+      "language": {
+        "id": "pol",
+        "name": "Polish",
+        "nameLocal": "Polski",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "PL", "name": "Poland", "nameLocal": "Poland" }
+      ],
+      "type": "text",
+      "updatedAt": "2024-06-29T07:09:52.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "1c9761e0230da6e0-01",
+      "dblId": "1c9761e0230da6e0",
+      "name": "Updated Gdansk Bible",
+      "nameLocal": "UWSPÓŁCZEŚNIONA BIBLIA GDAŃSKA",
+      "abbreviation": "polUBG",
+      "abbreviationLocal": "UBG",
+      "description": "Common",
+      "descriptionLocal": "pospolity",
+      "language": {
+        "id": "pol",
+        "name": "Polish",
+        "nameLocal": "Polski",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "PL", "name": "Poland", "nameLocal": "Poland" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-26T15:49:58.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "d63894c8d9a7a503-01",
+      "dblId": "d63894c8d9a7a503",
+      "name": "Biblia Livre Para Todos",
+      "nameLocal": "Biblia Livre Para Todos",
+      "abbreviation": "BLT",
+      "abbreviationLocal": "BLT",
+      "description": null,
+      "descriptionLocal": null,
+      "language": {
+        "id": "por",
+        "name": "Portuguese",
+        "nameLocal": "Português",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "BR", "name": "Brazil", "nameLocal": "Brazil" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-01T15:18:16.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "90799bb5b996fddc-01",
+      "dblId": "90799bb5b996fddc",
+      "name": "Translation for Translators in Brasilian Portuguese",
+      "nameLocal": "Translation for Translators in Brasilian Portuguese",
+      "abbreviation": "TfTP",
+      "abbreviationLocal": "TfTP",
+      "description": "common",
+      "descriptionLocal": "comum",
+      "language": {
+        "id": "por",
+        "name": "Portuguese",
+        "nameLocal": "Português",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "BR", "name": "Brazil", "nameLocal": "Brazil" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-30T00:25:02.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "592420522e16049f-01",
+      "dblId": "592420522e16049f",
+      "name": "Reina Valera 1909",
+      "nameLocal": "Reina Valera 1909",
+      "abbreviation": "RVR09",
+      "abbreviationLocal": "RVR09",
+      "description": "Biblia Reina Valera 1909",
+      "descriptionLocal": "Biblia Reina Valera 1909",
+      "language": {
+        "id": "spa",
+        "name": "Spanish",
+        "nameLocal": "Español",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "ZZ", "name": "Unspecific", "nameLocal": "Unspecific" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-28T11:06:58.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "48acedcf8595c754-01",
+      "dblId": "48acedcf8595c754",
+      "name": "Spanish Bible, Palabla de Dios para ti",
+      "nameLocal": "Palabla de Dios para ti",
+      "abbreviation": "spaPdDpt",
+      "abbreviationLocal": "PdDpt",
+      "description": "common",
+      "descriptionLocal": "común",
+      "language": {
+        "id": "spa",
+        "name": "Spanish",
+        "nameLocal": "Español",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "VE", "name": "Venezuela", "nameLocal": "Venezuela" },
+        { "id": "CO", "name": "Colombia", "nameLocal": "Colombia" },
+        { "id": "EC", "name": "Ecuador", "nameLocal": "Ecuador" },
+        { "id": "BO", "name": "Bolivia", "nameLocal": "Bolivia" },
+        { "id": "PE", "name": "Peru", "nameLocal": "Peru" },
+        { "id": "AR", "name": "Argentina", "nameLocal": "Argentina" },
+        { "id": "BR", "name": "Brazil", "nameLocal": "Brazil" },
+        { "id": "PY", "name": "Paraguay", "nameLocal": "Paraguay" },
+        { "id": "UY", "name": "Uruguay", "nameLocal": "Uruguay" },
+        { "id": "SV", "name": "El Salvador", "nameLocal": "El Salvador" },
+        { "id": "NI", "name": "Nicaragua", "nameLocal": "Nicaragua" },
+        { "id": "DO", "name": "Dominican Republic", "nameLocal": "Dominican Republic" },
+        { "id": "CU", "name": "Cuba", "nameLocal": "Cuba" },
+        { "id": "HN", "name": "Honduras", "nameLocal": "Honduras" },
+        { "id": "GT", "name": "Guatemala", "nameLocal": "Guatemala" },
+        { "id": "PA", "name": "Panama", "nameLocal": "Panama" },
+        { "id": "MX", "name": "Mexico", "nameLocal": "Mexico" },
+        { "id": "CL", "name": "Chile", "nameLocal": "Chile" },
+        { "id": "ES", "name": "Spain", "nameLocal": "Spain" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-28T01:06:54.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "48acedcf8595c754-02",
+      "dblId": "48acedcf8595c754",
+      "name": "Spanish NT + PP, Palabla de Dios para ti",
+      "nameLocal": "Nuevo Contracto, Salmos y Proverbios, Palabla de Dios para ti",
+      "abbreviation": "spaPdDpt",
+      "abbreviationLocal": "PdDpt",
+      "description": "NTPP",
+      "descriptionLocal": "Nuevo Contracto y Salmos y Proverbios",
+      "language": {
+        "id": "spa",
+        "name": "Spanish",
+        "nameLocal": "Español",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "VE", "name": "Venezuela", "nameLocal": "Venezuela" },
+        { "id": "CO", "name": "Colombia", "nameLocal": "Colombia" },
+        { "id": "EC", "name": "Ecuador", "nameLocal": "Ecuador" },
+        { "id": "BO", "name": "Bolivia", "nameLocal": "Bolivia" },
+        { "id": "PE", "name": "Peru", "nameLocal": "Peru" },
+        { "id": "AR", "name": "Argentina", "nameLocal": "Argentina" },
+        { "id": "BR", "name": "Brazil", "nameLocal": "Brazil" },
+        { "id": "PY", "name": "Paraguay", "nameLocal": "Paraguay" },
+        { "id": "UY", "name": "Uruguay", "nameLocal": "Uruguay" },
+        { "id": "SV", "name": "El Salvador", "nameLocal": "El Salvador" },
+        { "id": "NI", "name": "Nicaragua", "nameLocal": "Nicaragua" },
+        { "id": "DO", "name": "Dominican Republic", "nameLocal": "Dominican Republic" },
+        { "id": "CU", "name": "Cuba", "nameLocal": "Cuba" },
+        { "id": "HN", "name": "Honduras", "nameLocal": "Honduras" },
+        { "id": "GT", "name": "Guatemala", "nameLocal": "Guatemala" },
+        { "id": "PA", "name": "Panama", "nameLocal": "Panama" },
+        { "id": "MX", "name": "Mexico", "nameLocal": "Mexico" },
+        { "id": "CL", "name": "Chile", "nameLocal": "Chile" },
+        { "id": "ES", "name": "Spain", "nameLocal": "Spain" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-28T01:09:34.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "b32b9d1b64b4ef29-01",
+      "dblId": "b32b9d1b64b4ef29",
+      "name": "The Holy Bible in Simple Spanish",
+      "nameLocal": "La Biblia en Español Sencillo",
+      "abbreviation": "spabes",
+      "abbreviationLocal": "BES",
+      "description": "Common",
+      "descriptionLocal": "Común",
+      "language": {
+        "id": "spa",
+        "name": "Spanish",
+        "nameLocal": "Español",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "MX", "name": "Mexico", "nameLocal": "Mexico" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-30T22:01:48.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "482ddd53705278cc-01",
+      "dblId": "482ddd53705278cc",
+      "name": "The New Testament in Spanish, Free Bible Version",
+      "nameLocal": "El Nuevo Testamento, Versión Biblia Libre",
+      "abbreviation": "VBL",
+      "abbreviationLocal": "VBL",
+      "description": "common",
+      "descriptionLocal": "Nuevo Testmento",
+      "language": {
+        "id": "spa",
+        "name": "Spanish",
+        "nameLocal": "español",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "ES", "name": "Spain", "nameLocal": "Spain" },
+        { "id": "MX", "name": "Mexico", "nameLocal": "Mexico" },
+        { "id": "PY", "name": "Paraguay", "nameLocal": "Paraguay" },
+        { "id": "CO", "name": "Colombia", "nameLocal": "Colombia" },
+        { "id": "CL", "name": "Chile", "nameLocal": "Chile" },
+        { "id": "EC", "name": "Ecuador", "nameLocal": "Ecuador" },
+        { "id": "HN", "name": "Honduras", "nameLocal": "Honduras" },
+        { "id": "NI", "name": "Nicaragua", "nameLocal": "Nicaragua" },
+        { "id": "PE", "name": "Peru", "nameLocal": "Peru" },
+        { "id": "PA", "name": "Panama", "nameLocal": "Panama" },
+        { "id": "CU", "name": "Cuba", "nameLocal": "Cuba" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-15T19:30:44.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "482ddd53705278cc-02",
+      "dblId": "482ddd53705278cc",
+      "name": "Versión Biblia Libre",
+      "nameLocal": "Versión Biblia Libre",
+      "abbreviation": "VBL",
+      "abbreviationLocal": "VBL",
+      "description": "Protestant",
+      "descriptionLocal": "Protestant",
+      "language": {
+        "id": "spa",
+        "name": "Spanish",
+        "nameLocal": "español",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "ES", "name": "Spain", "nameLocal": "Spain" },
+        { "id": "MX", "name": "Mexico", "nameLocal": "Mexico" },
+        { "id": "PY", "name": "Paraguay", "nameLocal": "Paraguay" },
+        { "id": "CO", "name": "Colombia", "nameLocal": "Colombia" },
+        { "id": "CL", "name": "Chile", "nameLocal": "Chile" },
+        { "id": "EC", "name": "Ecuador", "nameLocal": "Ecuador" },
+        { "id": "HN", "name": "Honduras", "nameLocal": "Honduras" },
+        { "id": "NI", "name": "Nicaragua", "nameLocal": "Nicaragua" },
+        { "id": "PE", "name": "Peru", "nameLocal": "Peru" },
+        { "id": "PA", "name": "Panama", "nameLocal": "Panama" },
+        { "id": "CU", "name": "Cuba", "nameLocal": "Cuba" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-15T19:32:00.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "b83db44e6dc39993-01",
+      "dblId": "b83db44e6dc39993",
+      "name": "Biblica® Open New Serbian Translation Cyrillic 2017",
+      "nameLocal": "Biblica® Нови српски превод, слободна права",
+      "abbreviation": "ONSP",
+      "abbreviationLocal": "OНСП",
+      "description": "Holy Bible",
+      "descriptionLocal": "Свето писмо",
+      "language": {
+        "id": "srp",
+        "name": "Serbian",
+        "nameLocal": "Српски/ Srpski",
+        "script": "Cyrillic",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "RS", "name": "Serbia", "nameLocal": "Serbia" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-15T21:10:57.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "c1096b0470327a28-01",
+      "dblId": "c1096b0470327a28",
+      "name": "Biblica® Open New Serbian Translation Latin 2017",
+      "nameLocal": "Novi srpski prevod",
+      "abbreviation": "ONSTL",
+      "abbreviationLocal": "ONSPL",
+      "description": "Holy Bible",
+      "descriptionLocal": "Sveto Pismo",
+      "language": {
+        "id": "srp",
+        "name": "Serbian",
+        "nameLocal": "Српски/ Srpski",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "RS", "name": "Serbia", "nameLocal": "Serbia" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-10-01T05:14:01.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "06995ce9cd23361b-01",
+      "dblId": "06995ce9cd23361b",
+      "name": "Serbian Bible",
+      "nameLocal": "Sveta Biblija",
+      "abbreviation": "srp1865",
+      "abbreviationLocal": "SRP1865",
+      "description": "common",
+      "descriptionLocal": "zajednički",
+      "language": {
+        "id": "srp",
+        "name": "Serbian",
+        "nameLocal": "српски",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "RS", "name": "Serbia", "nameLocal": "Serbia" }
+      ],
+      "type": "text",
+      "updatedAt": "2026-01-30T20:57:52.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "611f8eb23aec8f13-01",
+      "dblId": "611f8eb23aec8f13",
+      "name": "Biblica® Open Kiswahili Contemporary Version (Neno) 2015",
+      "nameLocal": "Biblica® Toleo Wazi la Neno: Biblia Takatifu",
+      "abbreviation": "ONEN",
+      "abbreviationLocal": "ONEN",
+      "description": "Protestant Bible",
+      "descriptionLocal": "Protestant Bible",
+      "language": {
+        "id": "swh",
+        "name": "Swahili",
+        "nameLocal": "Kiswahili",
+        "script": "Latin",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "KE", "name": "Kenya", "nameLocal": "Kenya" },
+        { "id": "TZ", "name": "Tanzania", "nameLocal": "Tanzania" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-28T16:21:14.000Z",
+      "audioBibles": [
+        {
+          "id": "3533f7929cde418c-01",
+          "name": "Biblica® Open Kiswahili Contemporary Version™, Audio Edition",
+          "nameLocal": "Biblica® Toleo Wazi la Neno: Biblia Takatifu™, Toleo la Kusikiliza",
+          "dblId": "3533f7929cde418c"
+        }
+      ]
+    },
+    {
+      "id": "032ec262506b719f-01",
+      "dblId": "032ec262506b719f",
+      "name": "Biblica® Open Indian Tamil Contemporary Version",
+      "nameLocal": "Biblica® திறந்தநிலை தமிழ் சமகால பதிப்பு",
+      "abbreviation": "OTCV",
+      "abbreviationLocal": "OTCV",
+      "description": "Holy Bible",
+      "descriptionLocal": "பரிசுத்த வேதம்",
+      "language": {
+        "id": "tam",
+        "name": "Tamil",
+        "nameLocal": "தமிழ்",
+        "script": "Tamil",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-25T22:18:13.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "03a021185023710b-01",
+      "dblId": "03a021185023710b",
+      "name": "Indian Revised Version (IRV) Tamil - 2019",
+      "nameLocal": "இண்டியன் ரிவைஸ்டு வெர்ஸன் (IRV) - தமிழ்",
+      "abbreviation": "IRVTam",
+      "abbreviationLocal": "IRVTam",
+      "description": "Protestant Bible for all",
+      "descriptionLocal": "Protestant Bible for all",
+      "language": {
+        "id": "tam",
+        "name": "Tamil",
+        "nameLocal": "தமிழ்",
+        "script": "Tamil",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-26T18:32:09.000Z",
+      "audioBibles": [
+        {
+          "id": "5b168850d8ff4fe2-01",
+          "name": "Tamil Indian Revised Version (IRV)",
+          "nameLocal": "Tamil Indian Revised Version (IRV)",
+          "dblId": "5b168850d8ff4fe2"
+        }
+      ]
+    },
+    {
+      "id": "81d6933d39d343f8-03",
+      "dblId": "81d6933d39d343f8",
+      "name": "Biblica® Open Telugu Contemporary Version",
+      "nameLocal": "Biblica® ఉచిత తెలుగు సమకాలీన అనువాదం",
+      "abbreviation": "OTSA",
+      "abbreviationLocal": "OTSA",
+      "description": "Old Testament and New Testament",
+      "descriptionLocal": "పాత నిబంధన, క్రొత్త నిబంధన",
+      "language": {
+        "id": "tel",
+        "name": "Telugu",
+        "nameLocal": "తెలుగు",
+        "script": "Telugu",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+      "type": "text",
+      "updatedAt": "2025-09-29T15:33:48.000Z",
+      "audioBibles": []
+    },
+    {
+      "id": "5b835ce16a1703ff-01",
+      "dblId": "5b835ce16a1703ff",
+      "name": "Indian Revised Version (IRV) Telugu - 2019",
+      "nameLocal": "ఇండియన్ రివైజ్డ్ వెర్షన్ (IRV) - తెలుగు -2019",
+      "abbreviation": "IRVTel",
+      "abbreviationLocal": "IRVTel",
+      "description": "Bible for all",
+      "descriptionLocal": "Bible for all",
+      "language": {
+        "id": "tel",
+        "name": "Telugu",
+        "nameLocal": "తెలుగు",
+        "script": "Telugu",
+        "scriptDirection": "LTR"
+      },
+      "countries": [
+        { "id": "IN", "name": "India", "nameLocal": "India" }
+      ],
+        
+      "type": "text",
+      "updatedAt": "2025-09-29T15:33:48.000Z",
+       "audioBibles": [
+        {
+          "id": "0d7b2453e9ae4513-01",
+          "name": "Telugu Indian Revised Version (IRV)",
+          "nameLocal": "Telugu Indian Revised Version (IRV)",
+          "dblId": "0d7b2453e9ae4513"
+        }
+      ]
+    }
+  ],
+  "languages": [
+    { "code": "eng", "name": "English", "nativeName": "English", "flag": "🇬🇧" },
+    { "code": "lug", "name": "Ganda", "nativeName": "Luganda", "flag": "🇺🇬" },
+    { "code": "luo", "name": "Dholuo", "nativeName": "Dholuo", "flag": "🇰🇪" },
+    { "code": "mal", "name": "Malayalam", "nativeName": "മലയാളം", "flag": "🇮🇳" },
+    { "code": "mar", "name": "Marathi", "nativeName": "मराठी", "flag": "🇮🇳" },
+    { "code": "mdy", "name": "Male", "nativeName": "Male", "flag": "🇪🇹" },
+    { "code": "mgh", "name": "Makhuwa-Meetto", "nativeName": "Makua Imeetto", "flag": "🇹🇿" },
+    { "code": "nag", "name": "Naga Pidgin", "nativeName": "Naga Pidgin", "flag": "🇮🇳" },
+    { "code": "ndj", "name": "Ndamba", "nativeName": "Ndamba", "flag": "🇹🇿" },
+    { "code": "ngp", "name": "Nguu", "nativeName": "Ngulu", "flag": "🇹🇿" },
+    { "code": "nho", "name": "Takuu", "nativeName": "Takuu", "flag": "🇵🇬" },
+    { "code": "nit", "name": "Kolami, Southeastern", "nativeName": "Kolami, Southeastern", "flag": "🇮🇳" },
+    { "code": "nld", "name": "Dutch", "nativeName": "Nederlands", "flag": "🇳🇱" },
+    { "code": "nlx", "name": "Nahali", "nativeName": "Nahali", "flag": "🇮🇳" },
+    { "code": "nnq", "name": "Ngindo", "nativeName": "Ngindo", "flag": "🇹🇿" },
+    { "code": "nob", "name": "Norwegian Bokmål", "nativeName": "Norsk Bokmål", "flag": "🇳🇴" },
+    { "code": "npi", "name": "Nepali", "nativeName": "नेपाली", "flag": "🇳🇵" },
+    { "code": "nya", "name": "Chichewa", "nativeName": "Nyanja", "flag": "🇲🇼" },
+    { "code": "nzi", "name": "Nzema", "nativeName": "Nzema", "flag": "🇬🇭" },
+    { "code": "omb", "name": "Ambae, East", "nativeName": "Ambae, East", "flag": "🇻🇺" },
+    { "code": "ory", "name": "Oriya", "nativeName": "ODIA", "flag": "🇮🇳" },
+    { "code": "pan", "name": "Panjabi, Eastern", "nativeName": "ਪੰਜਾਬੀ", "flag": "🇮🇳" },
+    { "code": "peg", "name": "Pengo", "nativeName": "Pengo", "flag": "🇮🇳" },
+    { "code": "pes", "name": "Persian, Iranian", "nativeName": "فارسی", "flag": "🇮🇷" },
+    { "code": "pol", "name": "Polish", "nativeName": "Polski", "flag": "🇵🇱" },
+    { "code": "pon", "name": "Pohnpeian", "nativeName": "Pohnpeian", "flag": "🇫🇲" },
+    { "code": "por", "name": "Portuguese", "nativeName": "Português", "flag": "🇧🇷" },
+    { "code": "poy", "name": "Shipogoro", "nativeName": "Pogolo", "flag": "🇹🇿" },
+    { "code": "pwr", "name": "Powari", "nativeName": "Powari", "flag": "🇮🇳" },
+    { "code": "quc", "name": "K’iche’", "nativeName": "K’iche’", "flag": "🇬🇹" },
+    { "code": "rei", "name": "Reli", "nativeName": "Reli", "flag": "🇮🇳" },
+    { "code": "rki", "name": "Rakhine", "nativeName": "Rakhine", "flag": "🇲🇲" },
+    { "code": "rmc", "name": "Romani, Carpathian", "nativeName": "Romanes", "flag": "🇸🇰" },
+    { "code": "rmn", "name": "Romani, Balkan", "nativeName": "Romani, Balkan", "flag": "🇷🇸" },
+    { "code": "rmy", "name": "Romani, Vlax", "nativeName": "Romani, Vlax", "flag": "🇷🇸" },
+    { "code": "ruf", "name": "Luguru", "nativeName": "Luguru", "flag": "🇹🇿" },
+    { "code": "run", "name": "Rundi", "nativeName": "Ikirundi", "flag": "🇧🇮" },
+    { "code": "rup", "name": "Aromanian", "nativeName": "Aromanian", "flag": "🇦🇱" },
+    { "code": "san", "name": "Sanskrit", "nativeName": "Saṃskṛtam", "flag": "🇮🇳" },
+    { "code": "sby", "name": "Soli", "nativeName": "Soli", "flag": "🇿🇲" },
+    { "code": "sch", "name": "Sakachep", "nativeName": "Sakachep", "flag": "🇮🇳" },
+    { "code": "sle", "name": "Sholaga", "nativeName": "Sholaga", "flag": "🇮🇳" },
+    { "code": "slk", "name": "Slovak", "nativeName": "Slovenčina", "flag": "🇸🇰" },
+    { "code": "sna", "name": "Shona", "nativeName": "chiShona", "flag": "🇿🇼" },
+    { "code": "spa", "name": "Spanish", "nativeName": "Español", "flag": "🇪🇸" },
+    { "code": "srp", "name": "Serbian", "nativeName": "Српски", "flag": "🇷🇸" },
+    { "code": "swh", "name": "Swahili", "nativeName": "Kiswahili", "flag": "🇹🇿" },
+    { "code": "tam", "name": "Tamil", "nativeName": "தமிழ்", "flag": "🇮🇳" },
+    { "code": "tel", "name": "Telugu", "nativeName": "తెలుగు", "flag": "🇮🇳" },
+    { "code": "tgj", "name": "Tagin", "nativeName": "Tagin", "flag": "🇮🇳" },
+    { "code": "tha", "name": "Thai", "nativeName": "ไทย", "flag": "🇹🇭" },
+    { "code": "tkr", "name": "Tsakhur", "nativeName": "Tsakhur", "flag": "🇦🇿" },
+    { "code": "ton", "name": "Tonga", "nativeName": "lea fakatonga", "flag": "🇹🇴" },
+    { "code": "tsn", "name": "Tswana", "nativeName": "Setswana", "flag": "🇧🇼" },
+    { "code": "tur", "name": "Turkish", "nativeName": "Türkçe", "flag": "🇹🇷" },
+    { "code": "tvn", "name": "Tavoyan", "nativeName": "Tavoyan", "flag": "🇲🇲" },
+    { "code": "tvt", "name": "Tutsa Naga", "nativeName": "Tutsa Naga", "flag": "🇮🇳" },
+    { "code": "twi", "name": "Twi", "nativeName": "Twi", "flag": "🇬🇭" },
+    { "code": "ukr", "name": "Ukrainian", "nativeName": "Українська", "flag": "🇺🇦" },
+    { "code": "unx", "name": "Munda", "nativeName": "Munda", "flag": "🇮🇳" },
+    { "code": "urd", "name": "Urdu", "nativeName": "اردو", "flag": "🇵🇰" },
+    { "code": "vgr", "name": "Vaghri", "nativeName": "Vaghri", "flag": "🇮🇳" },
+    { "code": "vid", "name": "Vidunda", "nativeName": "Chividunda", "flag": "🇹🇿" },
+    { "code": "vie", "name": "Vietnamese", "nativeName": "Tiếng Việt", "flag": "🇻🇳" },
+    { "code": "xnj", "name": "Chingoni", "nativeName": "Chingoni", "flag": "🇹🇿" },
+    { "code": "yao", "name": "Yao", "nativeName": "Yao", "flag": "🇹🇿" },
+    { "code": "yap", "name": "Yapese", "nativeName": "Yapese", "flag": "🇫🇲" },
+    { "code": "ydd", "name": "Yiddish, Eastern", "nativeName": "Yiddish, Eastern", "flag": "🇺🇸" },
+    { "code": "yom", "name": "Yombe", "nativeName": "Kiyombi", "flag": "🇨🇩" },
+    { "code": "yor", "name": "Yoruba", "nativeName": "Yorùbá", "flag": "🇳🇬" },
+    { "code": "zaj", "name": "Zaramo", "nativeName": "Kizalamo", "flag": "🇹🇿" },
+    { "code": "ziw", "name": "Zigua", "nativeName": "Zigula", "flag": "🇹🇿" }
+  ]
+}

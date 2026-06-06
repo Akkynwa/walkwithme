@@ -18,7 +18,7 @@ interface PathNode {
 const MASTER_NODES: PathNode[] = [
   { id: 'path_1', title: 'Read Psalm 23', desc: 'A reflection on divine protection and guidance.', icon: 'check_circle', position: 'center' },
   { id: 'path_2', title: '10-Minute Morning Meditation', desc: '10 minutes of silent presence and breathing.', icon: 'air', position: 'right' },
-  { id: 'path_3', title: '7-Day Gratitude Challenge', desc: 'Begin an intentional journey of identifying daily blessings.', icon: 'auto_awesome', position: 'left' },
+  { id: 'path_3', title: '7-Day Gratitude Challenge', desc: 'Begin an intentional journey of identifying daily blessings.', icon: 'self_improvement', position: 'left' },
   { id: 'path_4', title: 'Set Monthly Spiritual Goal', desc: 'Setting intentions for the coming month of growth.', icon: 'lock', position: 'right' },
   { id: 'path_5', title: 'Service Reflection', desc: 'Exploring ways to serve others through light.', icon: 'diversity_3', position: 'center' },
 ];

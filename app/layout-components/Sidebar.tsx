@@ -16,7 +16,7 @@ export default function Sidebar() {
     { icon: 'menu_book', label: 'Bible', href: '/bible', key: 'bible' },
     { icon: 'library_books', label: 'Devotionals', href: '/sanctuary/devotionals', key: 'devotionals' },
     { icon: 'bedtime', label: 'Quiet Time', href: '/quiet-time', key: 'quiet-time' },
-    { icon: 'auto_awesome', label: 'AI spiritual assistance', href: '/ai/chat', key: 'chat' },
+    { icon: 'self_improvement', label: 'AI spiritual assistance', href: '/ai/chat', key: 'chat' },
     { icon: 'history_edu', label: 'Journal', href: '/journal', key: 'history' },
     { icon: 'potted_plant', label: 'Prayers', href: '/prayers', key: 'prayers' },
     { icon: 'hub', label: 'Community', href: '/community', key: 'community' },
@@ -34,7 +34,7 @@ export default function Sidebar() {
           <div className="px-6 pt-6 pb-4 shrink-0 border-b border-white/50">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 bg-orange-500 flex items-center justify-center rounded-xl shadow-lg shadow-orange-500/30">
-                <span className="material-symbols-outlined text-white text-[18px]">auto_awesome</span>
+                <span className="material-symbols-outlined text-white text-[18px]">self_improvement</span>
               </div>
               <div>
                 <h1 className="text-sm text-gray-800 font-black tracking-tight">WalkWithMe</h1>

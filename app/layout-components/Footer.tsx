@@ -40,7 +40,7 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
-              <span className="material-symbols-outlined text-white text-[12px]">auto_awesome</span>
+              <span className="material-symbols-outlined text-white text-[12px]">self_improvement</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-black uppercase tracking-wider text-gray-700">
@@ -106,7 +106,7 @@ export default function Footer() {
           <div className="flex items-center justify-between pt-2 border-t border-white/40">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                <span className="material-symbols-outlined text-white text-[10px]">auto_awesome</span>
+                <span className="material-symbols-outlined text-white text-[10px]">self_improvement</span>
               </div>
               <div className="flex flex-col">
                 <span className="text-[8px] font-black text-gray-700 tracking-tighter">WalkWithMe</span>

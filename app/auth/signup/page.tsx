@@ -90,7 +90,7 @@ export default function SignUpPage() {
         <div className="mb-8 text-center group">
           <div className="flex items-center justify-center gap-base mb-xs">
             <span className="material-symbols-outlined text-primary text-[42px] transition-transform duration-700 group-hover:rotate-180 ease-out fill-0">
-              auto_awesome
+              self_improvement
             </span>
             <h1 className="font-display-lg text-display-lg-mobile text-primary tracking-tight font-serif font-bold">
               WalkWithMe

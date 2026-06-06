@@ -370,7 +370,7 @@ export default function QuietTimeReadingPage() {
                                 onClick={() => handleAmenPulse(post.id)}
                                 className={`flex items-center gap-1.5 text-[8px] font-black tracking-wider px-3 py-1.5 rounded-lg transition-all ${post.hasAmened ? 'bg-amber-600 text-white shadow-sm' : 'bg-white/50 text-gray-500 hover:bg-amber-100'}`}
                               >
-                                <span className="material-symbols-outlined text-[12px]">auto_awesome</span>
+                                <span className="material-symbols-outlined text-[12px]">self_improvement</span>
                                 AMEN {post.amenCount > 0 && `(${post.amenCount})`}
                               </button>
                             </div>
@@ -582,7 +582,7 @@ export default function QuietTimeReadingPage() {
               disabled={loading || !note.trim()}
               className="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg font-black text-[9px] tracking-wider flex items-center justify-center gap-2 hover:shadow-lg transition-all disabled:opacity-40"
             >
-              <span className="material-symbols-outlined text-sm">auto_awesome</span>
+              <span className="material-symbols-outlined text-sm">self_improvement</span>
               {loading ? 'Publishing to Stream...' : 'Archive & Share'}
             </button>
           </div>

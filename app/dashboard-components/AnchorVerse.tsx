@@ -79,7 +79,7 @@ export function AnchorVerse() {
 
         {/* Label with icon */}
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-amber-400 text-[14px]">auto_awesome</span>
+          <span className="material-symbols-outlined text-amber-400 text-[14px]">self_improvement</span>
           <span className="text-[9px] font-black tracking-[0.3em] uppercase text-amber-300/90">
             Today's Anchor Focus
           </span>

@@ -60,7 +60,7 @@ export default function AIDevotionalCard({ item, isMobile = false }: AIDevotiona
             {item.category}
           </span>
           <div className="w-8 h-8 rounded-full bg-amber-500/80 flex items-center justify-center backdrop-blur-sm">
-            <span className="material-symbols-outlined text-xs">auto_awesome</span>
+            <span className="material-symbols-outlined text-xs">self_improvement</span>
           </div>
         </div>
 
