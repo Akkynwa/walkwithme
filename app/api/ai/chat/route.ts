@@ -1,5 +1,4 @@
 // Add this line to the top of the file
-export const runtime = 'nodejs';
 import { OpenAI } from 'openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextResponse } from 'next/server';
