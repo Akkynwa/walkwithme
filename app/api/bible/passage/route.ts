@@ -14,8 +14,8 @@ export async function GET(request: Request) {
   }
 
   const session = await getServerSession();
-  const isPaidUser = !!session?.user?.isPaid;
-
+  // const isPaidUser = !!session?.user?.isPaid;
+const isPaidUser = !!(session?.user as any)?.isPaid;
   try {
     let url;
     let headers: HeadersInit = {};
