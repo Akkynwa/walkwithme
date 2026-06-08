@@ -1,12 +1,11 @@
-// Add this line to the top of the file
 import { OpenAI } from 'openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // Adjust path based on your Prisma setup
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-export const runtime = 'edge';
 
+export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   try {
@@ -27,11 +26,6 @@ export async function POST(req: Request) {
     const systemMessage = {
       role: 'system',
       content: `
-        Your name is the WalkWithMe Companion. 
-        Core Philosophy: Scripture is a living well, not just a history book.
-        Context: ${activeBook ? `Reflecting on ${activeBook} ${activeChapter}.` : 'Exploring the sanctuary.'}
-        Style: ${isEmotional ? 'Healing, grace, soft presence.' : 'Depth, hidden wisdom, spiritual discovery.'}
-        Wrap answers in "Spiritual Intuitions" and use metaphors of light and living water.
         Your name is the WalkWithMe Companion. 
         Core Philosophy: Scripture is a living well, not just a history book.
         
@@ -58,15 +52,16 @@ export async function POST(req: Request) {
       stream: true,
       messages: [systemMessage, ...messages],
       temperature: 0.65,
-      max_tokens: 2048, // Bumped to 2048 to prevent cutting off fluid stream deliveries
+      max_tokens: 2048, 
     });
 
     // 3. Initialize OpenAI Stream with Non-Blocking Callbacks
+    // THIS IS WHERE THE MESSAGES ARE SAVED TO PRISMA
     const stream = OpenAIStream(response as any, {
       onStart: async () => {
         if (!userId) return;
-        // Fire-and-forget: background thread execution keeps token rendering unblocked
-        prisma.message.create({
+        // Save the User's message when the stream starts
+        await prisma.message.create({
           data: {
             content: lastUserMessage,
             role: 'user',
@@ -76,8 +71,8 @@ export async function POST(req: Request) {
       },
       onCompletion: async (completion) => {
         if (!userId) return;
-        // Fire-and-forget: stores final response in background safely
-        prisma.message.create({
+        // Save the AI's fully generated response when the stream finishes
+        await prisma.message.create({
           data: {
             content: completion,
             role: 'assistant',
@@ -87,7 +82,8 @@ export async function POST(req: Request) {
       },
     });
 
-    // 4. Return stream with optimization headers to avoid proxy buffering jitter
+    // 4. Return stream to the frontend
+    // NOTE: Nothing runs after this return statement!
     return new StreamingTextResponse(stream, {
       headers: {
         'X-Content-Type-Options': 'nosniff',

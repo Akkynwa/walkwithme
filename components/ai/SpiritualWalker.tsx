@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useChat } from 'ai/react';
 import { AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
 import { AIChatInput } from './AIChatInput';
@@ -21,12 +22,33 @@ export default function SpiritualWalker() {
     return () => clearInterval(timer);
   }, []);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  // 1. We must destructure setMessages from useChat to update history
+  const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: '/api/ai/chat',
     initialMessages: [
       { id: '1', role: 'assistant', content: "Welcome back, seeker. How does your heart feel today?" }
     ],
   });
+
+  // 2. Fetch history on mount and inject it into the chat state
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const res = await fetch('/api/chat/history');
+        if (res.ok) {
+          const history = await res.json();
+          // Only override if there is actual history, otherwise keep initial greeting
+          if (history && history.length > 0) {
+            setMessages(history); 
+          }
+        }
+      } catch (e) {
+        console.error("Could not load history", e);
+      }
+    };
+
+    loadHistory();
+  }, [setMessages]);
 
   return (
     <div className="relative flex min-h-screen overflow-hidden bg-slate-50">
@@ -47,7 +69,7 @@ export default function SpiritualWalker() {
       <div className="relative z-10 flex-1 lg:pl-64 pt-16 h-screen flex overflow-hidden w-full">
         <main className="flex-1 flex flex-col relative min-w-0 bg-white/10 backdrop-blur-sm">
           
-          {/* MOBILE SLIDER (Sliding Left to Right) */}
+          {/* MOBILE SLIDER */}
           <div className="xl:hidden w-full p-4 overflow-hidden">
             <AnimatePresence mode="wait">
               <AIDevotionalCard 
@@ -59,26 +81,44 @@ export default function SpiritualWalker() {
           </div>
 
           {/* CHAT SECTION */}
-<section className="flex-1 overflow-y-auto px-6 py-5 space-y-6 custom-scrollbar bg-black/[0.07] backdrop-blur-md">
-  {messages.map((msg) => (
-    <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[80%] p-4 rounded-3xl text-sm leading-relaxed ${
-        msg.role === 'user' 
-          ? 'bg-amber-600 text-white shadow-lg' 
-          : 'bg-white/80 text-gray-800 font-serif border border-white/50 shadow-sm'
-      }`}>
-        {msg.content}
-      </div>
-    </div>
-  ))}
-</section>
+          <section className="flex-1 overflow-y-auto px-6 py-5 space-y-6 custom-scrollbar bg-black/[0.07] backdrop-blur-md">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] p-5 rounded-3xl text-[15px] ${
+                  msg.role === 'user' 
+                    ? 'bg-amber-600 text-white shadow-lg rounded-tr-sm' 
+                    : 'bg-white/90 text-gray-800 border border-white/50 shadow-md rounded-tl-sm'
+                }`}>
+                  {/* 3. Render formatting cleanly based on the sender */}
+                  {msg.role === 'user' ? (
+                    <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                  ) : (
+                    <ReactMarkdown 
+                      className="font-serif"
+                      components={{
+                        // Add spacing between paragraphs
+                        p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-relaxed text-gray-700" {...props} />,
+                        // Style bold text as highlights
+                        strong: ({node, ...props}) => <strong className="font-semibold text-amber-800 bg-amber-50 px-1 rounded" {...props} />,
+                        // Style lists to look neat
+                        ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4 space-y-2" {...props} />,
+                        li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  )}
+                </div>
+              </div>
+            ))}
+          </section>
 
           <footer className="p-6 bg-white/40 backdrop-blur-xl border-t border-white/20">
             <AIChatInput input={input} handleInputChange={handleInputChange} handleSubmit={handleSubmit} isLoading={isLoading} />
           </footer>
         </main>
 
-        {/* DESKTOP SIDE PANEL (Fading In/Out One by One) */}
+        {/* DESKTOP SIDE PANEL */}
         <aside className="hidden xl:flex w-[400px] bg-white/30 backdrop-blur-2xl flex-col border-l border-white/20 p-8 justify-center items-center overflow-hidden">
           <div className="w-full relative">
              <div className="mb-6 text-center">

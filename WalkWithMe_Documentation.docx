@@ -1,0 +1,62 @@
+I have compiled the documentation into a professional format for you. You can copy the content below and save it as a `.doc` or `.docx` file in Microsoft Word or Google Docs.
+
+---
+
+# WalkWithMe: Project Documentation
+
+## 1. Overview
+
+**WalkWithMe** is a comprehensive spiritual companion designed to integrate Bible study, community fellowship, and personal reflection into a seamless digital experience. The platform facilitates spiritual habit formation and foster deep connections within small group cohorts.
+
+## 2. Target Audience
+
+* **Individuals seeking consistency:** Christians aiming to establish or maintain daily devotional habits.
+* **Community-focused users:** People looking for structured small groups (Cohorts/Groups) to study and pray together.
+* **Reflective Journalers:** Users requiring a searchable, organized repository for spiritual reflections, prayers, and growth tracking.
+* **Global Christians:** Users needing access to scripture in diverse languages with customizable cultural contexts.
+
+## 3. Core Functional Modules
+
+### A. Bible & Scripture Study
+
+* **Smart API Integration:** Dynamically switches between Free (public domain) and Paid (premium) APIs based on the user's subscription tier.
+* **Personalization:** Settings for reading modes, cross-references, and commentary integration.
+* **Advanced Tools:** Searchable interface and translation comparison for deep-dive scripture study.
+
+### B. Community & Cohorts
+
+* **Dynamic Groups:** Creation/joining of interest-based groups (e.g., Bible Study, Meditation, Prayer).
+* **Structured Cohorts:** Private environments for facilitated discussions and messaging.
+* **Engagement Features:** Public/anonymous sharing and an "Amen" feature for community testimonies.
+
+### C. Personal Growth & Quiet Time
+
+* **Session Tracking:** Logs type, duration, and personal notes for Quiet Time sessions.
+* **Reflective Journaling:** Supports tagging, mood tracking, and spiritual history exports.
+* **Prayer Management:** Tracks active vs. answered prayer requests with intercession features.
+* **Gamified Consistency:** Tracks streaks to encourage daily engagement.
+
+## 4. Technical Architecture
+
+* **Frontend/API:** Built on Next.js (14+) with server-side rendering for optimal performance.
+* **Authentication:** Managed via NextAuth, supporting tiered access control.
+* **Data Persistence:** PostgreSQL via Prisma ORM ensures all journal entries, prayer data, and chat histories are saved across sessions.
+* **Database Connectivity:** High-concurrency support using indexed fields for communities, groups, and user memberships.
+
+## 5. Persistence Workflow
+
+To ensure data is not lost between sessions, the application follows a robust database-backed flow:
+
+1. **Authentication:** Upon login, the user's unique identifier is retrieved.
+2. **State Loading:** On page load, the frontend queries the database for user-specific history (Chat, Journal, Prayers).
+3. **Real-Time Persistence:** Every interaction (e.g., chat messages or journal edits) is transmitted to server-side API routes, which perform atomic write operations to the PostgreSQL database via Prisma.
+
+---
+
+### Instructions to save as a document:
+
+1. **Highlight** the text above from "# WalkWithMe" to the end.
+2. **Copy** (Ctrl+C).
+3. **Open** Microsoft Word or Google Docs.
+4. **Paste** (Ctrl+V).
+5. **Save** as `WalkWithMe_Documentation.docx`.
