@@ -150,9 +150,8 @@ export default function ProfileSettingsPage() {
                         <Image
                           src={profile.image} 
                           alt="Profile avatar" 
-                          className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
-                          width={112}
-                          height={112}  
+                          fill
+                          className="object-cover transition-transform group-hover:scale-105 duration-500"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400 bg-amber-50">
