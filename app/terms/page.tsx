@@ -1,6 +1,5 @@
 // app/terms/page.tsx
 import { Metadata } from 'next';
-import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Terms of Service | Quiet Time Sanctuary',

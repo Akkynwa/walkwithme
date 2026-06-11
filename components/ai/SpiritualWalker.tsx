@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useChat } from 'ai/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { useRouter } from 'next/navigation';
@@ -40,23 +39,62 @@ export default function SpiritualWalker() {
     }
   };
 
-  // Initialize useChat with optimized saving logic
- // Initialize useChat with optimized saving logic
-const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-  api: '/api/ai/chat',
-  initialMessages: [{ id: '1', role: 'assistant', content: "Welcome back, seeker. How does your heart feel today?" }],
-  onFinish: async (message) => {
-    // 1. Grab the current conversation state directly
-    // 2. Append the finished streaming response from the AI assistant
-    const completedHistory = [...messages, message];
-    
-    // 3. Pass the fully combined array directly to your UI state
-    setMessages(completedHistory);
-    
-    // 4. Fire the database sync immediately with the absolute complete record
-    await saveChatHistory(completedHistory);
-  },
-});
+  // Initialize chat state management
+  const [messages, setMessages] = useState<Array<{id: string; role: 'user' | 'assistant'; content: string}>>([
+    { id: '1', role: 'assistant', content: "Welcome back, seeker. How does your heart feel today?" }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = { id: Date.now().toString(), role: 'user' as const, content: input };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+
+      if (res.ok && res.body) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let assistantMessage = { id: Date.now().toString(), role: 'assistant' as const, content: '' };
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          assistantMessage.content += decoder.decode(value);
+          setMessages(prev => {
+            const updated = [...prev];
+            if (updated[updated.length - 1]?.role === 'assistant') {
+              updated[updated.length - 1] = assistantMessage;
+            } else {
+              updated.push(assistantMessage);
+            }
+            return updated;
+          });
+        }
+
+        await saveChatHistory([...newMessages, assistantMessage]);
+      }
+    } catch (e) {
+      console.error('Error sending message:', e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Cycle through devotionals
   useEffect(() => {
@@ -82,7 +120,7 @@ const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading
       }
     };
     loadHistory();
-  }, [setMessages]);
+  }, []);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -92,17 +130,6 @@ const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading
         behavior: 'smooth'
       });
     }
-  }, [messages]);
-
-  // Debounced auto-save fallback for when users type or mutations occur outside of stream finishing
-  useEffect(() => {
-    if (messages.length <= 1) return; // Skip saving just the initial message
-    
-    const saveTimeout = setTimeout(() => {
-      saveChatHistory(messages);
-    }, 3000);
-    
-    return () => clearTimeout(saveTimeout);
   }, [messages]);
 
   return (
@@ -153,7 +180,7 @@ const { messages, setMessages, input, handleInputChange, handleSubmit, isLoading
             className="flex-1 overflow-y-auto px-3 py-3 space-y-2 custom-scrollbar"
           >
             <AnimatePresence mode="popLayout">
-              {messages.map((msg, idx) => (
+              {messages.map((msg: any, idx: number) => (
                 <motion.div
                   key={msg.id || idx}
                   initial={{ opacity: 0, y: 15, scale: 0.98 }}
