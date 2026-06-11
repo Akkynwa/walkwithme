@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
@@ -6,7 +8,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { randomUUID } from 'crypto';
 
-export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   try {
