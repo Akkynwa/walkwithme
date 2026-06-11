@@ -1,12 +1,12 @@
 import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-// import PasskeyProvider from 'next-auth/providers/passkey';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 
 export const authOptions: NextAuthOptions = {
+  // Keeps Prisma tracking your Google and Credentials user profiles safely
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -48,11 +48,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
     }),
-
-    // Added Passkey / WebAuthn support
-    // PasskeyProvider({
-    //   // Passkey implementation hooks into your database adapter configurations automatically
-    // }),
   ],
 
   pages: {
@@ -63,6 +58,7 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
+      // On initial login, bind the user's database ID directly to the JWT token instance
       if (user) {
         token.id = user.id;
       }
@@ -70,8 +66,9 @@ export const authOptions: NextAuthOptions = {
     },
     
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = (token?.id || token?.sub || "") as string;
+      if (session.user && token) {
+        // Correctly inject the true user database ID into the frontend session
+        session.user.id = (token.id || token.sub || "") as string;
       }
       return session;
     },
@@ -79,26 +76,28 @@ export const authOptions: NextAuthOptions = {
   
   events: {
     async signIn({ user }) {
-      if (user.id) {
+      if (user?.id) {
         await prisma.auditLog.create({
           data: {
             userId: user.id,
             action: 'USER_SIGNIN',
-            details: `User signed in: ${user.email}`,
+            details: `User signed in: ${user.email || 'OAuth User'}`,
           },
-        });
+        }).catch((err) => console.error("Sign-in audit log failure:", err));
       }
     },
 
+    // Safeguarded to prevent server-side crashes during session clearing
     async signOut({ token }) {
-      if (token.sub) {
+      const activeUserId = token?.sub || token?.id;
+      if (activeUserId) {
         await prisma.auditLog.create({
           data: {
-            userId: token.sub,
+            userId: activeUserId,
             action: 'USER_SIGNOUT',
             details: 'User signed out',
           },
-        });
+        }).catch((err) => console.error("Sign-out audit log failure:", err));
       }
     },
   },
