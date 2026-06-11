@@ -4,6 +4,9 @@ import { AppSettingsProvider } from './context/AppSettingsContext';
 import './globals.css';
 import PresenceDock from './layout-components/PresenceDock';
 import Footer from './layout-components/Footer'; // Adjust this path if your Footer is located elsewhere
+import BackButton from '@/components/BackButton';
+import FloatingSupportButton from '@/components/FloatingSupportButton';
+
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -45,9 +48,13 @@ export default function RootLayout({
         {/* Wrap your system inside the AppSettingsProvider */}
         <AppSettingsProvider>
           <Providers>
+            <header className="border-b p-4">
+        </header>
             <div className="flex-grow flex flex-col">
               {children}
             </div>
+                    <FloatingSupportButton />
+          <BackButton />
             <Footer />
           </Providers>
           <PresenceDock />

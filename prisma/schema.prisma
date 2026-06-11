@@ -54,8 +54,8 @@ model User {
   replies               Reply[]
   auditLogs             AuditLog[]
   messages              Message[]             
-currentStreak     Int       @default(0)
-  longestStreak     Int       @default(0)
+  currentStreak         Int                   @default(0)
+  longestStreak         Int                   @default(0)
   @@index([email])
 }
 
@@ -287,7 +287,7 @@ model AuditLog {
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String   @id // Modified: Removed default cuid handler so client hook string IDs match directly
   content   String   @db.Text
   role      String   
   createdAt DateTime @default(now())

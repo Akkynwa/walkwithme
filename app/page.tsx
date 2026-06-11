@@ -7,12 +7,16 @@ import Image from 'next/image';
 import Sidebar from './layout-components/Sidebar';
 import Header from './layout-components/Header';
 
-// Sub-components
+// Existing Sub-components
 import { MorningGreeting } from './dashboard-components/MorningGreeting';
 import { AnchorVerse } from './dashboard-components/AnchorVerse';
 import { WorkspaceGrid } from './dashboard-components/WorkspaceGrid';
 import { TestimonyScroll } from './dashboard-components/TestimonyScroll';
 import { BreathingSpace } from './dashboard-components/BreathingSpace';
+
+// NEWLY INTEGRATED COMPONENTS FOR STREAKS & PROGRESS TRACKING
+import ProgressTracker from '@/components/ProgressTracker';
+import { MotivationFeed } from '@/components/MotivationFeed';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -70,6 +74,11 @@ export default function Dashboard() {
           {/* 1. Alluring Entry Ambience */}
           <MorningGreeting name={session?.user?.name || 'Friend'} />
 
+          {/* NEW: Dynamic Metrics Tracker Section */}
+          <div className="mt-6">
+            <ProgressTracker />
+          </div>
+
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 mt-8">
             {/* Left Column: Core Focus */}
             <div className="xl:col-span-8 space-y-6 lg:space-y-8">
@@ -77,9 +86,19 @@ export default function Dashboard() {
               <WorkspaceGrid />
             </div>
 
-            {/* Right Column: Community & Support */}
+            {/* Right Column: Community Support & Mutual Motivation */}
             <aside className="xl:col-span-4 space-y-6 lg:space-y-8">
               <BreathingSpace />
+              
+              {/* NEW: Mutual Motivation Loop Feed */}
+              <div className="bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="material-symbols-outlined text-amber-600 text-xl">groups</span>
+                  <h3 className="font-serif italic text-sm text-slate-800 font-bold">Encourage the Body</h3>
+                </div>
+                <MotivationFeed />
+              </div>
+
               <TestimonyScroll />
             </aside>
           </div>

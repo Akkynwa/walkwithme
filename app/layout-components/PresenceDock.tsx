@@ -11,10 +11,9 @@ export default function PresenceDock() {
   const [isActive, setIsActive] = useState(false);
   const [seconds, setSeconds] = useState(0);
   
-  // Custom Origin Color
   const originOrange = '#fb923c';
 
-  // --- FIXED TIMER LOGIC ---
+  // --- TIMER ENGINE ---
   useEffect(() => {
     let interval: any = null;
 
@@ -26,7 +25,7 @@ export default function PresenceDock() {
           if (mode === 'stopwatch') return prev + 1;
           if (mode === 'timer') {
             if (prev <= 1) {
-              setIsActive(false); // Stop when hits zero
+              setIsActive(false);
               return 0;
             }
             return prev - 1;
@@ -48,33 +47,30 @@ export default function PresenceDock() {
   };
 
   return (
-    /* DRAGGABLE CONTAINER 
-       drag: allows movement
-       dragMomentum: false makes it feel "snappy" and grounded
-    */
     <motion.div 
       drag
       dragMomentum={false}
-      initial={{ x: 100, y: 500 }} // Starting position
-      className="fixed z-[100] cursor-grab active:cursor-grabbing"
+      initial={{ x: 80, y: 480 }}
+      className="fixed z-[100] select-none"
     >
-      <div className="flex items-center group">
+      <div className="flex items-center gap-1.5 p-1.5 rounded-3xl bg-white/20 backdrop-blur-xl border border-white/40 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.08)] group hover:bg-white/30 hover:border-white/60 transition-all duration-300">
         
-        {/* DRAG HANDLE / ICON */}
-        <div 
-          className="w-12 h-12 flex items-center justify-center rounded-2xl border border-white/40 shadow-2xl backdrop-blur-2xl transition-all"
-          style={{ backgroundColor: `${originOrange}20`, borderColor: `${originOrange}40` }}
-        >
-          <span className="material-symbols-outlined" style={{ color: originOrange }}>
+        {/* DRAG HANDLE: Premium Glass Grab Zone */}
+        <div className="w-10 h-10 flex flex-col items-center justify-center rounded-2xl cursor-grab active:cursor-grabbing bg-white/40 border border-white/60 hover:bg-white/80 text-slate-500 hover:text-amber-600 transition-all shadow-xs relative">
+          <span className="material-symbols-outlined text-[16px] font-light leading-none">
             {mode === 'clock' ? 'schedule' : mode === 'timer' ? 'hourglass_top' : 'timer'}
+          </span>
+          {/* Subtle dots layout to signal grab state */}
+          <span className="material-symbols-outlined text-[10px] opacity-40 absolute bottom-0.5 font-black tracking-tight">
+            drag_indicator
           </span>
         </div>
 
-        {/* MAIN INTERFACE CARD */}
-        <div className="ml-2 bg-white/80 backdrop-blur-3xl border border-white/40 shadow-2xl p-2 flex items-center gap-3 rounded-3xl">
+        {/* CONTROLS HUB */}
+        <div className="flex items-center gap-2 px-1">
           
-          {/* Mode Switcher */}
-          <div className="flex bg-gray-100/50 rounded-2xl p-1">
+          {/* Mode Selector Strip */}
+          <div className="flex bg-slate-900/5 backdrop-blur-xs rounded-xl p-0.5 border border-black/[0.03]">
             {[
               { id: 'clock', icon: 'schedule' },
               { id: 'timer', icon: 'hourglass_top' },
@@ -83,38 +79,38 @@ export default function PresenceDock() {
               <button
                 key={m.id}
                 onClick={() => { setMode(m.id as Mode); setIsActive(false); setSeconds(0); }}
-                className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
-                  mode === m.id ? 'bg-white shadow-md' : 'text-gray-400 hover:text-orange-400'
+                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                  mode === m.id 
+                    ? 'bg-white shadow-xs text-slate-800 scale-100 font-bold' 
+                    : 'text-slate-400 hover:text-amber-600 hover:scale-105'
                 }`}
               >
-                <span className="material-symbols-outlined text-[18px]" style={mode === m.id ? { color: originOrange } : {}}>
+                <span className="material-symbols-outlined text-[15px]">
                   {m.icon}
                 </span>
               </button>
             ))}
           </div>
 
-          {/* Time Display */}
-          <div className="px-2 min-w-[70px] text-center">
-            <div className="flex flex-col">
-              <span className="text-base font-black text-[#3C3830] tabular-nums tracking-tight">
-                {mode === 'clock' 
-                  ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-                  : formatTime(seconds)
-                }
-              </span>
-            </div>
+          {/* Core Numerical String Display */}
+          <div className="px-1 min-w-[76px] text-center">
+            <span className="text-[13px] font-mono font-bold text-slate-800 tracking-tight tabular-nums antialiased drop-shadow-xs">
+              {mode === 'clock' 
+                ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+                : formatTime(seconds)
+              }
+            </span>
           </div>
 
-          {/* Action Area */}
+          {/* Action Blocks Container */}
           <div className="flex items-center gap-1">
             {mode !== 'clock' && (
               <button
                 onClick={() => setIsActive(!isActive)}
-                className="w-9 h-9 rounded-xl flex items-center justify-center transition-all shadow-lg active:scale-90"
-                style={{ backgroundColor: originOrange, color: 'white' }}
+                className="w-7 h-7 rounded-lg flex items-center justify-center transition-all active:scale-95 text-white shadow-xs hover:brightness-105"
+                style={{ backgroundColor: originOrange }}
               >
-                <span className="material-symbols-outlined text-[20px]">
+                <span className="material-symbols-outlined text-[15px] font-bold">
                   {isActive ? 'pause' : 'play_arrow'}
                 </span>
               </button>
@@ -123,22 +119,23 @@ export default function PresenceDock() {
             {mode === 'timer' && !isActive && (
               <button 
                 onClick={() => setSeconds(s => s + 300)} 
-                className="w-9 h-9 rounded-xl bg-gray-100 text-[#3C3830] flex items-center justify-center hover:bg-gray-200 transition-colors"
+                className="w-7 h-7 rounded-lg bg-white/40 hover:bg-white/80 border border-white/60 text-slate-700 flex items-center justify-center shadow-2xs transition-all text-[9px] font-black tracking-tighter active:scale-95"
               >
-                <span className="text-[10px] font-black">+5m</span>
+                +5M
               </button>
             )}
 
-            {/* Reset Button (only shows when paused/timer active) */}
+            {/* Clear Status Trigger */}
             {(seconds > 0 && !isActive) && (
-                <button 
-                onClick={() => {setSeconds(0); setIsActive(false);}}
-                className="w-9 h-9 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center"
-                >
-                <span className="material-symbols-outlined text-[18px]">restart_alt</span>
-                </button>
+              <button 
+                onClick={() => { setSeconds(0); setIsActive(false); }}
+                className="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-600 flex items-center justify-center transition-all active:scale-95"
+              >
+                <span className="material-symbols-outlined text-[14px] font-bold">restart_alt</span>
+              </button>
             )}
           </div>
+
         </div>
       </div>
     </motion.div>
