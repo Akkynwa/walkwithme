@@ -186,6 +186,8 @@ model Community {
 model CommunityGroup {
   id          String        @id @default(cuid())
   communityId String?       // Made optional so groups can exist inside a parent organization or standalone
+  firstName   String?               // Added field
+  lastName    String?               // Added field
   name        String
   description String        @db.Text
   category    String        // 'Bible Study', 'Meditation', 'Prayer', etc.
