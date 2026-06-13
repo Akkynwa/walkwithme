@@ -36,7 +36,7 @@ function AuthForm() {
       if (result?.error) {
         toast.error(result.error || 'Failed to sign in');
       } else if (result?.ok) {
-        toast.success('Welcome back to your sanctuary! ✨');
+        toast.success('Welcome back to your sanctuary! Opening the gates...');
         router.push(searchParams.get('callbackUrl') || '/');
         router.refresh();
       }
@@ -56,7 +56,7 @@ function AuthForm() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -70,7 +70,7 @@ function AuthForm() {
       if (!response.ok) {
         toast.error(data.error || 'Failed to create account');
       } else {
-        toast.success('Account created successfully! 🎉');
+        toast.success('Account created successfully! Please log in.');
         setActiveTab('login');
         setFormData({ ...formData, password: '', agreeTerms: false });
       }
@@ -371,7 +371,7 @@ export default function AuthPage() {
             <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-10 h-[500px] flex items-center justify-center">
               <div className="flex flex-col items-center gap-3">
                 <span className="material-symbols-outlined animate-spin text-amber-600 text-3xl">sync</span>
-                <p className="text-xs text-gray-600">Loading sanctuary...</p>
+                <p className="text-xs text-gray-600">entering sanctuary...</p>
               </div>
             </div>
           }>

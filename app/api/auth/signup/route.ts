@@ -6,13 +6,12 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => null);
     if (!body) {
-      return NextResponse.json({ error: 'Invalid or empty request payload' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
 
-    // 1. Destructure firstName and lastName sent from your form
-    const { email, password, firstName, lastName } = body;
+    // 1. Destructure the combined 'name' property passed from your frontend
+    const { email, password, name } = body;
 
-    // 2. Strict key verification fallback
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
@@ -29,7 +28,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Prevent duplicate users
     const existingUser = await prisma.user.findUnique({
       where: { email: trimmedEmail },
     });
@@ -41,23 +39,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Combine names safely before database insertion
-    const combinedName = [firstName?.trim(), lastName?.trim()].filter(Boolean).join(' ');
-
-    // 5. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 6. Create user within a stable transaction
+    // 2. Pass only the arguments recognized by your actual Prisma schema model
     const user = await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
           email: trimmedEmail,
-          name: combinedName || 'User', // Falls back nicely if both are blank
+          name: name?.trim() || 'User', // Matches schema parameter exactly
           password: hashedPassword,
         },
       });
 
-      // Matches your schema requirements perfectly
       await tx.userPreferences.create({
         data: {
           userId: newUser.id,
@@ -99,9 +92,9 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('Signup error:', error);
+    console.error('Signup execution track error:', error);
     return NextResponse.json(
-      { error: 'Failed to create user', details: error?.message || '' },
+      { error: 'Failed to create user profile setup', details: error?.message || '' },
       { status: 500 }
     );
   }
