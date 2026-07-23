@@ -11,6 +11,54 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Dynamic theme colors (controlled by CSS variables)
+        primary: {
+          50: 'var(--color-primary-50)',
+          100: 'var(--color-primary-100)',
+          200: 'var(--color-primary-200)',
+          300: 'var(--color-primary-300)',
+          400: 'var(--color-primary-400)',
+          500: 'var(--color-primary-500)',
+          600: 'var(--color-primary-600)',
+          700: 'var(--color-primary-700)',
+          800: 'var(--color-primary-800)',
+          900: 'var(--color-primary-900)',
+          DEFAULT: 'var(--color-primary)',
+        },
+        accent: {
+          50: 'var(--color-accent-50)',
+          100: 'var(--color-accent-100)',
+          200: 'var(--color-accent-200)',
+          300: 'var(--color-accent-300)',
+          400: 'var(--color-accent-400)',
+          500: 'var(--color-accent-500)',
+          600: 'var(--color-accent-600)',
+          700: 'var(--color-accent-700)',
+          800: 'var(--color-accent-800)',
+          900: 'var(--color-accent-900)',
+          DEFAULT: 'var(--color-accent)',
+        },
+        background: {
+          light: 'var(--bg-light)',
+          dark: 'var(--bg-dark)',
+          card: 'var(--bg-card)',
+          elevated: 'var(--bg-elevated)',
+          surface: 'var(--bg-surface)',
+          DEFAULT: 'var(--bg-light)',
+        },
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+          inverse: 'var(--text-inverse)',
+        },
+        border: {
+          light: 'var(--border-light)',
+          dark: 'var(--border-dark)',
+          DEFAULT: 'var(--border-default)',
+        },
+        
+        // Legacy color system (keep for backward compatibility)
         "inverse-surface": "#2b3137",
         "on-secondary": "#ffffff",
         "surface-bright": "#f7f9ff",
@@ -39,7 +87,7 @@ module.exports = {
         "on-background": "#161c22",
         "on-tertiary-fixed": "#1e1b16",
         "on-tertiary": "#ffffff",
-        primary: "#4d6054",
+        "legacy-primary": "#4d6054",
         outline: "#737873",
         "surface-container-highest": "#dde3eb",
         error: "#ba1a1a",
@@ -47,7 +95,7 @@ module.exports = {
         "on-tertiary-fixed-variant": "#4a4640",
         "on-tertiary-container": "#fffbff",
         "secondary-fixed": "#e4e2dd",
-        background: "#f7f9ff",
+        "legacy-background": "#f7f9ff",
         "tertiary-container": "#79746d",
         surface: "#f7f9ff",
         "tertiary-fixed": "#e9e1d9",
@@ -63,6 +111,8 @@ module.exports = {
         DEFAULT: "0.25rem",
         lg: "0.5rem",
         xl: "0.75rem",
+        "2xl": "1rem",
+        "3xl": "1.5rem",
         full: "9999px",
       },
       spacing: {
@@ -77,11 +127,11 @@ module.exports = {
         md: "24px",
       },
       fontFamily: {
-        // Mapping standard keys to the fonts used in your HTML spec
-        serif: ["Playfair Display", "serif"],
-        sans: ["Plus Jakarta Sans", "sans-serif"],
-        "display-lg": ["Playfair Display", "serif"],
-        "headline-md": ["Playfair Display", "serif"],
+        serif: ["Playfair Display", "Georgia", "serif"],
+        sans: ["Inter", "Plus Jakarta Sans", "system-ui", "sans-serif"],
+        "display-lg": ["Playfair Display", "Georgia", "serif"],
+        "headline-md": ["Playfair Display", "Georgia", "serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
         "display-lg-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }],
@@ -92,6 +142,14 @@ module.exports = {
         "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }],
         "headline-md-mobile": ["24px", { lineHeight: "32px", fontWeight: "600" }],
         "body-md": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+        xs: ["12px", { lineHeight: "16px" }],
+        sm: ["14px", { lineHeight: "20px" }],
+        base: ["16px", { lineHeight: "24px" }],
+        lg: ["18px", { lineHeight: "28px" }],
+        xl: ["20px", { lineHeight: "28px" }],
+        "2xl": ["24px", { lineHeight: "32px" }],
+        "3xl": ["30px", { lineHeight: "36px" }],
+        "4xl": ["36px", { lineHeight: "40px" }],
       },
       keyframes: {
         breathe: {
@@ -102,20 +160,54 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        slideIn: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        pulse: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
+        },
       },
       animation: {
         breathe: "breathe 10s ease-in-out infinite",
         "fade-in-up": "fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "fade-in": "fadeIn 0.5s ease-out forwards",
+        "slide-in": "slideIn 0.3s ease-out forwards",
+        "pulse-slow": "pulse 3s ease-in-out infinite",
+      },
+      backdropBlur: {
+        xs: "2px",
+        sm: "4px",
+        md: "8px",
+        lg: "12px",
+        xl: "24px",
+        "2xl": "40px",
+      },
+      boxShadow: {
+        "glass": "0 8px 32px rgba(0, 0, 0, 0.04)",
+        "glass-lg": "0 20px 50px rgba(0, 0, 0, 0.06)",
+        "glass-xl": "0 30px 70px rgba(0, 0, 0, 0.08)",
       },
     },
   },
   plugins: [
     require("@tailwindcss/forms"),
-    // Adding a small plugin to handle the Material Symbol "FILL" state more easily
+    require("@tailwindcss/typography"),
+    // Plugin for Material Symbol FILL state
     function ({ addUtilities }) {
       addUtilities({
         '.fill-0': { 'font-variation-settings': '"FILL" 0' },
         '.fill-1': { 'font-variation-settings': '"FILL" 1' },
+        '.wght-300': { 'font-variation-settings': '"wght" 300' },
+        '.wght-400': { 'font-variation-settings': '"wght" 400' },
+        '.wght-500': { 'font-variation-settings': '"wght" 500' },
+        '.wght-600': { 'font-variation-settings': '"wght" 600' },
+        '.wght-700': { 'font-variation-settings': '"wght" 700' },
       })
     }
   ],

@@ -107,7 +107,7 @@ export default function SpiritualPathPage() {
       </div>
 
       <Sidebar />
-      <Header />
+        
 
       <main className="relative z-10 lg:ml-56 p-6 md:p-10 pt-20 max-w-4xl mx-auto w-full">
         

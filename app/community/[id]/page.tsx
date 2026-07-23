@@ -46,7 +46,7 @@ export default async function GroupWorkspacePage({ params }: PageProps) {
       </div>
 
       <Sidebar />
-      <Header />
+        
 
       <main className="relative z-10 lg:ml-56 p-6 md:p-10 pt-24 lg:pt-32 max-w-6xl mx-auto w-full pb-24 font-sans">
         

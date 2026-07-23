@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
-import Header from '@/app/layout-components/Header';
 import { toast } from 'react-hot-toast';
-import Image from 'next/image';
+import { useTheme } from '../../context/ThemeContext';
 
 interface JournalEntry {
   id: string;
@@ -20,6 +19,7 @@ export default function HistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
+  const { isDark } = useTheme();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -62,155 +62,145 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-indigo-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-200/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
       <Sidebar />
-      <Header />
 
-      <main className="relative z-10 flex-grow lg:ml-56 px-6 md:px-10 py-20 max-w-4xl mx-auto w-full">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-px bg-gray-400/40" />
-            <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Written Legacy</span>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h1 className="text-3xl md:text-4xl font-serif text-gray-800 tracking-tight">Journal History</h1>
-            
-            <div className="flex items-center gap-2 text-[9px] text-gray-500">
-              <span className="material-symbols-outlined text-[14px]">edit_note</span>
-              <span>{entries.length} reflections</span>
+      {/* Main Content Stream Container */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-[850px] mx-auto w-full">
+        
+        {/* Editorial Feed Header bar */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+          <div>
+            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
+              <span className="material-symbols-outlined text-[14px]">auto_stories</span>
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Written Legacy</span>
             </div>
+            <h1 className="text-3xl md:text-4xl font-serif font-serif-sub font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+              Journal History
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="font-sans text-[12px] text-zinc-400 dark:text-zinc-500">
+              {entries.length} reflections
+            </span>
+            <Link 
+              href="/journal/create"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] px-4 py-1.5 rounded-full transition-colors shadow-sm inline-flex items-center gap-1.5"
+            >
+              <span className="material-symbols-outlined text-[14px]">add</span>
+              <span>New Reflection</span>
+            </Link>
           </div>
         </div>
         
-        {/* Search and Filter Bar */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
-          {/* Search */}
+        {/* Compact Clean Search and Order Row */}
+        <div className="flex items-center gap-3 mb-10 max-w-[720px] mx-auto">
           <div className="relative flex-1">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 text-[16px]">
+              search
+            </span>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search reflections..."
-              className="w-full bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl py-2.5 pl-9 pr-4 text-sm font-serif italic text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all"
+              className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-900 rounded-lg py-2 pl-9 pr-4 text-[13px] font-sans text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 focus:outline-none focus:border-zinc-300 dark:focus:border-zinc-700 transition-colors"
             />
           </div>
 
-          {/* Sort Toggle */}
           <button 
             onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl text-[9px] font-black tracking-wider text-indigo-600 uppercase hover:bg-white/60 hover:border-indigo-300 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-lg text-[12px] font-medium font-sans text-zinc-600 dark:text-zinc-400 transition-colors"
           >
             <span className="material-symbols-outlined text-[14px]">
               {sortOrder === 'desc' ? 'south' : 'north'}
             </span>
-            {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
+            <span>{sortOrder === 'desc' ? 'Newest' : 'Oldest'}</span>
           </button>
         </div>
 
-        {/* Create New Entry Button */}
-        <div className="mb-6">
-          <Link 
-            href="/journal/create"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-[9px] font-black tracking-wider uppercase hover:bg-indigo-700 hover:scale-[1.02] transition-all shadow-md"
-          >
-            <span className="material-symbols-outlined text-[14px]">add</span>
-            New Reflection
-          </Link>
-        </div>
-
-        {/* Entries List */}
-        <div className="space-y-4">
+        {/* Dynamic Publications Stream Feed */}
+        <div className="max-w-[720px] mx-auto">
           {loading ? (
-            <div className="space-y-3">
+            <div className="space-y-8">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-28 w-full bg-white/40 backdrop-blur-sm animate-pulse rounded-xl border border-white/60" />
+                <div key={i} className="animate-pulse pb-8 border-b border-zinc-100 dark:border-zinc-900">
+                  <div className="h-4 w-24 bg-zinc-100 dark:bg-zinc-900 rounded mb-3" />
+                  <div className="h-6 w-2/3 bg-zinc-200 dark:bg-zinc-800 rounded mb-2" />
+                  <div className="h-4 w-full bg-zinc-100 dark:bg-zinc-900 rounded" />
+                </div>
               ))}
             </div>
           ) : filteredAndSortedEntries.length > 0 ? (
-            filteredAndSortedEntries.map((entry) => (
-              <Link href={`/journal/${entry.id}`} key={entry.id} className="block group">
-                <article className="bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl p-5 hover:bg-white/60 hover:shadow-xl hover:border-indigo-200 transition-all duration-300">
-                  <div className="flex justify-between items-start gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="material-symbols-outlined text-indigo-500 text-[12px]">calendar_today</span>
-                        <p className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">
-                          {new Date(entry.createdAt).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            year: 'numeric' 
-                          })}
-                        </p>
+            <div className="space-y-0">
+              {filteredAndSortedEntries.map((entry) => (
+                <Link href={`/journal/${entry.id}`} key={entry.id} className="block group border-b border-zinc-100 dark:border-zinc-900 py-8 first:pt-0 last:border-b-0">
+                  <article className="transition-all">
+                    
+                    {/* Excerpt Meta Header Strip */}
+                    <div className="flex items-center gap-3 text-[11px] font-sans text-zinc-400 dark:text-zinc-500 mb-2.5">
+                      <span className="font-mono">
+                        {new Date(entry.createdAt).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
+                      </span>
+                      <span>•</span>
+                      <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400">
+                        <span className="material-symbols-outlined text-[12px]">{getMoodIcon(entry.mood)}</span>
+                        <span className="font-medium text-[10px] uppercase tracking-wider">{entry.mood}</span>
                       </div>
-                      <h3 className="text-lg font-serif text-gray-800 group-hover:text-indigo-700 transition-colors truncate">
-                        {entry.title}
-                      </h3>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 rounded-full shrink-0">
-                      <span className="material-symbols-outlined text-indigo-500 text-[12px]">{getMoodIcon(entry.mood)}</span>
-                      <span className="text-[8px] font-bold text-indigo-600 uppercase tracking-wider">{entry.mood}</span>
+
+                    {/* Post Title */}
+                    <h3 className="text-xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 group-hover:text-orange-600 dark:group-hover:text-orange-500 transition-colors mb-2 leading-snug">
+                      {entry.title || 'Untitled Reflection'}
+                    </h3>
+
+                    {/* Excerpt Text Field */}
+                    <p className="text-[14px] font-serif leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                      {entry.content || 'This reflection was committed without secondary context.'}
+                    </p>
+
+                    {/* Understated Read Interaction trigger */}
+                    <div className="flex items-center gap-1 mt-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-4px] group-hover:translate-x-0">
+                      <span className="text-[11px] font-sans font-medium text-orange-600 dark:text-orange-500">Read reflection</span>
+                      <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[12px]">arrow_forward</span>
                     </div>
-                  </div>
-                  <p className="text-[11px] font-serif italic text-gray-600 line-clamp-2 leading-relaxed pl-5">
-                    {entry.content}
-                  </p>
-                  <div className="flex items-center gap-1 mt-2 pl-5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[7px] font-medium text-indigo-500 uppercase tracking-wider">Read</span>
-                    <span className="material-symbols-outlined text-indigo-500 text-[10px]">arrow_forward</span>
-                  </div>
-                </article>
-              </Link>
-            ))
+
+                  </article>
+                </Link>
+              ))}
+            </div>
           ) : (
-            <div className="text-center py-16 bg-white/30 backdrop-blur-sm border border-dashed border-indigo-200 rounded-2xl">
-              <div className="w-14 h-14 rounded-xl bg-indigo-100 flex items-center justify-center mx-auto mb-3">
-                <span className="material-symbols-outlined text-indigo-400 text-2xl">edit_note</span>
+            /* Substack Empty Clean Canvas Frame */
+            <div className="text-center py-20 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl bg-transparent">
+              <div className="w-12 h-12 rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-zinc-400 dark:text-zinc-500 text-xl">edit_note</span>
               </div>
-              <p className="text-sm text-gray-500 font-serif italic mb-2">No reflections found</p>
-              <p className="text-[10px] text-gray-400">
-                {searchQuery ? 'Try a different search term' : 'Start writing your first reflection'}
+              <p className="text-sm font-serif italic text-zinc-500 dark:text-zinc-400 mb-1">No reflections cataloged</p>
+              <p className="text-[12px] text-zinc-400 dark:text-zinc-500 font-sans">
+                {searchQuery ? 'Try matching alternative phrasing descriptors.' : 'Begin writing your permanent archives.'}
               </p>
               {!searchQuery && (
                 <Link 
                   href="/journal/create"
-                  className="inline-flex items-center gap-1 mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg text-[9px] font-black uppercase tracking-wider hover:bg-indigo-700 transition-all"
+                  className="mt-5 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 font-medium text-[11px] px-4 py-2 rounded-full transition-colors inline-flex items-center gap-1"
                 >
-                  <span className="material-symbols-outlined text-[12px]">add</span>
-                  Write First Entry
+                  <span className="material-symbols-outlined text-[13px]">add</span>
+                  <span>Write First Entry</span>
                 </Link>
               )}
             </div>
           )}
         </div>
 
-        {/* Decorative Footer */}
-        {filteredAndSortedEntries.length > 0 && (
-          <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-indigo-400" />
-            <span className="material-symbols-outlined text-indigo-400 text-sm">edit_note</span>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-indigo-400" />
-          </div>
-        )}
+        {/* Elegant Centered System Rule Dot Footer */}
+        <div className="mt-24 pt-8 border-t border-zinc-100 dark:border-zinc-900 flex justify-center">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+        </div>
       </main>
     </div>
   );

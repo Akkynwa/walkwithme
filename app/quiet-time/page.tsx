@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../layout-components/Sidebar';
 import Header from '../layout-components/Header';
-import Image from 'next/image';
+import { useTheme } from './../context/ThemeContext';
 
 const modules = [
   {
@@ -13,155 +13,119 @@ const modules = [
     desc: 'Begin with centering sounds, high-fidelity frequencies, or guided prayer.',
     path: '/quiet-time/audio',
     icon: 'graphic_eq',
-    color: 'from-amber-500/10 to-amber-600/5',
-    iconColor: 'text-amber-600',
-    borderHover: 'group-hover:border-amber-300',
   },
   {
     title: 'Scripture Reading',
     desc: "Engage deeply with today's dynamic, curated passage matrix.",
     path: '/quiet-time/reading',
     icon: 'menu_book',
-    color: 'from-amber-500/10 to-amber-600/5',
-    iconColor: 'text-amber-600',
-    borderHover: 'group-hover:border-amber-300',
   },
   {
     title: 'Heart Reflection',
     desc: 'Journal your personal thoughts, divine prompts, and revelations.',
     path: '/quiet-time/reflection',
     icon: 'edit_note',
-    color: 'from-amber-500/10 to-amber-600/5',
-    iconColor: 'text-amber-600',
-    borderHover: 'group-hover:border-amber-300',
   },
   {
     title: 'Daily Summary',
     desc: 'Review metrics, track your active streak, and seal your session insights.',
     path: '/quiet-time/summary',
     icon: 'task_alt',
-    color: 'from-amber-500/10 to-amber-600/5',
-    iconColor: 'text-amber-600',
-    borderHover: 'group-hover:border-amber-300',
   },
 ];
 
 export default function QuietTimeLobby() {
   const router = useRouter();
+  const { isDark } = useTheme();
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${
+      isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
+    }`}>
       <Sidebar />
       
-      <div className="flex-1 lg:ml-56 relative">
-        <Header />
+      <div className="flex-1 lg:ml-64 relative">
 
-        <main className="relative z-10 pt-20 pb-16 px-6 md:px-10 max-w-5xl mx-auto">
+        {/* Main Column Framework Content Area */}
+        <main className="pt-24 px-4 md:px-8 pb-24 max-w-5xl mx-auto w-full">
           
-          {/* Sacred Hero Header */}
-          <header className="mb-12 text-center md:text-left relative">
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-              <div className="w-8 h-px bg-amber-400/40" />
-              <span className="text-[8px] font-sans font-black uppercase tracking-wider text-amber-600">
-                The Sanctuary Ecosystem
-              </span>
+          {/* Editorial Substack Header Row */}
+          <header className="mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
+              <span className="material-symbols-outlined text-[14px]">self_improvement</span>
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">The Sanctuary Ecosystem</span>
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-800 tracking-tight mb-3">
+            <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
               Quiet Time Sanctuary
             </h1>
-            <div className="w-12 h-0.5 bg-gradient-to-r from-amber-500 to-amber-600 mb-5 mx-auto md:mx-0 rounded-full" />
-            <p className="text-gray-600 max-w-xl font-sans text-sm leading-relaxed">
-              Find your absolute center. Follow the architectural sequence below to complete your daily ritual and sync with your spiritual ledger.
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-sans mt-1.5 max-w-xl leading-relaxed">
+              Find your absolute center. Follow the sequence below to complete your daily ritual and sync your progress.
             </p>
           </header>
 
-          {/* Architectural Journey Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Clean Geometric Module Journey Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {modules.map((mod, idx) => (
               <Link 
                 key={mod.path} 
                 href={mod.path}
-                className={`group relative bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1 hover:bg-white/60 ${mod.borderHover}`}
+                className="group relative flex flex-col justify-between p-6 border border-zinc-200 dark:border-zinc-800 rounded-xl transition-colors hover:border-zinc-300 dark:hover:border-zinc-700 bg-transparent select-none outline-none"
               >
-                <div className="flex items-start justify-between">
-                  {/* Icon Frame */}
-                  <div className={`p-3 rounded-lg bg-gradient-to-br ${mod.color} border border-white/60 mb-5 transition-all duration-500 group-hover:shadow-md`}>
-                    <span className={`material-symbols-outlined text-[22px] ${mod.iconColor}`}>
-                      {mod.icon}
+                <div>
+                  <div className="flex items-start justify-between mb-4">
+                    {/* Minimalist Icon Indicator */}
+                    <div className="text-orange-600 dark:text-orange-500">
+                      <span className="material-symbols-outlined text-[20px]">
+                        {mod.icon}
+                      </span>
+                    </div>
+                    {/* Index Sequence Counter */}
+                    <span className="text-2xl font-serif font-bold italic text-zinc-200 dark:text-zinc-800 transition-colors group-hover:text-orange-600/20 dark:group-hover:text-orange-500/20">
+                      0{idx + 1}
                     </span>
                   </div>
-                  {/* Sequence Number */}
-                  <span className="text-4xl font-black italic text-gray-300/30 group-hover:text-amber-400/20 transition-colors duration-500 select-none">
-                    0{idx + 1}
-                  </span>
+
+                  <h3 className="text-base font-serif font-medium text-zinc-800 dark:text-zinc-200 mb-1 transition-colors group-hover:text-orange-600 dark:group-hover:text-orange-500">
+                    {mod.title}
+                  </h3>
+                  <p className="text-[13px] font-sans text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-sm mb-6">
+                    {mod.desc}
+                  </p>
                 </div>
 
-                <h3 className="text-lg font-serif font-bold text-gray-800 mb-2 tracking-wide">
-                  {mod.title}
-                </h3>
-                <p className="font-sans text-[10px] leading-relaxed text-gray-600 mb-5 max-w-sm">
-                  {mod.desc}
-                </p>
-
-                {/* Micro-Interaction CTA */}
-                <div className="flex items-center text-[8px] font-sans font-black uppercase tracking-wider text-amber-600 -translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                  Enter Module 
+                {/* Understated Micro CTA Link */}
+                <div className="flex items-center text-[11px] font-sans font-medium text-orange-600 dark:text-orange-500 -translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">
+                  <span>Enter Module</span>
                   <span className="material-symbols-outlined ml-1 text-[12px]">arrow_forward</span>
                 </div>
               </Link>
             ))}
           </div>
 
-          {/* Premium Call to Action Block */}
-          <div className="mt-10 p-6 md:p-8 rounded-xl bg-gradient-to-br from-amber-700 to-amber-800 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-            {/* Background Light Spill */}
-            <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -left-16 -top-16 w-64 h-64 bg-black/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start gap-1.5 mb-2">
-                <span className="material-symbols-outlined text-amber-300 text-[14px]">self_improvement</span>
-                <span className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-200">
-                  Recommended Flow
-                </span>
+          {/* Standardized Call to Action Block */}
+          <div className="mt-6 p-6 border border-zinc-200 dark:border-zinc-800 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-transparent">
+            <div className="flex-1">
+              <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-1.5">
+                <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+                <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Recommended Flow</span>
               </div>
-              <h2 className="text-xl md:text-2xl font-serif font-bold mb-1 tracking-tight">Ready to align?</h2>
-              <p className="font-sans text-[10px] text-amber-100/80 max-w-sm leading-relaxed">
-                We recommend processing via the default liturgy matrix. Start with Ambient Audio to calm cognitive noise.
+              <h2 className="text-base font-serif font-medium text-zinc-900 dark:text-zinc-50 mb-1">Ready to align?</h2>
+              <p className="text-[13px] font-sans text-zinc-500 dark:text-zinc-400 max-w-xl leading-relaxed">
+                We recommend processing via the default sequential track. Begin with Ambient Audio to settle cognitive noise before diving into text.
               </p>
             </div>
             
             <button 
               onClick={() => router.push('/quiet-time/audio')}
-              className="relative z-10 px-8 py-3 bg-white text-amber-700 rounded-lg font-sans font-black text-[9px] tracking-wider hover:bg-amber-50 hover:scale-[1.02] shadow-lg transition-all active:scale-[0.98] whitespace-nowrap"
+              className="w-full md:w-auto flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] px-5 py-2.5 rounded-full transition-colors shadow-sm whitespace-nowrap outline-none"
             >
-              START LITURGY
+              Start Liturgy
             </button>
           </div>
 
-          {/* Decorative Footer */}
-          <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-            <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+          {/* System Central Anchor Divider Dot */}
+          <div className="mt-24 flex justify-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
           </div>
         </main>
       </div>

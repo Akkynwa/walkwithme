@@ -12,6 +12,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'usercontent.flodesk.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
         pathname: '/**',
       },
@@ -20,7 +25,6 @@ const nextConfig = {
         hostname: 'ui-avatars.com',
         pathname: '/api/**',
       },
-      // Expanded Google patterns to catch all variations
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',

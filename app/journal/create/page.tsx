@@ -5,9 +5,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
-import Header from '@/app/layout-components/Header';
 import { toast } from 'react-hot-toast';
-import Image from 'next/image';
+import { useTheme } from '../../context/ThemeContext';
 
 const MOOD_OPTIONS = [
   { label: 'Peaceful', icon: 'spa' },
@@ -21,6 +20,7 @@ const MOOD_OPTIONS = [
 export default function CreateJournalPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { isDark } = useTheme();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -64,152 +64,117 @@ export default function CreateJournalPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-indigo-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-200/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
       <Sidebar />
-      <Header />
 
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-3xl mx-auto w-full">
-        {/* Header */}
-        <section className="mb-10">
-          <Link href="/journal" className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-colors mb-5 group">
-            <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
-            <span className="text-[9px] font-black tracking-wider uppercase">Back to Library</span>
+      {/* Main Content Column spacing configured identically to standard Substack specs */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-[850px] mx-auto w-full">
+        
+        {/* Navigation Action Strip */}
+        <div className="flex items-center justify-between mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+          <Link href="/journal" className="flex items-center gap-2 transition-colors text-zinc-500 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-500 font-sans text-[12px] font-medium">
+            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Back to Journal</span>
           </Link>
-          
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-px bg-gray-400/40" />
-            <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">New Entry</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-serif text-gray-800 tracking-tight">Write a Reflection</h1>
-          <p className="text-sm text-gray-600 italic border-l-2 border-indigo-400 pl-4 mt-2">
-            Pour your heart out; this space is yours.
-          </p>
-        </section>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-8">
-          
-          {/* Title Input */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-indigo-500 text-[14px]">title</span>
-              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">Entry Title</label>
-            </div>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Give this moment a name..."
-              className="w-full bg-transparent border-b border-gray-200 py-3 text-xl md:text-2xl font-serif text-gray-800 placeholder:text-gray-300 focus:outline-none focus:border-indigo-500 transition-all"
-            />
-          </div>
+          <span className="font-sans text-[11px] font-medium tracking-wider text-zinc-400 dark:text-zinc-500 uppercase">
+            Draft
+          </span>
+        </div>
 
-          {/* Mood Selector */}
+        {/* Editorial Writer Container */}
+        <form onSubmit={handleSubmit} className="max-w-[720px] mx-auto space-y-10">
+          
+          {/* Metadata Meta String Row: Mood Dropdown / Config */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-indigo-500 text-[14px]">favorite</span>
-              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">Current Heart State</label>
+            <div className="flex items-center gap-1.5 text-zinc-400 dark:text-zinc-500">
+              <span className="material-symbols-outlined text-[14px]">favorite</span>
+              <label className="text-[10px] font-sans font-semibold uppercase tracking-wider">Current Heart State</label>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {MOOD_OPTIONS.map((mood) => (
                 <button
                   key={mood.label}
                   type="button"
                   onClick={() => setFormData({ ...formData, mood: mood.label })}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold transition-all border ${
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-medium transition-colors font-sans border ${
                     formData.mood === mood.label 
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-500/20 scale-105' 
-                      : 'bg-white/50 border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-600'
+                      ? 'bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100 text-white dark:text-zinc-950' 
+                      : 'bg-transparent border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:border-zinc-400 dark:hover:border-zinc-600'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[14px]">{mood.icon}</span>
+                  <span className="material-symbols-outlined text-[13px]">{mood.icon}</span>
                   {mood.label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Content Textarea */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-indigo-500 text-[14px]">edit_note</span>
-              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">The Reflection</label>
-            </div>
-            <textarea
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="What is speaking to your heart today?"
-              rows={10}
-              className="w-full p-5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl text-base font-serif italic text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all resize-none leading-relaxed"
+          {/* Title Editor Row */}
+          <div className="space-y-1">
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Title..."
+              className="w-full bg-transparent text-3xl md:text-4xl font-serif font-serif-sub font-semibold tracking-tight pb-3 focus:outline-none text-zinc-900 dark:text-zinc-50 placeholder-zinc-300 dark:placeholder-zinc-700"
             />
           </div>
 
-          {/* Tags */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-indigo-500 text-[14px]">local_offer</span>
-              <label className="text-[8px] font-black text-indigo-600 uppercase tracking-wider">Keywords (Separated by commas)</label>
+          {/* Content Field Row */}
+          <div className="space-y-1">
+            <textarea
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              placeholder="Pour out your heart..."
+              rows={12}
+              className="w-full bg-transparent text-[16px] md:text-[17px] font-serif leading-relaxed focus:outline-none transition-all resize-none text-zinc-800 dark:text-zinc-200 placeholder-zinc-400"
+            />
+          </div>
+
+          {/* Tags String Row */}
+          <div className="space-y-2 pt-4 border-t border-zinc-100 dark:border-zinc-900">
+            <div className="flex items-center gap-1.5 text-zinc-400 dark:text-zinc-500">
+              <span className="material-symbols-outlined text-[14px]">local_offer</span>
+              <label className="text-[10px] font-sans font-semibold uppercase tracking-wider">Keywords (Separated by commas)</label>
             </div>
             <input
               type="text"
               value={formData.tags}
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-              placeholder="Grace, breakthrough, morning reflection"
-              className="w-full bg-transparent border-b border-gray-200 py-2 text-sm text-gray-600 focus:outline-none focus:border-indigo-500 transition-all"
+              placeholder="Grace, breakthrough, morning reflection..."
+              className="w-full bg-transparent border-b border-zinc-100 dark:border-zinc-900 py-1 text-[13px] text-zinc-600 dark:text-zinc-400 focus:outline-none focus:border-zinc-300 dark:focus:border-zinc-700 transition-colors placeholder-zinc-300 dark:placeholder-zinc-700 font-sans"
             />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-8">
+          {/* Action Row */}
+          <div className="flex items-center gap-6 pt-6">
             <button
               type="submit"
               disabled={loading}
-              className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl text-[10px] font-black tracking-wider uppercase hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] transition-all disabled:opacity-50"
+              className="bg-orange-600 hover:bg-orange-700 text-white font-medium text-[13px] px-6 py-2.5 rounded-full transition-colors shadow-sm disabled:opacity-50"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined animate-spin text-[14px]">sync</span>
+                <span className="flex items-center gap-2">
+                  <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
                   Preserving...
                 </span>
               ) : (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined text-[14px]">save</span>
-                  Seal Entry
-                </span>
+                'Publish Reflection'
               )}
             </button>
             <Link
               href="/journal"
-              className="text-[9px] font-bold text-gray-400 uppercase tracking-wider hover:text-red-500 transition-colors"
+              className="text-[12px] font-sans font-medium text-zinc-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
             >
-              Discard Changes
+              Discard
             </Link>
           </div>
         </form>
 
-        {/* Decorative Footer */}
-        <div className="mt-16 flex justify-center items-center gap-4 opacity-30">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-indigo-400" />
-          <span className="material-symbols-outlined text-indigo-400 text-sm">edit_note</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-indigo-400" />
+        {/* Minimalist Substack System Rule Line Divider Footer */}
+        <div className="mt-24 pt-8 border-t border-zinc-100 dark:border-zinc-900 flex justify-center">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
         </div>
       </main>
     </div>

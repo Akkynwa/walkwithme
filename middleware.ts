@@ -2,8 +2,8 @@ import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// 1. Set this to 'true' to enable authentication checks
-const AUTH_ENABLED = false; 
+// Enable route protection so authenticated pages are guarded consistently.
+const AUTH_ENABLED = true; 
 
 const protectedRoutes = [
   '/journal',

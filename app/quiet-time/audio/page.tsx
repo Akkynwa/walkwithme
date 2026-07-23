@@ -4,9 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { DownloadButton } from '@/components/audio/DownloadButton';
-import Image from 'next/image';
+import { useTheme } from '../../context/ThemeContext';
 
-// Full Language Configuration Mapping
 const BIBLE_VERSIONS = [
   { id: 'de4e12af7f29f59f-01', name: 'KJV', lang: 'English' },
   { id: '06125ad3d5662098-01', name: 'NIV', lang: 'English' },
@@ -14,7 +13,6 @@ const BIBLE_VERSIONS = [
   { id: 'ibo-izii-id', name: 'Izii', lang: 'Igbo' }
 ];
 
-// Complete canonical structural reference map for proper API serialization
 const BIBLE_STRUCTURE = [
   { name: 'Genesis', id: 'GEN', chapters: 50 },
   { name: 'Exodus', id: 'EXO', chapters: 40 },
@@ -41,7 +39,7 @@ const BIBLE_STRUCTURE = [
   { name: 'Isaiah', id: 'ISA', chapters: 66 },
   { name: 'Jeremiah', id: 'JER', chapters: 52 },
   { name: 'Lamentations', id: 'LAM', chapters: 5 },
-  { name: 'Ezekiel', id: 'EZR', chapters: 48 },
+  { name: 'Ezekiel', id: 'EZK', chapters: 48 }, 
   { name: 'Daniel', id: 'DAN', chapters: 12 },
   { name: 'Hosea', id: 'HOS', chapters: 14 },
   { name: 'Joel', id: 'JOL', chapters: 3 },
@@ -80,7 +78,7 @@ const BIBLE_STRUCTURE = [
   { name: '1 John', id: '1JN', chapters: 5 },
   { name: '2 John', id: '2JN', chapters: 1 },
   { name: '3 John', id: '3JN', chapters: 1 },
-  { name: 'Jude', 'id': 'JUD', chapters: 1 },
+  { name: 'Jude', id: 'JUD', chapters: 1 },
   { name: 'Revelation', id: 'REV', chapters: 22 }
 ];
 
@@ -90,12 +88,13 @@ interface VerseLine {
 }
 
 export default function QuietTimeAudioPage() {
+  const { isDark } = useTheme();
+  
   const [book, setBook] = useState('Psalms');
   const [chapter, setChapter] = useState(23);
   const [version, setVersion] = useState(BIBLE_VERSIONS[0].id);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   
-  // Real dynamic verse line array state mapping
   const [verses, setVerses] = useState<VerseLine[]>([]);
   const [isLoadingText, setIsLoadingText] = useState(false);
   
@@ -109,7 +108,6 @@ export default function QuietTimeAudioPage() {
   const passageReference = `${book} ${chapter}`;
   const selectedBookData = BIBLE_STRUCTURE.find(b => b.name === book) || BIBLE_STRUCTURE[18];
 
-  // Fetch real-time audio route configurations
   const fetchSanctuaryAudio = useCallback(async () => {
     setIsLoadingAudio(true);
     setAudioUrl(null); 
@@ -118,18 +116,16 @@ export default function QuietTimeAudioPage() {
       const data = await res.json();
       if (data.url) setAudioUrl(data.url);
     } catch (err) {
-      console.error("Sanctuary Audio Engine failure:", err);
+      console.error("Audio failure:", err);
     } finally {
       setIsLoadingAudio(false);
     }
   }, [selectedBookData, chapter, version]);
 
-  // Combined tracking effect dependencies updates text + journal syncs cleanly
   useEffect(() => {
     async function fetchScriptureText() {
       setIsLoadingText(true);
       try {
-        // Calling public REST API mapping engine layers directly
         const res = await fetch(`https://bible-api.com/${book}+${chapter}?translation=kjv`);
         if (res.ok) {
           const data = await res.json();
@@ -140,7 +136,7 @@ export default function QuietTimeAudioPage() {
           setVerses(parsedVerses);
         }
       } catch (err) {
-        console.error("Failed to collect text layout nodes:", err);
+        console.error("Text engine drop:", err);
       } finally {
         setIsLoadingText(false);
       }
@@ -153,7 +149,7 @@ export default function QuietTimeAudioPage() {
         const data = await res.json();
         setNoteContent(data.content || data.body || '');
       } catch (err) {
-        console.error("Failed to query journal pipeline:", err);
+        console.error("Journal pipeline query error:", err);
       } finally {
         setIsLoadingNote(false);
       }
@@ -179,160 +175,185 @@ export default function QuietTimeAudioPage() {
       });
       if (!res.ok) throw new Error('Journal transaction failed');
     } catch (err) {
-      console.error("Failed to commit entry to journals ledger:", err);
+      console.error("Journal commit trace error:", err);
     } finally {
       setIsSavingNote(false);
     }
   };
 
   return (
-    <div className="relative flex min-h-screen overflow-x-hidden">
-      {/* Background Image Elements */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Ambient Pulsing Glow Filters */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${
+      isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
+    }`}>
+      
       <Sidebar />
 
-      <main className="relative z-10 lg:ml-56 flex-1 px-4 md:px-10 py-8 max-w-5xl mx-auto pb-20 w-full">
+      {/* Main viewport frame safely pushing below global header space */}
+      <main className="lg:ml-56 flex-1 pt-16 md:pt-20 grid grid-cols-1 md:grid-cols-2 h-screen overflow-hidden box-border">
         
-        {/* Dynamic Selector Bar Section */}
-        <section className="mb-8 bg-white/40 backdrop-blur-xl border border-white/60 p-3 rounded-xl flex flex-wrap md:flex-nowrap items-center gap-3 shadow-lg">
+        {/* LEFT COMPARTMENT: Centered Hero Context, Configuration Panel & Audio Player Deck */}
+        <div className={`flex flex-col items-center justify-start p-6 md:p-8 border-b md:border-b-0 md:border-r overflow-y-auto space-y-8 w-full ${
+          isDark ? 'border-zinc-900 bg-zinc-950' : 'border-zinc-100 bg-zinc-50/40'
+        }`}>
           
-          {/* Complete Scripture Book Dropdown Selector */}
-          <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 flex-1 min-w-[140px]">
-            <span className="material-symbols-outlined text-amber-600 text-[16px]">menu_book</span>
-            <select 
-              value={book} 
-              onChange={(e) => {
-                setBook(e.target.value);
-                setChapter(1); // Auto reset chapter to 1 when shifting books safely
-              }}
-              className="bg-transparent text-xs font-sans font-semibold text-gray-800 outline-none w-full appearance-none cursor-pointer"
-            >
-              {BIBLE_STRUCTURE.map(b => <option key={b.id} value={b.name}>{b.name}</option>)}
-            </select>
-          </div>
-
-          {/* Scaled Chapter Input Sync Dropdown */}
-          <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 w-full md:w-32">
-            <span className="text-[8px] font-sans font-black text-amber-600 uppercase">Chapter</span>
-            <select 
-              value={chapter}
-              onChange={(e) => setChapter(Number(e.target.value))}
-              className="bg-transparent text-xs font-sans font-semibold text-gray-800 outline-none w-full appearance-none cursor-pointer"
-            >
-              {Array.from({ length: selectedBookData.chapters }, (_, idx) => (
-                <option key={idx + 1} value={idx + 1}>{idx + 1}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Language Version Dropdown Selection */}
-          <div className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-lg border border-white/60 flex-1 min-w-[120px]">
-            <span className="material-symbols-outlined text-amber-600 text-[16px]">language</span>
-            <select 
-              value={version} 
-              onChange={(e) => setVersion(e.target.value)}
-              className="bg-transparent text-xs font-sans font-semibold text-gray-800 outline-none w-full appearance-none cursor-pointer"
-            >
-              {BIBLE_VERSIONS.map(v => <option key={v.id} value={v.id}>{v.name} ({v.lang})</option>)}
-            </select>
-          </div>
-
-          {/* Audio Playback Speed Modifier */}
-          <div className="flex items-center gap-1 px-2 border-l border-gray-200/80">
-            <span className="material-symbols-outlined text-amber-600 text-[14px]">speed</span>
-            <select 
-              value={playbackSpeed}
-              onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
-              className="bg-transparent text-[10px] font-sans font-bold text-gray-700 outline-none cursor-pointer"
-            >
-              <option value={0.8}>0.8x</option>
-              <option value={1}>1.0x</option>
-              <option value={1.2}>1.2x</option>
-              <option value={1.5}>1.5x</option>
-            </select>
-          </div>
-        </section>
-
-        {/* Media Control Card Section */}
-        <section className="mb-12 flex flex-col items-center">
-          <div className="relative w-full max-w-3xl">
-            {isLoadingAudio && (
-              <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-[8px] font-sans font-black uppercase tracking-wider text-gray-600">Preparing Sanctuary Audio...</p>
-                </div>
-              </div>
-            )}
+          {/* Left Column Content Wrapper: Enforces consistent bounding lines */}
+          <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-2">
             
-            <AudioPlayer
-              src={audioUrl || ''} 
-              title={book}
-              book={book}
-              chapter={chapter}
-              playbackSpeed={playbackSpeed}
-              bgImage="https://images.unsplash.com/photo-1501854140801-50d01698950b"
-            />
-          </div>
-          
-          <div className="mt-6 flex gap-6">
-            {audioUrl && <DownloadButton audioUrl={audioUrl} title={`${book}_${chapter}`} />}
-            <button className="group flex flex-col items-center gap-1 transition-all">
-              <div className="w-10 h-10 rounded-full border border-gray-300 bg-white/60 flex items-center justify-center text-gray-600 group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600 transition-all shadow-sm">
-                <span className="material-symbols-outlined text-[18px]">bookmark_border</span>
-              </div>
-              <span className="text-[8px] font-sans font-bold text-gray-500 uppercase tracking-wider">Save</span>
-            </button>
-          </div>
-        </section>
-
-        {/* Re-modeled Interactive Line Scripture Reader Card Section */}
-        <section className="bg-white/40 backdrop-blur-xl border border-white/60 p-6 md:p-10 rounded-2xl shadow-xl relative overflow-hidden">
-          <div className="absolute top-4 right-6 opacity-5 select-none pointer-events-none">
-             <span className="text-[7rem] font-black text-gray-800">{chapter}</span>
-          </div>
-          
-          <div className="relative z-10 w-full">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-px bg-amber-400/40" />
-              <span className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Scripture Study Sanctuary</span>
+            {/* Centered Hero Context Header */}
+            <div className="w-full text-center px-1">
+              <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 font-sans">
+                Audio Sanctuary
+              </h1>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 font-medium leading-relaxed max-w-xs mx-auto">
+                Stream scripture, configure translations, and synchronize your devotions.
+              </p>
             </div>
             
-            <h2 className="text-2xl font-serif font-bold text-gray-800 mb-6">{book} {chapter}</h2>
+            {/* Uniform Parameter Selection Panel */}
+            <div className={`w-full p-4 border rounded-2xl space-y-4 shadow-sm ${
+              isDark ? 'bg-zinc-900/50 border-zinc-900' : 'bg-white border-zinc-200'
+            }`}>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Book Picker */}
+                <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border relative ${
+                  isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
+                }`}>
+                  <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[16px] shrink-0">menu_book</span>
+                  <select 
+                    value={book} 
+                    onChange={(e) => {
+                      setBook(e.target.value);
+                      setChapter(1);
+                    }}
+                    className="bg-transparent text-xs font-sans font-medium text-zinc-800 dark:text-zinc-200 outline-none w-full appearance-none cursor-pointer"
+                  >
+                    {BIBLE_STRUCTURE.map(b => (
+                      <option key={b.id} value={b.name} className={isDark ? 'bg-zinc-900' : 'bg-white'}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Chapter Picker */}
+                <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border relative ${
+                  isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
+                }`}>
+                  <span className="text-[10px] font-sans font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider shrink-0">Ch</span>
+                  <select 
+                    value={chapter}
+                    onChange={(e) => setChapter(Number(e.target.value))}
+                    className="bg-transparent text-xs font-sans font-medium text-zinc-800 dark:text-zinc-200 outline-none w-full appearance-none cursor-pointer"
+                  >
+                    {Array.from({ length: selectedBookData.chapters }, (_, idx) => (
+                      <option key={idx + 1} value={idx + 1} className={isDark ? 'bg-zinc-900' : 'bg-white'}>
+                        {idx + 1}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Version Picker */}
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border relative w-full ${
+                isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
+              }`}>
+                <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[16px] shrink-0">language</span>
+                <select 
+                  value={version} 
+                  onChange={(e) => setVersion(e.target.value)}
+                  className="bg-transparent text-xs font-sans font-medium text-zinc-800 dark:text-zinc-200 outline-none w-full appearance-none cursor-pointer"
+                >
+                  {BIBLE_VERSIONS.map(v => (
+                    <option key={v.id} value={v.id} className={isDark ? 'bg-zinc-900' : 'bg-white'}>
+                      {v.name} ({v.lang})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Playback Pace Controller */}
+              <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800/60">
+                <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[16px]">speed</span> Playback Pace
+                </span>
+                <select 
+                  value={playbackSpeed}
+                  onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
+                  className="bg-transparent text-xs font-sans font-medium text-zinc-600 dark:text-zinc-400 outline-none cursor-pointer"
+                >
+                  <option value={0.8} className={isDark ? 'bg-zinc-900' : 'bg-white'}>0.8x pace</option>
+                  <option value={1} className={isDark ? 'bg-zinc-900' : 'bg-white'}>1.0x normal</option>
+                  <option value={1.2} className={isDark ? 'bg-zinc-900' : 'bg-white'}>1.2x swift</option>
+                  <option value={1.5} className={isDark ? 'bg-zinc-900' : 'bg-white'}>1.5x accelerated</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Rescued Audio Player Deck Context */}
+            <div className="w-full flex flex-col items-center">
+              <div className="relative w-full aspect-video shadow-md rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-900 bg-zinc-100 dark:bg-zinc-900">
+                {isLoadingAudio && (
+                  <div className={`absolute inset-0 z-20 backdrop-blur-sm flex items-center justify-center ${
+                    isDark ? 'bg-zinc-950/60' : 'bg-white/60'
+                  }`}>
+                    <div className="w-4 h-4 border-2 border-orange-600 dark:border-orange-500 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+                <AudioPlayer
+                  src={audioUrl || ''} 
+                  title={book}
+                  book={book}
+                  chapter={chapter}
+                  playbackSpeed={playbackSpeed}
+                  bgImage="https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=600&auto=format&fit=crop"
+                />
+              </div>
+              
+              {/* Downstream Command Triggers */}
+              <div className="mt-4 flex flex-col gap-2 w-full">
+                {audioUrl && <DownloadButton audioUrl={audioUrl} title={`${book}_${chapter}`} />}
+                <button className={`flex items-center justify-center gap-2 py-2 border rounded-xl text-xs font-medium shadow-sm transition-colors w-full ${
+                  isDark 
+                    ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200' 
+                    : 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900'
+                }`}>
+                  <span className="material-symbols-outlined text-[16px]">bookmark_border</span>
+                  <span>Bookmark Position</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* RIGHT COMPARTMENT: Scripture Text Engine */}
+        <div className="flex flex-col h-full overflow-y-auto p-6 md:p-8">
+          <div className="w-full max-w-2xl mx-auto pb-28">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                {book} <span className="text-orange-600 dark:text-orange-500 font-light">{chapter}</span>
+              </h2>
+            </div>
             
             {isLoadingText ? (
-              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 font-serif italic text-xs">
-                <div className="w-5 h-5 border border-amber-600 border-t-transparent rounded-full animate-spin mb-1"/>
-                Unrolling scripture text...
+              <div className="py-32 flex flex-col items-center justify-center gap-2 text-zinc-400 dark:text-zinc-500 text-xs">
+                <div className="w-5 h-5 border-2 border-orange-600 dark:border-orange-500 border-t-transparent rounded-full animate-spin mb-2"/>
+                Streaming text...
               </div>
             ) : (
-              // Renders line-by-line verses matching AudioVerse system behavior
-              <div className="space-y-4 font-serif text-lg md:text-xl text-gray-700 leading-relaxed selection:bg-amber-100">
+              <div className="space-y-4 text-[15px] text-zinc-800 dark:text-zinc-200 leading-relaxed">
                 {verses.map((v) => (
                   <div 
                     key={v.number} 
-                    className="p-2 rounded-xl transition-all hover:bg-white/30 flex items-start gap-3 group"
+                    className={`p-2.5 rounded-xl transition-colors flex items-start gap-4 ${
+                      isDark ? 'hover:bg-zinc-900/40' : 'hover:bg-zinc-100/50'
+                    }`}
                   >
-                    <span className="text-xs font-sans font-black text-amber-600/50 mt-1.5 select-none min-w-[20px] text-right">
+                    <span className="text-xs font-bold text-orange-600/60 dark:text-orange-500/50 mt-1 select-none min-w-[20px] text-right">
                       {v.number}
                     </span>
-                    <p className="flex-1 text-slate-800 transition-colors">
+                    <p className="flex-1 text-zinc-700 dark:text-zinc-300">
                       {v.text}
                     </p>
                   </div>
@@ -340,93 +361,79 @@ export default function QuietTimeAudioPage() {
               </div>
             )}
             
-            <div className="mt-10 flex gap-4">
+            <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800/80 flex gap-3 justify-center">
               <button 
                 onClick={() => setIsNotesOpen(true)}
-                className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-lg text-[9px] font-sans font-black uppercase tracking-wider hover:shadow-lg hover:shadow-amber-500/25 transition-all"
+                className="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2 rounded-xl text-xs font-medium shadow-sm transition-colors flex items-center gap-1.5"
               >
-                Study Notes
-              </button>
-              <button className="bg-white/50 border border-gray-200 text-gray-700 px-8 py-3 rounded-lg text-[9px] font-sans font-black uppercase tracking-wider hover:bg-white/80 transition-all">
-                Share Verse
+                <span className="material-symbols-outlined text-[16px]">edit_note</span> Open Study Journal
               </button>
             </div>
           </div>
-        </section>
+        </div>
       </main>
 
-      {/* Slide-out Panel for Journal Notes */}
-      <div className={`fixed inset-y-0 right-0 w-full max-w-md bg-white/95 backdrop-blur-xl border-l border-white/60 shadow-2xl z-50 transition-transform duration-500 ease-out ${isNotesOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="h-full flex flex-col p-6 justify-between">
+      {/* Slide-out Journal Panel */}
+      <div className={`fixed inset-y-0 right-0 w-full max-w-md border-l z-50 transition-transform duration-300 ease-out flex flex-col ${
+        isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'
+      } ${isNotesOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        
+        <div className="h-full flex flex-col p-6 justify-between overflow-y-auto pt-20">
           <div>
-            <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-200">
+            <div className="flex justify-between items-center mb-5 pb-4 border-b border-zinc-100 dark:border-zinc-800">
               <div>
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className="material-symbols-outlined text-amber-500 text-[14px]">edit_note</span>
-                  <span className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-600">Journal Sync</span>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[16px]">edit_note</span>
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-orange-600 dark:text-orange-500">
+                    Journal Sync
+                  </span>
                 </div>
-                <h3 className="text-lg font-serif font-bold text-gray-800">{book} {chapter} Notes</h3>
+                <h3 className="text-base font-sans font-semibold text-zinc-900 dark:text-zinc-100">
+                  {book} {chapter} Insights
+                </h3>
               </div>
+              
               <button 
                 onClick={() => setIsNotesOpen(false)}
-                className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
+                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+                  isDark ? 'border-zinc-800 text-zinc-500 hover:text-zinc-300' : 'border-zinc-200 text-zinc-400 hover:text-zinc-600'
+                }`}
               >
-                <span className="material-symbols-outlined text-[14px]">close</span>
+                <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
             </div>
 
-            <div className="p-3 bg-amber-50/50 rounded-xl border border-amber-100 mb-5 relative min-h-[70px]">
-              {isLoadingNote ? (
-                <div className="flex items-center gap-2 justify-center py-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                  <span className="text-[8px] font-sans font-bold uppercase tracking-wider text-gray-500">Syncing Journal...</span>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="material-symbols-outlined text-amber-500 text-[10px]">menu_book</span>
-                    <h4 className="text-[7px] font-sans font-black uppercase tracking-wider text-amber-700">Passage Context</h4>
-                  </div>
-                  <p className="text-[9px] text-gray-600 italic line-clamp-2">
-                    {verses.length > 0 ? `"${verses[0].text}..."` : '"Reading active scripture scrolls..."'}
-                  </p>
-                </>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-amber-500 text-[12px]">notes</span>
-                <label className="text-[7px] font-sans font-black uppercase tracking-wider text-gray-500">Reflections & Insights</label>
-              </div>
+            <div className="flex flex-col gap-2">
               <textarea 
                 value={noteContent}
                 disabled={isLoadingNote}
                 onChange={(e) => setNoteContent(e.target.value)}
-                placeholder={isLoadingNote ? "Waiting for journal sync..." : "Record structural insights or revelation notes here..."}
-                className="w-full h-56 p-3 rounded-xl bg-white/50 border border-gray-200 text-xs text-gray-700 outline-none font-sans focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all resize-none leading-relaxed disabled:opacity-50 placeholder:text-gray-400"
+                placeholder={isLoadingNote ? "Waiting for journal sync..." : "Record revelation notes here..."}
+                className={`w-full h-80 p-3 rounded-xl text-xs font-sans outline-none border transition-all resize-none leading-relaxed disabled:opacity-50 ${
+                  isDark 
+                    ? 'bg-zinc-950 border-zinc-800 text-zinc-200 placeholder:text-zinc-700 focus:border-zinc-700' 
+                    : 'bg-white border-zinc-200 text-zinc-800 placeholder:text-zinc-300 focus:border-zinc-300'
+                }`}
               />
             </div>
           </div>
 
-          <div className="pt-4 border-t border-gray-200 flex items-center justify-between">
-            <span className="text-[8px] font-sans text-gray-400 italic">
-              {noteContent.length > 0 ? `${noteContent.length} characters logged` : 'Empty sheet'}
+          <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between mt-6">
+            <span className="text-xs font-sans text-zinc-400 dark:text-zinc-500">
+              {noteContent.length} characters
             </span>
+            
             <button 
               onClick={saveStudyNotes}
               disabled={isSavingNote || isLoadingNote}
-              className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-sans font-black text-[8px] tracking-wider uppercase rounded-lg transition-all disabled:opacity-50 flex items-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02]"
+              className="px-5 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 text-white disabled:text-zinc-400 dark:disabled:text-zinc-600 rounded-full font-sans font-medium text-xs transition-colors flex items-center gap-2"
             >
               {isSavingNote ? (
-                <>
-                  <div className="w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Syncing...
-                </>
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  <span className="material-symbols-outlined text-[12px]">save</span>
-                  Save Entry
+                  <span className="material-symbols-outlined text-[14px]">save</span>
+                  <span>Save Entry</span>
                 </>
               )}
             </button>

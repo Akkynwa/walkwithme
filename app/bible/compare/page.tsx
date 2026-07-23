@@ -1,17 +1,27 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import { useTheme } from '../../context/ThemeContext';
 import { ParallelBible } from '@/components/bible/ParallelBible';
 import Sidebar from '@/app/layout-components/Sidebar';
-import Header from '@/app/layout-components/Header';
-import Image from 'next/image';
+
+interface VerseComparison {
+  translation: string;
+  book: string;
+  chapter: number;
+  verse: number;
+  text: string;
+}
 
 export default function ComparePage() {
+  const { isDark } = useTheme();
+
   const [selectedTranslations, setSelectedTranslations] = useState(['KJV', 'NIV']);
   const [book, setBook] = useState('John');
   const [chapter, setChapter] = useState('3');
   const [verse, setVerse] = useState('16');
-  const [versesData, setVersesData] = useState<any[]>([]);
+  const [versesData, setVersesData] = useState<VerseComparison[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchComparison = useCallback(async () => {
@@ -32,7 +42,7 @@ export default function ComparePage() {
       
       const data = await response.json();
       if (data.success) {
-        setVersesData(data.results); 
+        setVersesData(data.results || []); 
       }
     } catch (error) {
       console.error('Failed to fetch translations:', error);
@@ -43,7 +53,7 @@ export default function ComparePage() {
 
   useEffect(() => {
     fetchComparison();
-  }, [book, chapter, verse, selectedTranslations, fetchComparison]);
+  }, [fetchComparison]);
 
   const toggleTranslation = (translation: string) => {
     setSelectedTranslations(prev =>
@@ -54,49 +64,50 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen transition-colors duration-200 ${
+      isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-stone-50 text-stone-900'
+    }`}>
+      
       <Sidebar />
-      <Header />
 
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-6xl mx-auto w-full">
+      <main className="flex-1 lg:ml-56 pt-24 pb-16 px-6 md:px-10 max-w-4xl mx-auto w-full space-y-4">
+        
+        {/* Compact Back Button */}
+        <div className="flex justify-start">
+          <Link 
+            href="/bible" 
+            className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded border transition-colors ${
+              isDark 
+                ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700' 
+                : 'bg-white border-stone-200 text-stone-500 hover:text-stone-800 hover:border-stone-300 shadow-sm'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[12px]">arrow_back</span>
+            Back
+          </Link>
+        </div>
         
         {/* Header Section */}
-        <header className="mb-10">
+        <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-px bg-amber-400/40" />
-            <span className="text-[8px] font-black uppercase tracking-wider text-amber-600">Study Mode</span>
+            <div className={`w-8 h-px ${isDark ? 'bg-amber-500/40' : 'bg-amber-400/40'}`} />
+            <span className={`text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>Study Mode</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-600"></div>
-            <h1 className="text-3xl md:text-4xl font-serif text-gray-800 tracking-tight">
+            <div className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-amber-500' : 'bg-amber-600'}`}></div>
+            <h1 className={`text-3xl md:text-4xl font-serif tracking-tight ${isDark ? 'text-zinc-100' : 'text-gray-800'}`}>
               Compare <span className="italic text-amber-600">Translations</span>
             </h1>
           </div>
-          <p className="text-sm text-gray-600 italic border-l-2 border-amber-400 pl-4 mt-2">
+          <p className={`text-sm italic border-l-2 border-amber-400 pl-4 mt-2 ${isDark ? 'text-zinc-400' : 'text-gray-600'}`}>
             Study scripture across multiple translations side by side.
           </p>
         </header>
 
-        {/* Controls Container */}
-        <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-6 mb-8 shadow-lg">
+        {/* Controls Container - Plain/Solid Theme */}
+        <div className={`border rounded-xl p-6 mb-8 shadow-sm transition-colors ${
+          isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-stone-200'
+        }`}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
             <div className="space-y-1.5">
               <div className="flex items-center gap-1 ml-1">
@@ -106,7 +117,11 @@ export default function ComparePage() {
               <input
                 value={book}
                 onChange={e => setBook(e.target.value)}
-                className="w-full bg-white/50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                className={`w-full border rounded-lg px-4 py-2 text-sm font-medium outline-none transition-all ${
+                  isDark 
+                    ? 'bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-amber-500' 
+                    : 'bg-stone-50 border-gray-250 text-gray-700 focus:border-amber-500'
+                }`}
                 placeholder="John"
               />
             </div>
@@ -120,7 +135,11 @@ export default function ComparePage() {
                 type="number" 
                 value={chapter} 
                 onChange={e => setChapter(e.target.value)} 
-                className="w-full bg-white/50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                className={`w-full border rounded-lg px-4 py-2 text-sm font-medium outline-none transition-all ${
+                  isDark 
+                    ? 'bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-amber-500' 
+                    : 'bg-stone-50 border-gray-250 text-gray-700 focus:border-amber-500'
+                }`}
               />
             </div>
             
@@ -133,7 +152,11 @@ export default function ComparePage() {
                 type="number" 
                 value={verse} 
                 onChange={e => setVerse(e.target.value)} 
-                className="w-full bg-white/50 border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                className={`w-full border rounded-lg px-4 py-2 text-sm font-medium outline-none transition-all ${
+                  isDark 
+                    ? 'bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-amber-500' 
+                    : 'bg-stone-50 border-gray-250 text-gray-700 focus:border-amber-500'
+                }`}
               />
             </div>
           </div>
@@ -146,8 +169,10 @@ export default function ComparePage() {
                   onClick={() => toggleTranslation(t)}
                   className={`px-3 py-1.5 rounded-full text-[7px] font-black uppercase tracking-wider transition-all border ${
                     selectedTranslations.includes(t) 
-                      ? 'bg-gradient-to-r from-amber-600 to-amber-700 border-amber-600 text-white shadow-md' 
-                      : 'bg-white/50 border-gray-200 text-gray-500 hover:border-amber-300 hover:text-amber-600'
+                      ? 'bg-gradient-to-r from-amber-600 to-amber-700 border-amber-600 text-white shadow-sm' 
+                      : isDark
+                        ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-amber-500 hover:text-amber-500'
+                        : 'bg-stone-50 border-gray-200 text-gray-500 hover:border-amber-300 hover:text-amber-600'
                   }`}
                 >
                   {t}
@@ -182,18 +207,20 @@ export default function ComparePage() {
             translations={selectedTranslations} 
           />
         ) : !loading && (
-          <div className="py-20 text-center bg-white/30 backdrop-blur-sm rounded-xl border border-dashed border-amber-200">
-            <div className="w-14 h-14 rounded-xl bg-amber-100 flex items-center justify-center mx-auto mb-3">
-              <span className="material-symbols-outlined text-amber-400 text-2xl">menu_book</span>
+          <div className={`py-20 text-center rounded-xl border border-dashed ${
+            isDark ? 'bg-zinc-900/30 border-zinc-800 text-zinc-400' : 'bg-stone-50 border-amber-200 text-gray-500'
+          }`}>
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-3 ${isDark ? 'bg-zinc-800' : 'bg-amber-100'}`}>
+              <span className="material-symbols-outlined text-amber-500 text-2xl">menu_book</span>
             </div>
-            <p className="text-[10px] font-serif italic text-gray-500">Select translations and click Compare to begin your study.</p>
+            <p className="text-[10px] font-serif italic">Select translations and click Compare to begin your study.</p>
           </div>
         )}
 
         {/* Decorative Footer */}
         <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
           <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-          <span className="material-symbols-outlined text-amber-400 text-sm">compare_arrows</span>
+          <span className="material-symbols-outlined text-amber-500 text-sm">compare_arrows</span>
           <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
         </div>
       </main>

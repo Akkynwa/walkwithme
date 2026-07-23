@@ -46,7 +46,7 @@ export default function SignUpPage() {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON   .stringify({
+        body: JSON.stringify({
           email: formData.email.trim(),
           password: formData.password,
           name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
@@ -69,7 +69,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-on-background flex items-center justify-center py-lg px-margin-mobile md:px-lg overflow-x-hidden relative select-none">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.16),_transparent_35%),linear-gradient(135deg,_#fff7ed_0%,_#ffffff_45%,_#fef2f2_100%)] px-4 py-8 sm:px-6 md:px-8 select-none">
       
       {/* Atmospheric Background Blurs */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -89,22 +89,22 @@ export default function SignUpPage() {
         {/* Brand App Header Identity */}
         <div className="mb-8 text-center group">
           <div className="flex items-center justify-center gap-base mb-xs">
-            <span className="material-symbols-outlined text-primary text-[42px] transition-transform duration-700 group-hover:rotate-180 ease-out fill-0">
+            <span className="material-symbols-outlined text-orange-600 text-[42px] transition-transform duration-700 group-hover:rotate-180 ease-out fill-0">
               self_improvement
             </span>
-            <h1 className="font-display-lg text-display-lg-mobile text-primary tracking-tight font-serif font-bold">
+            <h1 className="font-display-lg text-display-lg-mobile text-slate-900 tracking-tight font-serif font-bold">
               WalkWithMe
             </h1>
           </div>
         </div>
 
         {/* Modular Authentication Card Context */}
-        <div className="bg-surface-container-lowest rounded-2xl p-6 md:p-8 border border-outline-variant/30 shadow-2xl shadow-on-background/[0.015] backdrop-blur-md">
+        <div className="rounded-[28px] border border-orange-100 bg-white/90 p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.35)] backdrop-blur-xl md:p-8">
           <div className="mb-8">
-            <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight font-serif font-bold mb-1.5">
+            <h2 className="font-headline-md text-headline-md text-slate-900 tracking-tight font-serif font-bold mb-1.5">
               Create Your Sanctuary
             </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant/80 font-medium">
+            <p className="font-body-md text-body-md text-slate-600 font-medium">
               Join our spiritual community today
             </p>
           </div>
@@ -114,7 +114,7 @@ export default function SignUpPage() {
             {/* Split row matching initial form setup state updates */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label htmlFor="firstName" className="font-label-md text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-0.5 block">
+                <label htmlFor="firstName" className="ml-0.5 block text-xs font-black uppercase tracking-[0.24em] text-slate-600">
                   First Name
                 </label>
                 <input
@@ -125,11 +125,11 @@ export default function SignUpPage() {
                   placeholder="John"
                   disabled={loading}
                   required
-                  className="w-full bg-surface-container-low border border-outline-variant/10 focus:border-primary/40 focus:ring-4 focus:ring-primary/5 px-4 py-3.5 rounded-xl font-label-md text-sm text-on-surface placeholder:text-outline/40 transition-all duration-300 font-medium outline-none"
+                  className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-100"
                 />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="lastName" className="font-label-md text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-0.5 block">
+                <label htmlFor="lastName" className="ml-0.5 block text-xs font-black uppercase tracking-[0.24em] text-slate-600">
                   Last Name
                 </label>
                 <input
@@ -140,13 +140,13 @@ export default function SignUpPage() {
                   placeholder="Doe"
                   disabled={loading}
                   required
-                  className="w-full bg-surface-container-low border border-outline-variant/10 focus:border-primary/40 focus:ring-4 focus:ring-primary/5 px-4 py-3.5 rounded-xl font-label-md text-sm text-on-surface placeholder:text-outline/40 transition-all duration-300 font-medium outline-none"
+                  className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-100"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="email" className="font-label-md text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-0.5 block">
+              <label htmlFor="email" className="ml-0.5 block text-xs font-black uppercase tracking-[0.24em] text-slate-600">
                 Email Address
               </label>
               <input
@@ -157,12 +157,12 @@ export default function SignUpPage() {
                 placeholder="name@example.com"
                 disabled={loading}
                 required
-                className="w-full bg-surface-container-low border border-outline-variant/10 focus:border-primary/40 focus:ring-4 focus:ring-primary/5 px-4 py-3.5 rounded-xl font-label-md text-sm text-on-surface placeholder:text-outline/40 transition-all duration-300 font-medium outline-none"
+                className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-100"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="password" className="font-label-md text-xs font-black uppercase tracking-widest text-on-surface-variant/80 ml-0.5 block">
+              <label htmlFor="password" className="ml-0.5 block text-xs font-black uppercase tracking-[0.24em] text-slate-600">
                 Create Password
               </label>
               <div className="relative">
@@ -174,12 +174,12 @@ export default function SignUpPage() {
                   placeholder="Min. 8 characters"
                   disabled={loading}
                   required
-                  className="w-full bg-surface-container-low border border-outline-variant/10 focus:border-primary/40 focus:ring-4 focus:ring-primary/5 pl-4 pr-12 py-3.5 rounded-xl font-label-md text-sm text-on-surface placeholder:text-outline/40 transition-all duration-300 font-medium outline-none"
+                  className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 pl-4 pr-12 py-3.5 text-sm font-medium text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-100"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 hover:text-on-surface transition-colors p-1 flex items-center justify-center rounded-lg"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-lg p-1 text-slate-500 transition-colors hover:text-orange-600"
                 >
                   <span className="material-symbols-outlined text-[20px]">
                     {showPassword ? 'visibility_off' : 'visibility'}
@@ -196,16 +196,16 @@ export default function SignUpPage() {
                   type="checkbox"
                   checked={formData.termsAccepted}
                   onChange={(e) => setFormData({ ...formData, termsAccepted: e.target.checked })}
-                  className="w-4 h-4 rounded border-outline-variant/60 text-primary focus:ring-primary/30 transition-all cursor-pointer bg-surface-container-low"
+                  className="h-4 w-4 cursor-pointer rounded border-orange-200 bg-orange-50 text-orange-500 transition-all focus:ring-orange-400"
                 />
               </div>
-              <label htmlFor="terms" className="font-label-sm text-xs font-medium text-secondary leading-normal cursor-pointer">
+              <label htmlFor="terms" className="cursor-pointer text-xs font-medium leading-normal text-slate-600">
                 I agree to the{' '}
-                <Link href="#" className="text-primary font-semibold hover:underline transition-colors decoration-primary/30 underline-offset-2">
+                <Link href="#" className="font-semibold text-orange-600 underline-offset-2 transition-colors hover:underline">
                   Terms of Service
                 </Link>
                 {' '}and{' '}
-                <Link href="#" className="text-primary font-semibold hover:underline transition-colors decoration-primary/30 underline-offset-2">
+                <Link href="#" className="font-semibold text-orange-600 underline-offset-2 transition-colors hover:underline">
                   Privacy Policy
                 </Link>
               </label>
@@ -214,17 +214,17 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-enter w-full bg-primary text-on-primary py-4 px-6 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/10 hover:opacity-95 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none mt-2"
+              className="btn-enter mt-2 w-full rounded-2xl bg-orange-500 px-6 py-4 text-xs font-black uppercase tracking-[0.24em] text-white shadow-xl shadow-orange-500/20 transition-all duration-300 hover:bg-orange-600 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
             >
               {loading ? 'Creating Sanctuary...' : 'Create Your Sanctuary'}
             </button>
           </form>
 
           {/* Card Structural Footer Divider Split */}
-          <div className="pt-5 border-t border-outline-variant/30 text-center">
-            <p className="font-label-sm text-xs font-medium text-secondary">
+          <div className="border-t border-orange-100 pt-5 text-center">
+            <p className="text-xs font-medium text-slate-600">
               Already have an account?{' '}
-              <Link href="/auth/signin" className="text-primary font-bold hover:underline transition-colors decoration-primary/30 underline-offset-2 ml-1">
+              <Link href="/auth/signin" className="ml-1 font-bold text-orange-600 underline-offset-2 transition-colors hover:underline">
                 Log in
               </Link>
             </p>
@@ -232,11 +232,11 @@ export default function SignUpPage() {
         </div>
 
         {/* Polished Bottom Testimonial */}
-        <div className="mt-6 px-4 text-center opacity-60 hover:opacity-85 transition-opacity duration-500 max-w-[400px] mx-auto">
-          <p className="font-label-sm text-xs text-secondary italic leading-relaxed">
+        <div className="mx-auto mt-6 max-w-[400px] px-4 text-center opacity-70 transition-opacity duration-500 hover:opacity-90">
+          <p className="text-xs italic leading-relaxed text-slate-600">
             {`"A beautiful tool for keeping my spiritual life consistent and grounded. The interface itself feels like a prayer."`}
           </p>
-          <p className="font-label-sm text-[11px] font-black uppercase tracking-widest text-on-surface-variant/80 mt-2">
+          <p className="mt-2 text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">
             — Sarah K., User since 2023
           </p>
         </div>

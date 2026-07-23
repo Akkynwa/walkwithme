@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { toast } from 'react-hot-toast';
-import Image from 'next/image';
+import { useTheme } from '../../context/ThemeContext';
 
 interface Prayer {
   id: string;
@@ -25,6 +25,7 @@ export default function PrayerDetailPage() {
   const router = useRouter();
   const params = useParams();
   const prayerId = params.id as string;
+  const { isDark } = useTheme();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -104,45 +105,17 @@ export default function PrayerDetailPage() {
 
   if (loading || !prayer) {
     return (
-      <div className="relative flex items-center justify-center min-h-screen">
-        <div className="fixed inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-            alt="Peaceful sanctuary background"
-            fill
-            className="object-cover scale-110 blur-xl opacity-30"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-        </div>
-        <div className="relative z-10 flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-amber-600/20 border-t-amber-600 rounded-full animate-spin"></div>
-          <p className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Entering Prayer Altar...</p>
+      <div className={`flex items-center justify-center min-h-screen ${isDark ? 'bg-background-dark' : 'bg-background-light'}`}>
+        <div className="flex flex-col items-center gap-3">
+          <div className={`w-8 h-8 border-2 ${isDark ? 'border-primary-400/20 border-t-primary-400' : 'border-amber-600/20 border-t-amber-600'} rounded-full animate-spin`}></div>
+          <p className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Entering Prayer Altar...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen ${isDark ? 'bg-background-dark' : 'bg-background-light'}`}>
       <Sidebar />
 
       <main className="relative z-10 flex-1 lg:ml-56 pt-20 px-6 md:px-10 pb-16 max-w-6xl mx-auto w-full">
@@ -150,17 +123,21 @@ export default function PrayerDetailPage() {
           <div className="flex items-center gap-4">
             <Link 
               href="/prayers" 
-              className="p-2.5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl text-gray-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-all duration-200 flex items-center justify-center group"
+              className={`p-2.5 backdrop-blur-sm border rounded-xl transition-all duration-200 flex items-center justify-center group ${
+                isDark 
+                  ? 'bg-black/40 border-white/10 text-gray-400 hover:bg-primary-500/20 hover:text-primary-400 hover:border-primary-500/30' 
+                  : 'bg-white/40 border-white/60 text-gray-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200'
+              }`}
             >
               <span className="material-symbols-outlined text-base transition-transform group-hover:-translate-x-0.5">arrow_back</span>
             </Link>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-600"></div>
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-600">{prayer.category || 'General'}</span>
+                <div className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-primary-400' : 'bg-amber-600'}`}></div>
+                <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>{prayer.category || 'General'}</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-tight">
-                Prayer <span className="font-serif italic text-amber-600">Reflection</span>
+              <h1 className={`text-2xl md:text-3xl font-serif tracking-tight ${isDark ? 'text-text-primary' : 'text-gray-800'}`}>
+                Prayer <span className={`font-serif italic ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>Reflection</span>
               </h1>
             </div>
           </div>
@@ -169,8 +146,10 @@ export default function PrayerDetailPage() {
             onClick={() => setIsEditing(!isEditing)}
             className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all shadow-sm flex items-center gap-2 ${
               isEditing 
-                ? 'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100' 
-                : 'bg-white/40 backdrop-blur-sm text-gray-700 border border-white/60 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200'
+                ? 'bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800/30' 
+                : isDark 
+                  ? 'bg-black/40 backdrop-blur-sm text-gray-400 border-white/10 hover:bg-primary-500/20 hover:text-primary-400 hover:border-primary-500/30' 
+                  : 'bg-white/40 backdrop-blur-sm text-gray-700 border-white/60 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200'
             }`}
           >
             <span className="material-symbols-outlined text-xs">{isEditing ? 'close' : 'edit'}</span>
@@ -180,24 +159,26 @@ export default function PrayerDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-8">
-            <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-6 md:p-8 shadow-lg transition-all">
+            <div className={`backdrop-blur-xl border rounded-2xl p-6 md:p-8 shadow-lg transition-all ${
+              isDark ? 'bg-black/40 border-white/10' : 'bg-white/40 border-white/60'
+            }`}>
               
               {!isEditing ? (
                 <div className="space-y-6">
                   {/* Status and Date */}
-                  <div className="flex flex-wrap items-center gap-3 pb-4 border-b border-gray-200/50">
+                  <div className={`flex flex-wrap items-center gap-3 pb-4 border-b ${isDark ? 'border-white/10' : 'border-gray-200/50'}`}>
                     <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider ${
                       prayer.status === 'answered' 
-                        ? 'bg-emerald-100 text-emerald-700' 
+                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' 
                         : prayer.status === 'archived'
-                        ? 'bg-gray-100 text-gray-600'
-                        : 'bg-amber-100 text-amber-700'
+                        ? 'bg-gray-100 text-gray-600 dark:bg-gray-800/50 dark:text-gray-400'
+                        : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                     }`}>
                       {prayer.status}
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-gray-400 text-[12px]">calendar_today</span>
-                      <span className="text-[10px] text-gray-500">
+                      <span className={`material-symbols-outlined text-[12px] ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>calendar_today</span>
+                      <span className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
                         {new Date(prayer.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
@@ -205,33 +186,35 @@ export default function PrayerDetailPage() {
 
                   {/* Title */}
                   <div>
-                    <h2 className="text-xl md:text-2xl font-serif text-gray-800 font-semibold leading-tight tracking-tight">
+                    <h2 className={`text-xl md:text-2xl font-serif font-semibold leading-tight tracking-tight ${isDark ? 'text-text-primary' : 'text-gray-800'}`}>
                       {prayer.title}
                     </h2>
                   </div>
                   
                   {/* Description Card */}
-                  <div className="bg-amber-50/30 backdrop-blur-sm p-6 rounded-xl border border-amber-100">
+                  <div className={`backdrop-blur-sm p-6 rounded-xl border ${isDark ? 'bg-primary-500/10 border-primary-500/20' : 'bg-amber-50/30 border-amber-100'}`}>
                     <div className="flex items-center gap-1.5 mb-3">
-                      <span className="material-symbols-outlined text-amber-500 text-[14px]">favorite</span>
-                      <h3 className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Petition Focus</h3>
+                      <span className={`material-symbols-outlined text-[14px] ${isDark ? 'text-primary-400' : 'text-amber-500'}`}>favorite</span>
+                      <h3 className={`text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>Petition Focus</h3>
                     </div>
-                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-serif italic">
+                    <p className={`text-sm leading-relaxed whitespace-pre-wrap font-serif italic ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                       "{prayer.description}"
                     </p>
                   </div>
 
                   {/* Answer Section */}
                   {prayer.answer && (
-                    <div className="bg-emerald-50/30 backdrop-blur-sm border border-emerald-100 p-6 rounded-xl relative overflow-hidden animate-in fade-in duration-500">
+                    <div className={`backdrop-blur-sm border p-6 rounded-xl relative overflow-hidden animate-in fade-in duration-500 ${
+                      isDark ? 'bg-emerald-900/10 border-emerald-800/30' : 'bg-emerald-50/30 border-emerald-100'
+                    }`}>
                       <div className="absolute top-3 right-3 opacity-10 pointer-events-none">
-                        <span className="material-symbols-outlined text-5xl text-emerald-600">self_improvement</span>
+                        <span className={`material-symbols-outlined text-5xl ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>self_improvement</span>
                       </div>
                       <div className="flex items-center gap-1.5 mb-3">
-                        <span className="material-symbols-outlined text-emerald-500 text-[14px]">celebration</span>
-                        <h3 className="text-[8px] font-black text-emerald-600 uppercase tracking-wider">Answered Manifestation</h3>
+                        <span className={`material-symbols-outlined text-[14px] ${isDark ? 'text-emerald-400' : 'text-emerald-500'}`}>celebration</span>
+                        <h3 className={`text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>Answered Manifestation</h3>
                       </div>
-                      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      <p className={`text-sm leading-relaxed whitespace-pre-wrap ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                         {prayer.answer}
                       </p>
                     </div>
@@ -241,7 +224,7 @@ export default function PrayerDetailPage() {
                 <div className="space-y-5 animate-in fade-in duration-300">
                   {/* Title Input */}
                   <div className="space-y-1.5">
-                    <label className="flex items-center gap-1.5 text-[8px] font-black text-amber-600 uppercase tracking-wider">
+                    <label className={`flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>
                       <span className="material-symbols-outlined text-[12px]">title</span>
                       Entry Title
                     </label>
@@ -249,13 +232,17 @@ export default function PrayerDetailPage() {
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all ${
+                        isDark 
+                          ? 'bg-black/30 border-white/10 text-text-primary' 
+                          : 'bg-white/50 border-gray-200 text-gray-800'
+                      }`}
                     />
                   </div>
 
                   {/* Description Textarea */}
                   <div className="space-y-1.5">
-                    <label className="flex items-center gap-1.5 text-[8px] font-black text-amber-600 uppercase tracking-wider">
+                    <label className={`flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>
                       <span className="material-symbols-outlined text-[12px]">edit_note</span>
                       Petition Focus
                     </label>
@@ -263,21 +250,29 @@ export default function PrayerDetailPage() {
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       rows={6}
-                      className="w-full bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all resize-none font-serif italic"
+                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all resize-none font-serif italic ${
+                        isDark 
+                          ? 'bg-black/30 border-white/10 text-text-primary' 
+                          : 'bg-white/50 border-gray-200 text-gray-700'
+                      }`}
                     />
                   </div>
 
                   {/* Status Select */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="flex items-center gap-1.5 text-[8px] font-black text-amber-600 uppercase tracking-wider">
+                      <label className={`flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>
                         <span className="material-symbols-outlined text-[12px]">flag</span>
                         Status
                       </label>
                       <select
                         value={formData.status}
                         onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                        className="w-full bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+                        className={`w-full border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all ${
+                          isDark 
+                            ? 'bg-black/30 border-white/10 text-text-primary' 
+                            : 'bg-white/50 border-gray-200 text-gray-800'
+                        }`}
                       >
                         <option value="pending">Pending</option>
                         <option value="answered">Answered</option>
@@ -289,7 +284,7 @@ export default function PrayerDetailPage() {
                   {/* Answer Field (conditional) */}
                   {formData.status === 'answered' && (
                     <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <label className="flex items-center gap-1.5 text-[8px] font-black text-emerald-600 uppercase tracking-wider">
+                      <label className={`flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
                         <span className="material-symbols-outlined text-[12px]">celebration</span>
                         Manifestation Log
                       </label>
@@ -298,7 +293,11 @@ export default function PrayerDetailPage() {
                         onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
                         placeholder="Detail how this prayer was answered..."
                         rows={4}
-                        className="w-full bg-emerald-50/30 border border-emerald-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
+                        className={`w-full border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all resize-none ${
+                          isDark 
+                            ? 'bg-emerald-900/10 border-emerald-800/30 text-text-primary' 
+                            : 'bg-emerald-50/30 border-emerald-200 text-gray-700'
+                        }`}
                       />
                     </div>
                   )}
@@ -307,7 +306,7 @@ export default function PrayerDetailPage() {
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {saving && <div className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
                     <span>{saving ? 'Syncing...' : 'Commit Changes'}</span>
@@ -320,59 +319,63 @@ export default function PrayerDetailPage() {
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-5">
             {/* Timeline Card */}
-            <div className="bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl p-5 shadow-sm">
+            <div className={`backdrop-blur-sm border rounded-xl p-5 shadow-sm ${isDark ? 'bg-black/40 border-white/10' : 'bg-white/40 border-white/60'}`}>
               <div className="flex items-center gap-1.5 mb-4">
-                <span className="material-symbols-outlined text-amber-500 text-[14px]">schedule</span>
-                <h3 className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Audit Timeline</h3>
+                <span className={`material-symbols-outlined text-[14px] ${isDark ? 'text-primary-400' : 'text-amber-500'}`}>schedule</span>
+                <h3 className={`text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>Audit Timeline</h3>
               </div>
               <div className="space-y-4">
-                <TimelineItem icon="calendar_today" label="Created" date={prayer.createdAt} />
-                <TimelineItem icon="history" label="Last Updated" date={prayer.updatedAt} />
+                <TimelineItem icon="calendar_today" label="Created" date={prayer.createdAt} isDark={isDark} />
+                <TimelineItem icon="history" label="Last Updated" date={prayer.updatedAt} isDark={isDark} />
               </div>
             </div>
 
             {/* Inspiration Card */}
-            <div className="bg-amber-50/30 backdrop-blur-sm border border-amber-100 rounded-xl p-5 text-center relative overflow-hidden group">
+            <div className={`backdrop-blur-sm border rounded-xl p-5 text-center relative overflow-hidden group ${
+              isDark ? 'bg-primary-500/10 border-primary-500/20' : 'bg-amber-50/30 border-amber-100'
+            }`}>
               <div className="absolute top-2 right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-                <span className="material-symbols-outlined text-4xl text-amber-600">spa</span>
+                <span className={`material-symbols-outlined text-4xl ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>spa</span>
               </div>
-              <span className="material-symbols-outlined text-amber-500 text-2xl mb-2 block">spa</span>
-              <p className="text-[8px] font-black text-amber-600 uppercase tracking-wider">Sacred Silence</p>
-              <p className="text-[10px] text-gray-600 mt-1 italic font-serif leading-relaxed">
+              <span className={`material-symbols-outlined text-2xl mb-2 block ${isDark ? 'text-primary-400' : 'text-amber-500'}`}>spa</span>
+              <p className={`text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>Sacred Silence</p>
+              <p className={`text-[10px] mt-1 italic font-serif leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 Allow your petitions to settle into divine order.
               </p>
             </div>
 
             {/* Scripture Verse */}
-            <div className="bg-white/30 backdrop-blur-sm border border-white/40 rounded-xl p-4 text-center">
-              <p className="text-[9px] font-serif italic text-gray-600 leading-relaxed">
+            <div className={`backdrop-blur-sm border rounded-xl p-4 text-center ${isDark ? 'bg-black/30 border-white/10' : 'bg-white/30 border-white/40'}`}>
+              <p className={`text-[9px] font-serif italic leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."
               </p>
-              <p className="text-[7px] font-black text-amber-600 uppercase tracking-wider mt-2">— Philippians 4:6</p>
+              <p className={`text-[7px] font-black uppercase tracking-wider mt-2 ${isDark ? 'text-primary-400' : 'text-amber-600'}`}>— Philippians 4:6</p>
             </div>
           </aside>
         </div>
 
         {/* Decorative Footer */}
         <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-          <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+          <div className={`h-px w-16 bg-gradient-to-r from-transparent ${isDark ? 'to-primary-400' : 'to-amber-400'}`} />
+          <span className={`material-symbols-outlined text-sm ${isDark ? 'text-primary-400' : 'text-amber-400'}`}>menu_book</span>
+          <div className={`h-px w-16 bg-gradient-to-l from-transparent ${isDark ? 'to-primary-400' : 'to-amber-400'}`} />
         </div>
       </main>
     </div>
   );
 }
 
-function TimelineItem({ icon, label, date }: { icon: string; label: string; date: string }) {
+function TimelineItem({ icon, label, date, isDark }: { icon: string; label: string; date: string; isDark: boolean }) {
   return (
     <div className="flex gap-3 items-start">
-      <div className="p-1.5 bg-amber-50 rounded-lg text-amber-500 flex items-center justify-center">
+      <div className={`p-1.5 rounded-lg flex items-center justify-center ${
+        isDark ? 'bg-primary-500/20 text-primary-400' : 'bg-amber-50 text-amber-500'
+      }`}>
         <span className="material-symbols-outlined text-[14px]">{icon}</span>
       </div>
       <div className="space-y-0.5">
-        <p className="text-[8px] font-black text-gray-500 uppercase tracking-wider">{label}</p>
-        <p className="text-[10px] text-gray-700 font-medium">
+        <p className={`text-[8px] font-black uppercase tracking-wider ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>{label}</p>
+        <p className={`text-[10px] font-medium ${isDark ? 'text-text-primary' : 'text-gray-700'}`}>
           {new Date(date).toLocaleString('en-US', { 
             month: 'short', 
             day: 'numeric', 

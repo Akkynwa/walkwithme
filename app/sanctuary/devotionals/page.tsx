@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
 import { DEVOTIONALS } from '../../data/devotionals';
-import Image from 'next/image';
-import DevotionalCard from '@/components/DevotionalCard'; // Adjust path as needed
+import DevotionalCard from '@/components/DevotionalCard';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function DevotionalPage() {
+  const { isDark } = useTheme();
   const [filter, setFilter] = useState('All');
+  
   const categories = ['All', ...new Set(DEVOTIONALS.map(d => d.category))];
 
   const filteredDevotionals = filter === 'All' 
@@ -16,106 +18,78 @@ export default function DevotionalPage() {
     : DEVOTIONALS.filter(d => d.category === filter);
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${
+      isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
+    }`}>
       <Sidebar />
       
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-7xl mx-auto w-full">
-        <MainHeader />
+      {/* Main Column Framework Content Area */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-7xl mx-auto w-full">
 
-        {/* Header Section */}
-        <header className="mb-12 text-center md:text-left">
-          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-            <div className="w-8 h-px bg-amber-400/40" />
-            <span className="text-[8px] font-sans font-black uppercase tracking-wider text-amber-600">
-              Daily Reading
-            </span>
+        {/* Editorial Substack Header Row */}
+        <header className="mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+          <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
+            <span className="material-symbols-outlined text-[14px]">auto_stories</span>
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Daily Reading</span>
           </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif text-gray-800 mb-3 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
             The Daily Sanctuary
           </h1>
-          <div className="flex items-center gap-3 justify-center md:justify-start">
-            <div className="w-10 h-0.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full" />
-            <p className="text-gray-600 italic font-serif text-base">
-              "Thy word is a lamp unto my feet"
-            </p>
-          </div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 font-serif italic mt-2 border-l-2 border-orange-500 dark:border-orange-500 pl-4">
+            "Thy word is a lamp unto my feet"
+          </p>
         </header>
 
-        {/* Category Filter */}
-        <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-3 scrollbar-hide">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-4 py-1.5 rounded-full text-[8px] font-black tracking-wider uppercase transition-all whitespace-nowrap
-                ${filter === cat 
-                  ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md shadow-amber-500/20' 
-                  : 'bg-white/40 backdrop-blur-sm border border-white/60 text-gray-500 hover:border-amber-300 hover:text-amber-600'
-                }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Category Horizontal Filter Menu Container */}
+        <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-3 scrollbar-none">
+          {categories.map((cat) => {
+            const isSelected = filter === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-4 py-1.5 rounded-full text-[11px] font-sans font-medium tracking-normal transition-colors whitespace-nowrap outline-none
+                  ${isSelected 
+                    ? 'bg-orange-600 dark:bg-orange-500 text-white shadow-sm' 
+                    : 'border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700 bg-transparent'
+                  }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Devotional Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 gap-y-12">
+        {/* Adaptive Grid Array Display Framework */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 gap-y-10">
           {filteredDevotionals.map((item) => (
             <DevotionalCard key={item.id} item={item} />
           ))}
         </div>
 
-        {/* Empty State */}
+        {/* Empty Search/Filter Fallback Grid State */}
         {filteredDevotionals.length === 0 && (
-          <div className="text-center py-20 bg-white/30 backdrop-blur-sm border border-dashed border-amber-200 rounded-xl mt-8">
-            <div className="w-14 h-14 rounded-xl bg-amber-100 flex items-center justify-center mx-auto mb-3">
-              <span className="material-symbols-outlined text-amber-400 text-2xl">menu_book</span>
+          <div className="text-center py-24 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl max-w-xl mx-auto mt-6">
+            <div className="w-10 h-10 rounded-lg border border-zinc-100 dark:border-zinc-900 bg-transparent flex items-center justify-center mx-auto mb-4 text-zinc-400 dark:text-zinc-500">
+              <span className="material-symbols-outlined text-[18px]">menu_book</span>
             </div>
-            <p className="text-sm text-gray-500 font-serif italic">No devotionals found in this category.</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-sans">
+              No devotionals found inside this category.
+            </p>
             <button 
               onClick={() => setFilter('All')}
-              className="mt-3 px-4 py-1.5 bg-amber-600 text-white rounded-lg text-[8px] font-black uppercase tracking-wider hover:bg-amber-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] rounded-full transition-colors shadow-sm"
             >
-              View All
+              Reset Filters
             </button>
           </div>
         )}
 
-        {/* Decorative Footer */}
-        <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-          <span className="material-symbols-outlined text-amber-400 text-sm">menu_book</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+        {/* System Central Anchor Divider Dot */}
+        <div className="mt-24 flex justify-center">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
         </div>
       </main>
-
-      <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 }

@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
-import Image from 'next/image';
+import { useTheme } from './../context/ThemeContext';
 
 export default function SettingsPage() {
+  const { isDark } = useTheme();
+
   const sections = [
     { title: 'Profile', href: '/settings/profile', icon: 'person', description: 'Manage your personal information' },
     { title: 'Bible Preferences', href: '/settings/bible-preferences', icon: 'auto_stories', description: 'Customize your reading experience' },
@@ -15,104 +17,129 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased ${
+      isDark ? 'bg-zinc-950 text-zinc-100 selection:bg-primary-950/50' : 'bg-white text-zinc-900 selection:bg-primary-100'
+    }`}>
       <Sidebar />
 
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 px-6 md:px-10 pb-16 max-w-6xl mx-auto w-full">
+      {/* Main Content Stream Container */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-[720px] mx-auto w-full">
         
-        {/* Header */}
-        <header className="mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-px bg-amber-400/40" />
-            <span className="text-[8px] font-black uppercase tracking-wider text-amber-600">Preferences</span>
+        {/* Editorial Feed Header bar */}
+        <header className={`mb-12 pb-4 ${
+          isDark ? 'border-zinc-900' : 'border-zinc-100'
+        } border-b`}>
+          <div className={`flex items-center gap-1.5 mb-2 ${
+            isDark ? 'text-primary-400' : 'text-primary-600'
+          }`}>
+            <span className="material-symbols-outlined text-[14px]">settings</span>
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Preferences</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-tight">
-            System <span className="italic font-serif text-amber-600">Settings</span>
+          <h1 className={`text-3xl md:text-4xl font-serif font-semibold tracking-tight ${
+            isDark ? 'text-zinc-50' : 'text-zinc-900'
+          }`}>
+            System Settings
           </h1>
-          <p className="text-sm text-gray-500 italic border-l-2 border-amber-400 pl-4 mt-2">
+          <p className={`text-sm font-sans mt-1.5 ${
+            isDark ? 'text-zinc-400' : 'text-zinc-500'
+          }`}>
             Configure your sanctuary experience.
           </p>
         </header>
 
-        {/* Settings Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {/* Settings Stream List */}
+        <div className="space-y-0 mb-16">
           {sections.map((section) => (
             <Link 
               key={section.href} 
               href={section.href}
-              className="group"
+              className="group block py-5 first:pt-0 border-b ${
+                isDark ? 'border-zinc-900/60' : 'border-zinc-100'
+              }"
             >
-              <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-4 hover:bg-white/60 hover:border-amber-200 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
-                    <span className="material-symbols-outlined text-amber-600 text-[18px] group-hover:text-amber-700 transition-colors">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  {/* Understated Minimal Icon Wrapper */}
+                  <div className={`w-5 h-5 mt-0.5 flex items-center justify-center transition-colors ${
+                    isDark 
+                      ? 'text-zinc-500 group-hover:text-primary-400'
+                      : 'text-zinc-400 group-hover:text-primary-600'
+                  }`}>
+                    <span className="material-symbols-outlined text-[20px]">
                       {section.icon}
                     </span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-[10px] font-bold text-gray-800 tracking-tight group-hover:text-amber-700 transition-colors">
+                  
+                  <div>
+                    <h3 className={`text-[15px] font-sans font-medium transition-colors ${
+                      isDark
+                        ? 'text-zinc-200 group-hover:text-primary-400'
+                        : 'text-zinc-800 group-hover:text-primary-600'
+                    }`}>
                       {section.title}
                     </h3>
-                    <p className="text-[7px] text-gray-500 font-medium">
+                    <p className={`text-[13px] font-sans mt-0.5 leading-normal ${
+                      isDark ? 'text-zinc-500' : 'text-zinc-400'
+                    }`}>
                       {section.description}
                     </p>
                   </div>
-                  <span className="material-symbols-outlined text-gray-300 text-sm group-hover:translate-x-0.5 group-hover:text-amber-500 transition-all">
-                    chevron_right
-                  </span>
                 </div>
+
+                <span className={`material-symbols-outlined text-lg transition-all ${
+                  isDark
+                    ? 'text-zinc-700 group-hover:text-primary-400 group-hover:translate-x-0.5'
+                    : 'text-zinc-300 group-hover:text-primary-600 group-hover:translate-x-0.5'
+                }`}>
+                  chevron_right
+                </span>
               </div>
             </Link>
           ))}
         </div>
 
-        {/* Danger Zone */}
-        <section className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-          <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center">
-                <span className="material-symbols-outlined text-rose-500 text-[16px]">gpp_maybe</span>
-              </div>
-              <div>
-                <h3 className="text-[9px] font-black text-gray-800 uppercase tracking-wider">Account Security</h3>
-                <p className="text-[7px] text-gray-500 font-medium">Permanent data deletion and export options.</p>
-              </div>
+        {/* Danger Zone Section */}
+        <section className={`pt-8 border-t ${
+          isDark ? 'border-zinc-900' : 'border-zinc-100'
+        }`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-4">
+            <div>
+              <h3 className={`text-sm font-sans font-semibold uppercase tracking-wider ${
+                isDark ? 'text-zinc-200' : 'text-zinc-800'
+              }`}>
+                Account Security
+              </h3>
+              <p className={`text-[13px] font-sans mt-1 ${
+                isDark ? 'text-zinc-500' : 'text-zinc-400'
+              }`}>
+                Permanent data deletion and export options.
+              </p>
             </div>
             
-            <div className="flex gap-2 w-full md:w-auto">
-              <button className="flex-1 md:flex-none px-4 py-1.5 rounded-lg border border-gray-200 text-[7px] font-black uppercase tracking-wider text-gray-600 hover:bg-white/50 hover:border-amber-300 transition-all">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-[12px] font-sans font-medium transition-colors border ${
+                isDark
+                  ? 'border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-zinc-300 bg-transparent'
+                  : 'border-zinc-200 hover:border-zinc-300 text-zinc-600 bg-transparent'
+              }`}>
                 Export Data
               </button>
-              <button className="flex-1 md:flex-none px-4 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[7px] font-black uppercase tracking-wider hover:bg-rose-100 transition-all">
+              <button className={`flex-1 sm:flex-none px-4 py-2 rounded-full text-[12px] font-sans font-medium transition-colors border ${
+                isDark
+                  ? 'bg-red-950/30 hover:bg-red-950/50 text-red-400 border-red-900/30'
+                  : 'bg-red-50 hover:bg-red-100 text-red-600 border-transparent'
+              }`}>
                 Delete Account
               </button>
             </div>
           </div>
         </section>
 
-        {/* Decorative Footer */}
-        <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-          <span className="material-symbols-outlined text-amber-400 text-sm">settings</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+        {/* Elegant Centered System Rule Dot Footer */}
+        <div className="mt-24 flex justify-center">
+          <div className={`w-1.5 h-1.5 rounded-full ${
+            isDark ? 'bg-zinc-800' : 'bg-zinc-200'
+          }`} />
         </div>
       </main>
     </div>

@@ -1,12 +1,12 @@
+// app/layout.tsx
 import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
 import { AppSettingsProvider } from './context/AppSettingsContext';
+import { ThemeProvider } from './context/ThemeContext';
 import './globals.css';
 import PresenceDock from './layout-components/PresenceDock';
-import Footer from './layout-components/Footer'; // Adjust this path if your Footer is located elsewhere
-import BackButton from '@/components/BackButton';
 import FloatingSupportButton from '@/components/FloatingSupportButton';
-
+import { AppShell } from './layout-components/AppShell';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -38,27 +38,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-<head>
-  <link 
-    rel="stylesheet" 
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=optional" 
-  />
-</head>
-      <body className="bg-surface text-on-surface font-body-md transition-colors antialiased min-h-screen flex flex-col">
-        {/* Wrap your system inside the AppSettingsProvider */}
-        <AppSettingsProvider>
-          <Providers>
-            <header className="border-b p-4">
-        </header>
-            <div className="flex-grow flex flex-col">
-              {children}
-            </div>
-                    <FloatingSupportButton />
-          <BackButton />
-            <Footer />
-          </Providers>
-          <PresenceDock />
-        </AppSettingsProvider>
+      <head>
+        <link 
+          rel="stylesheet" 
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" 
+        />
+        <link 
+          rel="stylesheet" 
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" 
+        />
+      </head>
+      <body className="bg-background-light dark:bg-background-dark text-text-primary font-sans transition-colors duration-300 antialiased min-h-screen flex flex-col">
+        {/* Step 1: ThemeProvider wraps absolutely everything */}
+        <ThemeProvider>
+          <AppSettingsProvider>
+            <Providers>
+              <div className="flex-grow flex flex-col">
+                <AppShell>{children}</AppShell>
+              </div>
+              
+              {/* Step 2: Ensure all components that might look up theme/auth are INSIDE all Providers */}
+              <PresenceDock />
+              <FloatingSupportButton />
+            </Providers>
+          </AppSettingsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

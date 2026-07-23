@@ -8,11 +8,13 @@ import toast from 'react-hot-toast';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Auth Form Component
-function AuthForm() {
+// Import your logo source path (e.g., from public folder or assets)
+import logo from '/public/logo.png'; 
+
+// Auth Form Component (Right Panel inside the Modal)
+function AuthForm({ activeTab, setActiveTab }: { activeTab: 'login' | 'register', setActiveTab: (tab: 'login' | 'register') => void }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -82,178 +84,148 @@ function AuthForm() {
   };
 
   return (
-    <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-white/80 shadow-2xl">
-      {/* Tab Headers */}
-      <div className="flex gap-6 mb-6 border-b border-gray-200/50">
+    <div className="w-full flex flex-col justify-center">
+      {/* Dynamic Header Copy */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-sans font-semibold tracking-tight text-zinc-900 mb-2">
+          {activeTab === 'login' ? 'Welcome Back.' : 'Join the tribe.'}
+        </h2>
+        <p className="text-sm text-zinc-500">
+          {activeTab === 'login' 
+            ? 'Access your private digital sanctuary logs and community feed.' 
+            : 'Receive access to your private journal and daily structured devotionals.'}
+        </p>
+      </div>
+
+      {/* Tab Selectors */}
+      <div className="flex gap-4 mb-6 border-b border-zinc-100">
         {(['login', 'register'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`pb-3 text-[10px] font-black uppercase tracking-wider transition-all relative ${
-              activeTab === tab ? 'text-amber-700' : 'text-gray-400 hover:text-gray-600'
+            className={`pb-2 text-xs font-medium tracking-wide transition-all relative ${
+              activeTab === tab ? 'text-zinc-900 font-semibold' : 'text-zinc-400 hover:text-zinc-600'
             }`}
           >
-            {tab === 'login' ? 'Welcome Back' : 'Join Us'}
+            {tab === 'login' ? 'Sign In' : 'Register'}
             {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-600 rounded-full" />
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-zinc-900 rounded-full" />
             )}
           </button>
         ))}
       </div>
 
-      <div className="min-h-[400px]">
+      <div>
         {activeTab === 'login' ? (
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-1.5">
-              <label className="text-[9px] font-black uppercase tracking-wider text-gray-500 ml-1 flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">email</span>
-                Email Address
-              </label>
+          <form onSubmit={handleLogin} className="space-y-3">
+            <input 
+              required 
+              type="email"
+              className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm transition-all outline-none placeholder:text-zinc-400"
+              placeholder="Email address"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+            <div className="relative w-full">
               <input 
-                required type="email"
-                className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-4 py-3 rounded-xl text-sm transition-all outline-none"
-                placeholder="hello@walkwithme.com"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex justify-between px-1">
-                <label className="text-[9px] font-black uppercase tracking-wider text-gray-500 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">lock</span>
-                  Password
-                </label>
-                <Link 
-                  href="/auth/forgot-password" 
-                  className="text-[9px] font-bold text-amber-600 hover:text-amber-700 transition-colors"
-                >
-                  Forgot?
-                </Link>
-              </div>
-              <input 
-                required type="password"
-                className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-4 py-3 rounded-xl text-sm outline-none transition-all"
-                placeholder="••••••••"
+                required 
+                type="password"
+                className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm outline-none transition-all placeholder:text-zinc-400"
+                placeholder="Password"
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
               />
+              <Link 
+                href="/auth/forgot-password" 
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
+              >
+                Forgot?
+              </Link>
             </div>
+
             <button 
               disabled={loading}
               type="submit"
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3.5 rounded-xl text-[11px] font-black uppercase tracking-wider hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-3.5 text-xs font-semibold tracking-wider uppercase transition-colors disabled:opacity-50"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
-                  Opening Sanctuary...
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined text-[16px]">self_improvement</span>
-                  Enter Sanctuary
-                </span>
-              )}
+              {loading ? 'Opening Sanctuary...' : 'Enter Sanctuary'}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="text-[8px] font-black uppercase tracking-wider text-gray-500 ml-1">First Name</label>
-                <input 
-                  required 
-                  className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-4 py-3 rounded-xl text-sm outline-none transition-all" 
-                  placeholder="John" 
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[8px] font-black uppercase tracking-wider text-gray-500 ml-1">Last Name</label>
-                <input 
-                  required 
-                  className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-4 py-3 rounded-xl text-sm outline-none transition-all" 
-                  placeholder="Doe" 
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <label className="text-[8px] font-black uppercase tracking-wider text-gray-500 ml-1 flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">email</span>
-                Email Address
-              </label>
               <input 
-                required type="email"
-                className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-4 py-3 rounded-xl text-sm outline-none transition-all" 
-                placeholder="hello@walkwithme.com"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                required 
+                className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm outline-none transition-all placeholder:text-zinc-400" 
+                placeholder="First name" 
+                value={formData.firstName}
+                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+              />
+              <input 
+                required 
+                className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm outline-none transition-all placeholder:text-zinc-400" 
+                placeholder="Last name" 
+                value={formData.lastName}
+                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
               />
             </div>
-            <div className="space-y-1">
-              <label className="text-[8px] font-black uppercase tracking-wider text-gray-500 ml-1 flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">lock</span>
-                Password (8+ characters)
-              </label>
+            <input 
+              required 
+              type="email"
+              className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm outline-none transition-all placeholder:text-zinc-400" 
+              placeholder="Email address"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+            <input 
+              required 
+              type="password"
+              className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm outline-none transition-all placeholder:text-zinc-400" 
+              placeholder="Password (8+ characters)"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+            />
+            
+            <div className="flex items-start gap-3 pt-1">
               <input 
-                required type="password"
-                className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-4 py-3 rounded-xl text-sm outline-none transition-all" 
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-              />
-            </div>
-            <div className="flex items-start gap-3 px-1 pt-2">
-              <input 
-                type="checkbox" id="terms"
-                className="rounded border-gray-300 text-amber-600 focus:ring-amber-500 mt-0.5"
+                type="checkbox" 
+                id="terms"
+                className="rounded border-zinc-300 text-zinc-950 focus:ring-zinc-900 mt-1"
                 checked={formData.agreeTerms}
                 onChange={(e) => setFormData({...formData, agreeTerms: e.target.checked})}
               />
-              <label htmlFor="terms" className="text-[10px] text-gray-600 leading-relaxed">
-                I agree to the <Link href="/terms" className="text-amber-700 font-bold hover:underline">Terms of Service</Link> and{' '}
-                <Link href="/privacy" className="text-amber-700 font-bold hover:underline">Privacy Policy</Link>.
+              <label htmlFor="terms" className="text-[11px] text-zinc-500 leading-normal">
+                I agree to the <Link href="/terms" className="text-zinc-900 font-semibold hover:underline">Terms</Link> and{' '}
+                <Link href="/privacy" className="text-zinc-900 font-semibold hover:underline">Privacy Policy</Link>.
               </label>
             </div>
+
             <button 
               disabled={loading}
               type="submit"
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3.5 rounded-xl text-[11px] font-black uppercase tracking-wider hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+              className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-3.5 text-xs font-semibold tracking-wider uppercase transition-colors"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
-                  Creating Account...
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined text-[16px]">person_add</span>
-                  Create Account
-                </span>
-              )}
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
         )}
 
-        {/* Divider */}
-        <div className="my-8">
+        {/* Dynamic Divider */}
+        <div className="my-5">
           <div className="relative flex items-center">
-            <div className="flex-grow border-t border-gray-200/50"></div>
-            <span className="px-4 text-[8px] font-black uppercase tracking-[0.2em] text-gray-400">Or continue with</span>
-            <div className="flex-grow border-t border-gray-200/50"></div>
+            <div className="flex-grow border-t border-zinc-200"></div>
+            <span className="px-3 text-[10px] font-medium uppercase tracking-wider text-zinc-400">Or connection</span>
+            <div className="flex-grow border-t border-zinc-200"></div>
           </div>
         </div>
 
-        {/* Social Login Buttons */}
+        {/* Social Authentication Row */}
         <div className="grid grid-cols-2 gap-3">
           <button 
             type="button"
             onClick={() => signIn('google', { callbackUrl: '/' })}
-            className="flex items-center justify-center gap-2 bg-white/60 border border-gray-200/60 py-3 rounded-xl hover:bg-white/80 hover:border-amber-300 transition-all duration-200 group"
+            className="flex items-center justify-center gap-2 bg-white border border-zinc-300 py-2.5 hover:bg-zinc-50 transition-colors"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -261,124 +233,104 @@ function AuthForm() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-            <span className="text-[10px] font-bold text-gray-700 group-hover:text-amber-700">Google</span>
+            <span className="text-xs font-medium text-zinc-700">Google</span>
           </button>
           <button 
             type="button"
-            className="flex items-center justify-center gap-2 bg-white/60 border border-gray-200/60 py-3 rounded-xl hover:bg-white/80 hover:border-amber-300 transition-all duration-200 group"
+            className="flex items-center justify-center gap-2 bg-white border border-zinc-300 py-2.5 hover:bg-zinc-50 transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px] text-gray-600 group-hover:text-amber-700">passkey</span>
-            <span className="text-[10px] font-bold text-gray-700 group-hover:text-amber-700">Passkey</span>
+            <span className="material-symbols-outlined text-[16px] text-zinc-600">passkey</span>
+            <span className="text-xs font-medium text-zinc-700">Passkey</span>
           </button>
         </div>
-      </div>
-
-      {/* Footer Toggle */}
-      <div className="mt-8 pt-6 border-t border-gray-200/50 text-center">
-        <p className="text-[10px] text-gray-500 font-medium">
-          {activeTab === 'login' ? "New to WalkWithMe? " : "Already have an account? "}
-          <button 
-            type="button"
-            onClick={() => setActiveTab(activeTab === 'login' ? 'register' : 'login')}
-            className="text-amber-700 font-black hover:underline underline-offset-4 transition-all"
-          >
-            {activeTab === 'login' ? 'Start your journey' : 'Return to sanctuary'}
-          </button>
-        </p>
       </div>
     </div>
   );
 }
 
-// Main Auth Page
+// Main Floating Modal View Layout Wrapper
 export default function AuthPage() {
+  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
+
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 md:p-8 overflow-hidden font-sans">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful mountain sanctuary"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Subtle overlay for better readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/20 to-white/10"></div>
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.16),_transparent_35%),linear-gradient(135deg,_#fff7ed_0%,_#ffffff_45%,_#fef2f2_100%)] p-4 font-sans sm:p-6">
+      
+      {/* BACKGROUND CONTENT LAYER */}
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none filter blur-sm flex flex-col p-8 justify-between">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-zinc-400 rounded-lg"></div>
+            <div className="h-4 w-24 bg-zinc-300 rounded"></div>
+          </div>
+          <div className="h-4 w-32 bg-zinc-300 rounded"></div>
+        </div>
+        <div className="grid grid-cols-3 gap-6 my-auto max-w-4xl w-full mx-auto">
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+        </div>
       </div>
 
-      {/* Animated Background Elements - Subtle */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-amber-200/20 rounded-full blur-[80px] animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-amber-300/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '-3s' }}></div>
-      </div>
+      {/* SEMI-TRANSPARENT MODAL OVERLAY BACKDROP */}
+      <div className="absolute inset-0 bg-white/35 z-10 backdrop-blur-[2px]" />
 
-      <main className="relative z-10 w-full max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-        {/* Left Column - Branding */}
-        <div className="w-full lg:w-1/2 space-y-6 text-center lg:text-left backdrop-blur-sm rounded-3xl p-6 lg:p-8 bg-white/20">
-          {/* Logo */}
-          <div className="flex items-center justify-center lg:justify-start gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-700 rounded-2xl flex items-center justify-center shadow-xl shadow-amber-900/30">
-              <span className="material-symbols-outlined text-white text-2xl">self_improvement</span>
-            </div>
-            <h1 className="font-serif text-3xl md:text-4xl font-black text-gray-800 tracking-tight">WalkWithMe</h1>
-          </div>
-          
-          {/* Hero Text */}
-          <div className="space-y-3">
-            <h2 className="font-serif text-2xl md:text-3xl font-semibold text-gray-800 leading-tight">
-              Your Digital Sanctuary for
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-800">
-                Spiritual Growth
-              </span>
-            </h2>
-            <p className="text-sm text-gray-700 leading-relaxed max-w-md mx-auto lg:mx-0">
-              Find stillness in a noisy world. Track daily verses, journal your thoughts, 
-              and grow in faith with a community of believers.
-            </p>
-          </div>
+      {/* FLOATING DIALOG CARD */}
+      <div className="relative z-20 w-full max-w-[920px] overflow-hidden rounded-[32px] border border-orange-100 bg-white/90 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.35)] backdrop-blur-xl md:flex min-h-[560px]">
+        
+        {/* ESCAPE / CLOSE CONTROL CROSS */}
+        <Link 
+          href="/"
+          className="absolute right-4 top-4 z-30 rounded-full bg-orange-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-orange-600 transition hover:bg-orange-100"
+          aria-label="Close form view"
+        >
+          <span className="material-symbols-outlined text-xl">close</span>
+        </Link>
 
-          {/* Features Grid */}
-          <div className="grid grid-cols-2 gap-3 max-w-md mx-auto lg:mx-0 pt-4">
-            {[
-              { icon: 'menu_book', label: 'Daily Bible' },
-              { icon: 'edit_note', label: 'Journal' },
-              { icon: 'forum', label: 'Community' },
-              { icon: 'psychology', label: 'AI Insights' },
-            ].map((feature) => (
-              <div key={feature.label} className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl px-3 py-2 border border-white/70">
-                <span className="material-symbols-outlined text-amber-700 text-[16px]">{feature.icon}</span>
-                <span className="text-[9px] font-bold text-gray-700 uppercase tracking-wider">{feature.label}</span>
+        {/* LEFT COMPONENT COLUMN: Brand Header & Showcase Container */}
+        <div className="w-full md:w-1/2 bg-orange-50/70 p-8 flex flex-col justify-between border-r border-orange-100 select-none">
+          {/* Brand Logo Header */}
+          <div className="shrink-0">
+            <Link href="/" className="inline-block">
+              <div className="flex items-center gap-2.5">
+                <Image
+                  src={logo}
+                  alt="WalkWithMe Logo"
+                  priority
+                  className="h-16 w-auto object-contain select-none pointer-events-none"
+                />
+                <span className="text-[11px] font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-200">
+                  WalkWithMe
+                </span>
               </div>
-            ))}
+            </Link>
           </div>
 
-          {/* Testimonial */}
-          <div className="hidden lg:block mt-8 p-4 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 max-w-md">
-            <div className="flex gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white text-[12px] font-bold">JD</div>
-              <div>
-                <p className="text-[11px] text-gray-700 italic">"WalkWithMe has transformed my daily quiet time. The peaceful design makes it feel so serene!"</p>
-                <p className="text-[9px] font-bold text-amber-700 mt-1">— Sarah Johnson</p>
-              </div>
-            </div>
+          {/* Image Asset Showcase */}
+          <div className="my-auto py-6 flex items-center justify-center">
+            <Image
+              src="https://images.unsplash.com/photo-1653569746987-8c1c63b2ffe2?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="The Names of God Ebook Guide on Tablet"
+              width={800}
+              height={600}
+              priority
+              className="w-full h-auto max-w-lg object-contain drop-shadow-xl select-none pointer-events-none mx-auto"
+            />
           </div>
         </div>
 
-        {/* Right Column - Auth Card */}
-        <div className="w-full lg:w-[480px]">
+        {/* RIGHT COMPONENT COLUMN: Core Interactive Auth Container */}
+        <div className="w-full md:w-1/2 bg-white/90 p-8 sm:p-12 flex flex-col justify-between">
           <Suspense fallback={
-            <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-10 h-[500px] flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <span className="material-symbols-outlined animate-spin text-amber-600 text-3xl">sync</span>
-                <p className="text-xs text-gray-600">entering sanctuary...</p>
-              </div>
+            <div className="h-full w-full flex flex-col items-center justify-center gap-3 py-20">
+              <span className="material-symbols-outlined animate-spin text-zinc-900 text-2xl">sync</span>
+              <p className="text-xs text-zinc-500">Preparing interface module...</p>
             </div>
           }>
-            <AuthForm />
+            <AuthForm activeTab={activeTab} setActiveTab={setActiveTab} />
           </Suspense>
         </div>
-      </main>
+
+      </div>
     </div>
   );
 }

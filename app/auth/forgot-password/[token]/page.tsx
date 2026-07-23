@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import Image from 'next/image';
 
 export default function SetNewPasswordPage() {
   const params = useParams();
@@ -26,7 +25,7 @@ export default function SetNewPasswordPage() {
     }
 
     if (password.length < 8) {
-      toast.error('For your sanctuary security, use at least 8 characters.');
+      toast.error('For security, use at least 8 characters.');
       return;
     }
 
@@ -53,189 +52,167 @@ export default function SetNewPasswordPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col font-sans overflow-hidden">
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-zinc-100 font-sans overflow-hidden">
       
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Subtle overlay for better readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/20 to-white/10"></div>
-      </div>
-
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-amber-200/20 rounded-full blur-[80px] animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-amber-300/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '-3s' }}></div>
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 w-full sticky top-0 bg-transparent">
-        <div className="flex justify-center md:justify-start items-center px-6 py-6 md:px-12 max-w-7xl mx-auto">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-gradient-to-br from-amber-600 to-amber-700 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/30">
-              <span className="material-symbols-outlined text-white text-[18px]">self_improvement</span>
-            </div>
-            <h1 className="font-serif text-xl font-black text-gray-800 tracking-tight">
-              WalkWithMe
-            </h1>
-          </Link>
+      {/* BACKGROUND CONTENT LAYER (Simulates dashboard background layout contextual frames) */}
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none filter blur-sm flex flex-col p-8 justify-between">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-zinc-400 rounded-lg"></div>
+            <div className="h-4 w-24 bg-zinc-300 rounded"></div>
+          </div>
+          <div className="h-4 w-32 bg-zinc-300 rounded"></div>
         </div>
-      </header>
+        <div className="grid grid-cols-3 gap-6 my-auto max-w-4xl w-full mx-auto">
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+        </div>
+      </div>
 
-      <main className="relative z-10 flex-grow flex items-center justify-center px-6 py-12">
-        <section className="w-full max-w-[480px] animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/80 shadow-2xl">
-            
-            {!isSuccess ? (
-              <>
-                <div className="text-center mb-8">
-                  <div className="w-16 h-16 bg-amber-100/50 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-                    <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'wght' 300" }}>verified_user</span>
-                  </div>
-                  <h2 className="font-serif text-2xl md:text-3xl font-semibold text-gray-800 mb-3 tracking-tight">Secure Your Account</h2>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Choose a strong, memorable password to re-enter your sanctuary.
-                  </p>
-                </div>
+      {/* MODAL OVERLAY BACKDROP */}
+      <div className="absolute inset-0 bg-black/20 z-10 backdrop-blur-[2px]" />
 
-                <form onSubmit={handleUpdatePassword} className="space-y-6">
-                  <div className="space-y-4">
-                    {/* New Password Field */}
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-black uppercase tracking-wider text-amber-700 ml-1 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">lock</span>
-                        New Password
-                      </label>
-                      <div className="relative">
-                        <input 
-                          required 
-                          type={showPassword ? "text" : "password"}
-                          className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-5 py-4 rounded-xl text-sm transition-all outline-none text-gray-800 pr-12"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-600 transition-colors"
-                        >
-                          <span className="material-symbols-outlined text-[18px]">
-                            {showPassword ? 'visibility_off' : 'visibility'}
-                          </span>
-                        </button>
-                      </div>
-                    </div>
+      {/* FLOATING DIALOG CARD */}
+      <div className="relative z-20 w-full max-w-[460px] bg-white rounded-md shadow-2xl overflow-hidden p-8 sm:p-10 flex flex-col justify-between min-h-[480px]">
+        
+        {/* ESCAPE CONTROL */}
+        <Link 
+          href="/auth" 
+          className="absolute right-4 top-4 text-zinc-400 hover:text-zinc-600 transition-colors"
+          aria-label="Close credentials view"
+        >
+          <span className="material-symbols-outlined text-xl">close</span>
+        </Link>
 
-                    {/* Confirm Password Field */}
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-black uppercase tracking-wider text-amber-700 ml-1 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">verified</span>
-                        Confirm New Password
-                      </label>
-                      <div className="relative">
-                        <input 
-                          required 
-                          type={showConfirmPassword ? "text" : "password"}
-                          className="w-full bg-white/60 border border-gray-200/60 focus:bg-white focus:border-amber-300 focus:ring-2 focus:ring-amber-500/20 px-5 py-4 rounded-xl text-sm transition-all outline-none text-gray-800 pr-12"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="••••••••"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-600 transition-colors"
-                        >
-                          <span className="material-symbols-outlined text-[18px]">
-                            {showConfirmPassword ? 'visibility_off' : 'visibility'}
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Password Strength Indicator */}
-                  {password && (
-                    <div className="px-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full transition-all duration-300 ${
-                              password.length < 4 ? 'w-1/4 bg-red-500' :
-                              password.length < 8 ? 'w-2/4 bg-yellow-500' :
-                              'w-full bg-green-500'
-                            }`}
-                          />
-                        </div>
-                        <span className="text-[8px] font-bold text-gray-500 uppercase">
-                          {password.length < 4 ? 'Weak' : password.length < 8 ? 'Medium' : 'Strong'}
-                        </span>
-                      </div>
-                      <p className="text-[8px] text-gray-400">
-                        {password.length < 8 ? `Add ${8 - password.length} more characters` : 'Great password strength!'}
-                      </p>
-                    </div>
-                  )}
-
-                  <button 
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-4 rounded-xl text-[11px] font-black uppercase tracking-wider hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? (
-                      <span className="flex items-center gap-2">
-                        <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
-                        Updating Credentials...
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[16px]">restore</span>
-                        Restore Access
-                      </span>
-                    )}
-                  </button>
-                </form>
-              </>
-            ) : (
-              <div className="text-center py-4 animate-in fade-in zoom-in-95 duration-500">
-                <div className="w-16 h-16 bg-green-100/50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-                  <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'wght' 300" }}>task_alt</span>
-                </div>
-                <h2 className="font-serif text-2xl md:text-3xl font-semibold text-gray-800 mb-3 tracking-tight">Access Restored</h2>
-                <p className="text-sm text-gray-600 leading-relaxed mb-6">
-                  Your password has been successfully updated. You may now return to the login gate.
+        <div className="my-auto">
+          {!isSuccess ? (
+            <>
+              {/* Heading Section */}
+              <div className="mb-6">
+                <h2 className="text-3xl font-sans font-semibold tracking-tight text-zinc-900 mb-2">
+                  Update password.
+                </h2>
+                <p className="text-sm text-zinc-500 leading-normal">
+                  Provide a clean, robust set of security credentials below to reconfigure account validation permissions.
                 </p>
-                <Link 
-                  href="/auth/signin" 
-                  className="inline-block w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white py-4 rounded-xl text-[11px] font-black uppercase tracking-wider hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] transition-all text-center"
-                >
-                  Return to Login
-                </Link>
               </div>
-            )}
 
-            <div className="mt-8 pt-6 border-t border-gray-200/50 text-center">
+              {/* Form Controls */}
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                
+                {/* New Password Field */}
+                <div className="relative">
+                  <input 
+                    required 
+                    type={showPassword ? "text" : "password"}
+                    className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm transition-all outline-none placeholder:text-zinc-400"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="New password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">
+                      {showPassword ? 'visibility_off' : 'visibility'}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Confirm Password Field */}
+                <div className="relative">
+                  <input 
+                    required 
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm transition-all outline-none placeholder:text-zinc-400"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">
+                      {showConfirmPassword ? 'visibility_off' : 'visibility'}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Password Strength Indicator */}
+                {password && (
+                  <div className="px-1 py-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex-1 h-[2px] bg-zinc-100 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-300 ${
+                            password.length < 4 ? 'w-1/4 bg-zinc-400' :
+                            password.length < 8 ? 'w-2/4 bg-zinc-600' :
+                            'w-full bg-zinc-900'
+                          }`}
+                        />
+                      </div>
+                      <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-wide">
+                        {password.length < 4 ? 'Weak' : password.length < 8 ? 'Medium' : 'Strong'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <button 
+                  disabled={loading}
+                  type="submit"
+                  className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-3.5 text-xs font-semibold tracking-wider uppercase transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
+                      <span>Restoring...</span>
+                    </>
+                  ) : (
+                    'Restore Access'
+                  )}
+                </button>
+              </form>
+            </>
+          ) : (
+            /* Success Response State */
+            <div className="text-center py-4 animate-in fade-in zoom-in-95 duration-400">
+              <div className="w-12 h-12 bg-zinc-100 text-zinc-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-xl">task_alt</span>
+              </div>
+              <h3 className="text-2xl font-sans font-semibold tracking-tight text-zinc-900 mb-2">
+                Access Restored
+              </h3>
+              <p className="text-sm text-zinc-500 leading-normal mb-6">
+                Your password parameters have been verified and applied successfully.
+              </p>
               <Link 
-                href="/auth/signin" 
-                className="inline-flex items-center gap-2 text-[9px] font-black text-gray-500 hover:text-amber-700 transition-colors uppercase tracking-wider"
+                href="/auth" 
+                className="block w-full bg-zinc-900 hover:bg-zinc-800 text-white py-3.5 text-xs font-semibold tracking-wider uppercase transition-colors text-center"
               >
-                <span className="material-symbols-outlined text-sm">arrow_back</span>
-                Back to Login
+                Return to Login
               </Link>
             </div>
-          </div>
+          )}
+        </div>
 
-          <p className="text-center mt-8 text-[10px] text-gray-500 italic px-10 leading-relaxed">
-            "Your sanctuary is secure. Guard your heart and your path."
-          </p>
-        </section>
-      </main>
+        {/* Card Footer Toggle Link */}
+        <div className="mt-8 pt-5 border-t border-zinc-100 text-center">
+          <Link 
+            href="/auth" 
+            className="inline-flex items-center gap-1 text-xs font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
+          >
+            <span className="material-symbols-outlined text-base">arrow_back</span>
+            <span>Back to account registration</span>
+          </Link>
+        </div>
+
+      </div>
     </div>
   );
 }

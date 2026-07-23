@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { LANGUAGES } from '@/lib/constants';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function LanguageSettingsPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
   const [language, setLanguage] = useState('en');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,8 +29,8 @@ export default function LanguageSettingsPage() {
       } catch (err) {
         console.error('Failed reading native dialect specifications:', err);
       } finally {
-        setLoading(false);
-      }
+  setLoading(false); // Clean execution, no call signature errors
+}
     }
     fetchLanguage();
   }, []);
@@ -58,117 +59,102 @@ export default function LanguageSettingsPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
       <Sidebar />
 
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 px-6 md:px-10 pb-16 max-w-2xl mx-auto w-full">
+      {/* Main Single-Column Settings Feed Container */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-[720px] mx-auto w-full">
         
-        {/* Header Block */}
-        <header className="mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-px bg-amber-400/40" />
-            <span className="text-[8px] font-black uppercase tracking-wider text-amber-600">Localization</span>
+        {/* Editorial Substack Header Row */}
+        <header className="mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+          <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
+            <span className="material-symbols-outlined text-[14px]">language</span>
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Localization Parameters</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-tight">
-            Language <span className="italic font-serif text-amber-600">Interface</span>
+          <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Language Interface
           </h1>
-          <p className="text-sm text-gray-500 italic border-l-2 border-amber-400 pl-4 mt-2">
-            Choose your preferred language for the sanctuary.
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 font-sans mt-1.5">
+            Choose your preferred global system language for the sanctuary layout and interface translations.
           </p>
         </header>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-6 h-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-[8px] font-black uppercase tracking-wider text-gray-500 animate-pulse">
+          <div className="flex flex-col items-center justify-center py-40 gap-4">
+            <div className="w-5 h-5 border-2 border-orange-600 dark:border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-[11px] font-sans font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500 animate-pulse">
               Parsing translations...
             </span>
           </div>
         ) : (
-          <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-6 shadow-lg animate-in fade-in duration-500">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-amber-500 text-[14px]">language</span>
-                  <label className="text-[7px] font-black text-amber-600 uppercase tracking-wider">
-                    Preferred Dialect
-                  </label>
-                </div>
+          <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in duration-500">
+            
+            {/* Input Selection Block */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-sans font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 block">
+                Preferred Dialect
+              </label>
+              <div className="relative w-full">
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full bg-white/50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all"
+                  className="w-full bg-transparent border border-zinc-200 dark:border-zinc-800 focus:border-orange-600 dark:focus:border-orange-500 text-sm text-zinc-800 dark:text-zinc-200 rounded-lg px-3 py-2.5 outline-none transition-colors appearance-none font-sans"
                 >
                   {languageOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value} className="dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100">
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
+                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-600">
+                  <span className="material-symbols-outlined text-[16px]">unfold_more</span>
+                </div>
               </div>
+            </div>
 
-              {/* Informative Toast Banner Container */}
-              <div className="bg-amber-50/30 border border-amber-200/50 p-4 rounded-lg flex items-start gap-3">
-                <span className="material-symbols-outlined text-amber-500 text-[18px] mt-0.5">
-                  info
-                </span>
-                <p className="text-[9px] text-gray-600 leading-relaxed font-medium">
-                  Applying changes requires a rapid framework restart. Your open dashboard layouts, journal entry instances, and workspace sessions will instantly synchronize to the updated selection.
-                </p>
-              </div>
+            {/* Informative Informational Box */}
+            <div className="border border-zinc-100 dark:border-zinc-900/60 bg-zinc-50/50 dark:bg-zinc-900/20 p-4 rounded-lg flex items-start gap-3">
+              <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[18px] shrink-0 mt-0.5">
+                info
+              </span>
+              <p className="text-[12px] text-zinc-500 dark:text-zinc-400 leading-relaxed font-sans">
+                Applying updates will trigger a fast client session hydration sync. Open dashboard workflows, journaling metrics, and server session states automatically read from this translation configuration.
+              </p>
+            </div>
 
-              {/* Actions Section */}
-              <div className="flex items-center gap-3 pt-2">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="bg-gradient-to-r from-amber-600 to-amber-700 hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] text-white rounded-lg text-[8px] font-black uppercase tracking-wider px-6 py-2.5 transition-all disabled:opacity-50 flex items-center gap-2"
-                >
-                  {saving ? (
-                    <>
-                      <span className="material-symbols-outlined animate-spin text-[12px]">sync</span>
-                      Syncing...
-                    </>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-[12px]">check</span>
-                      Apply Changes
-                    </>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push('/settings')}
-                  className="bg-white/50 backdrop-blur-sm border border-gray-200 text-gray-600 rounded-lg text-[8px] font-black uppercase tracking-wider px-5 py-2.5 hover:bg-white/80 transition-all"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            {/* Structured Action Controls Row */}
+            <div className="flex items-center gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-900">
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] px-4 py-2 rounded-full transition-colors shadow-sm disabled:opacity-50"
+              >
+                {saving ? (
+                  <>
+                    <span className="material-symbols-outlined animate-spin text-[14px]">sync</span>
+                    <span>Syncing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-[14px]">check</span>
+                    <span>Apply Changes</span>
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push('/settings')}
+                className="px-4 py-2 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-full text-[12px] font-sans font-medium text-zinc-600 dark:text-zinc-400 transition-colors bg-transparent"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         )}
 
-        {/* Decorative Footer */}
-        <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-          <span className="material-symbols-outlined text-amber-400 text-sm">language</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+        {/* Elegant Centered System Rule Dot Divider */}
+        <div className="mt-24 flex justify-center">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
         </div>
       </main>
     </div>

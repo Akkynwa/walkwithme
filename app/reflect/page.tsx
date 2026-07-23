@@ -6,9 +6,11 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
+import { useTheme } from './../context/ThemeContext';
 
 export default function ReflectionPage() {
   const { status } = useSession();
+  const { isDark } = useTheme();
   const router = useRouter();
   
   const [isSaving, setIsSaving] = useState(false);
@@ -41,7 +43,6 @@ export default function ReflectionPage() {
     try {
       setIsSaving(true);
       
-      // Combine the reflection fields into a single structured content block
       const combinedContent = `
 What stood out:
 ${formData.standingOut}
@@ -87,56 +88,63 @@ ${formData.intention}
   if (status === 'loading') return null;
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] font-serif">
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${
+      isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
+    }`}>
       <Sidebar />
-      <MainHeader />
 
-      <main className="lg:ml-64 p-6 md:p-12 pt-28 max-w-[1200px] mx-auto animate-in fade-in duration-700">
+      {/* Main Framework Content Area */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-7xl mx-auto w-full">
         
-        {/* Header */}
-        <header className="mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] font-sans text-[10px] font-black mb-4 uppercase tracking-[0.2em]">
+        {/* Editorial Substack Header Row */}
+        <header className="mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+          <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
             <span className="material-symbols-outlined text-[14px]">calendar_today</span>
-            <span>{today}</span>
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">{today}</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif text-[#3C3830] mb-3">Daily Reflection</h2>
-          <p className="text-[#7C7565] italic border-l-2 border-[#D4AF37] pl-4 max-w-xl">
+          <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Daily Reflection
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 font-serif italic mt-2 border-l-2 border-orange-500 dark:border-orange-500 pl-4">
             Take a moment of stillness to process today's word and align your spirit.
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
-          {/* Left Column: Context Area */}
-          <aside className="lg:col-span-4 lg:sticky lg:top-28 h-fit space-y-6">
-            <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
-              <div className="flex items-center gap-2 mb-6 text-[#D4AF37]">
-                <span className="material-symbols-outlined text-xl">self_improvement</span>
-                <span className="font-sans text-[10px] font-black uppercase tracking-[0.2em]">Guided Stillness</span>
+          {/* Left Column: Context Card Panel */}
+          <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
+            <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 bg-transparent">
+              <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-4">
+                <span className="material-symbols-outlined text-[16px]">self_improvement</span>
+                <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Guided Stillness</span>
               </div>
-              <p className="text-lg text-[#3C3830] leading-relaxed italic mb-6">
+              <p className="text-base text-zinc-800 dark:text-zinc-200 font-serif italic leading-relaxed mb-6">
                 "Be still, and know that I am God."
               </p>
               
-              <div className="border-t border-gray-50 pt-6">
-                <h4 className="font-sans text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Reflection Tip</h4>
-                <p className="text-sm text-[#7C7565] leading-relaxed">
+              <div className="border-t border-zinc-100 dark:border-zinc-900 pt-4">
+                <h4 className="text-[10px] font-sans font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                  Reflection Tip
+                </h4>
+                <p className="text-[13px] text-zinc-500 dark:text-zinc-400 font-sans leading-relaxed">
                   Don't rush. Let the thoughts flow naturally. This is your personal space for growth.
                 </p>
               </div>
 
-              {/* Ambient Breathe Component */}
-              <div className="mt-10 flex flex-col items-center justify-center p-8 bg-gray-50/50 rounded-2xl group">
-                <div className="w-12 h-12 bg-primary rounded-full opacity-20 animate-ping absolute"></div>
-                <div className="w-12 h-12 bg-primary rounded-full shadow-lg shadow-primary/20 mb-4 relative z-10 transition-transform duration-1000 scale-110 group-hover:scale-125"></div>
-                <p className="font-sans text-[10px] font-black text-gray-400 uppercase tracking-widest">Breathe.</p>
+              {/* Centralized Focus Dot Indicator Component */}
+              <div className="mt-8 flex flex-col items-center justify-center p-6 border border-zinc-100 dark:border-zinc-900 rounded-xl bg-transparent">
+                <div className="w-2 h-2 rounded-full bg-orange-600 dark:bg-orange-500 animate-pulse mb-3" />
+                <p className="text-[10px] font-sans font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                  Breathe.
+                </p>
               </div>
             </div>
           </aside>
 
-          {/* Right Column: Dynamic Form */}
+          {/* Right Column: Interactive Reflection Form Area */}
           <section className="lg:col-span-8">
-            <form onSubmit={handleSave} className="space-y-12">
+            <form onSubmit={handleSave} className="space-y-10">
               
               <ReflectionField 
                 label="What stood out to you in today's reading?" 
@@ -160,52 +168,67 @@ ${formData.intention}
                 rows={4}
               />
 
-              {/* Mood Selector */}
-              <div className="py-8 border-y border-gray-100 flex flex-wrap items-center gap-8">
-                <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em]">Your Heart State</span>
-                <div className="flex gap-4">
-                  {moods.map((mood) => (
-                    <button
-                      key={mood.label}
-                      type="button"
-                      onClick={() => setSelectedMood(mood.label)}
-                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                        selectedMood === mood.label 
-                          ? 'bg-primary text-white scale-110 shadow-lg' 
-                          : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
-                      }`}
-                      title={mood.label}
-                    >
-                      <span className="material-symbols-outlined text-lg">{mood.icon}</span>
-                    </button>
-                  ))}
+              {/* Heart State Section Grid */}
+              <div className="py-6 border-y border-zinc-100 dark:border-zinc-900 flex flex-wrap items-center gap-6">
+                <span className="text-[10px] font-sans font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                  Your Heart State
+                </span>
+                <div className="flex gap-3">
+                  {moods.map((mood) => {
+                    const isSelected = selectedMood === mood.label;
+                    return (
+                      <button
+                        key={mood.label}
+                        type="button"
+                        onClick={() => setSelectedMood(mood.label)}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors outline-none ${
+                          isSelected 
+                            ? 'bg-orange-600 dark:bg-orange-500 text-white shadow-sm' 
+                            : 'border border-zinc-200 dark:border-zinc-800 text-zinc-400 dark:text-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 bg-transparent'
+                        }`}
+                        title={mood.label}
+                      >
+                        <span className="material-symbols-outlined text-[18px]">{mood.icon}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Form Actions */}
-              <div className="flex flex-col sm:flex-row items-center justify-end gap-8 pt-4">
+              {/* Bottom Controller Panel Area */}
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-2">
                 <button 
                   type="button" 
                   onClick={() => router.back()}
-                  className="text-[10px] font-black text-gray-300 uppercase tracking-widest hover:text-red-400 transition-colors"
+                  className="px-4 py-2 text-[12px] font-sans font-medium text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-transparent outline-none"
                 >
                   Discard Draft
                 </button>
                 <button 
                   type="submit" 
                   disabled={isSaving}
-                  className="w-full sm:w-auto bg-primary text-white px-12 py-5 rounded-full text-[11px] font-black tracking-[0.2em] uppercase hover:shadow-2xl hover:shadow-primary/30 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] px-6 py-2.5 rounded-full transition-colors shadow-sm disabled:opacity-50 outline-none"
                 >
                   {isSaving ? (
-                    <span className="material-symbols-outlined animate-spin text-sm">sync</span>
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-[14px]">sync</span>
+                      <span>Preserving...</span>
+                    </>
                   ) : (
-                    <span className="material-symbols-outlined text-sm">self_improvement</span>
+                    <>
+                      <span className="material-symbols-outlined text-[14px]">self_improvement</span>
+                      <span>Seal Reflection</span>
+                    </>
                   )}
-                  {isSaving ? 'Preserving...' : 'Seal Reflection'}
                 </button>
               </div>
             </form>
           </section>
+        </div>
+
+        {/* System Central Anchor Divider Dot */}
+        <div className="mt-24 flex justify-center">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
         </div>
       </main>
     </div>
@@ -213,9 +236,8 @@ ${formData.intention}
 }
 
 /**
- * HELPER COMPONENT
+ * REUSABLE MODULAR ENTRY FIELD FRAMEWORK
  */
-
 function ReflectionField({ 
   label, 
   placeholder, 
@@ -230,8 +252,8 @@ function ReflectionField({
   rows?: number 
 }) {
   return (
-    <div className="group">
-      <label className="block text-2xl font-serif text-[#3C3830] mb-4 group-focus-within:text-primary transition-colors duration-500">
+    <div className="group flex flex-col">
+      <label className="text-base font-serif font-medium text-zinc-800 dark:text-zinc-200 mb-2 transition-colors">
         {label}
       </label>
       <div className="relative">
@@ -240,9 +262,8 @@ function ReflectionField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-transparent border-none focus:ring-0 border-b border-gray-100 focus:border-primary transition-all duration-700 text-lg italic text-[#3C3830] placeholder:text-gray-200 p-0 py-4 resize-none leading-relaxed"
-        ></textarea>
-        <div className="absolute bottom-0 left-0 h-[1px] bg-primary w-0 group-focus-within:w-full transition-all duration-1000 ease-out"></div>
+          className="w-full bg-transparent border-0 border-b border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-300 dark:placeholder:text-zinc-700 focus:ring-0 focus:border-orange-600 dark:focus:border-orange-500 transition-colors text-base font-sans font-normal py-3 resize-none leading-relaxed outline-none"
+        />
       </div>
     </div>
   );

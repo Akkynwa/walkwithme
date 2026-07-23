@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Sidebar from '../layout-components/Sidebar';
 import Header from '../layout-components/Header';
+import { useTheme } from '../context/ThemeContext';
 import { getCommunityGroups, toggleGroupMembership, createCommunityGroup } from './actions';
 
 interface CommunityGroup {
@@ -24,6 +25,7 @@ interface ToastNotification {
 }
 
 export default function CommunityPage() {
+  const { isDark } = useTheme();
   const [groups, setGroups] = useState<CommunityGroup[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Groups');
@@ -116,7 +118,9 @@ export default function CommunityPage() {
   const categories = ['All Groups', 'Bible Study', 'Meditation', 'Prayer'];
 
   return (
-    <div className="relative flex min-h-screen overflow-x-hidden bg-slate-50/30 selection:bg-amber-200">
+    <div className={`relative flex min-h-screen overflow-x-hidden transition-colors duration-300 selection:bg-primary-200 ${
+      isDark ? 'bg-zinc-950' : 'bg-slate-50/30'
+    }`}>
       {/* Dynamic Ambient Background Blurs */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Image
@@ -126,16 +130,22 @@ export default function CommunityPage() {
           className="object-cover scale-110 blur-2xl opacity-25 select-none"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 via-white/40 to-amber-50/20" />
+        <div className={`absolute inset-0 ${ 
+          isDark 
+            ? 'bg-gradient-to-br from-zinc-950/80 via-zinc-900/40 to-slate-900/20'
+            : 'bg-gradient-to-br from-slate-50/80 via-white/40 to-amber-50/20'
+        }`} />
       </div>
 
       {/* Global Interactive Notification Banner Container */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 max-w-sm w-full font-sans animate-in slide-in-from-top-4 duration-300">
           <div className={`p-4 rounded-xl border backdrop-blur-md shadow-xl flex items-start gap-3 transition-all ${
-            toast.type === 'success' ? 'bg-emerald-50/95 border-emerald-500/30 text-emerald-900' :
-            toast.type === 'error' ? 'bg-rose-50/95 border-rose-500/30 text-rose-900' :
-            'bg-amber-50/95 border-amber-500/30 text-amber-900'
+            toast.type === 'success' 
+              ? isDark ? 'bg-emerald-950/95 border-emerald-700/30 text-emerald-100' : 'bg-emerald-50/95 border-emerald-500/30 text-emerald-900'
+              : toast.type === 'error' 
+              ? isDark ? 'bg-rose-950/95 border-rose-700/30 text-rose-100' : 'bg-rose-50/95 border-rose-500/30 text-rose-900'
+              : isDark ? 'bg-amber-950/95 border-amber-700/30 text-amber-100' : 'bg-amber-50/95 border-amber-500/30 text-amber-900'
           }`}>
             <span className="material-symbols-outlined mt-0.5 text-base shrink-0">
               {toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info'}
@@ -153,24 +163,29 @@ export default function CommunityPage() {
         </div>
       )}
 
+      {/* Navigation Ecosystem Layers */}
       <Sidebar />
       <Header />
 
       <main className="relative z-10 lg:ml-56 p-6 md:p-10 pt-24 max-w-6xl mx-auto w-full pb-24">
         
-        <header className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <header className={`mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4`}>
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-px bg-amber-500/50" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-amber-700 font-sans">Ecosystem Directory</span>
+              <div className={`w-8 h-px ${ isDark ? 'bg-primary-600/50' : 'bg-amber-500/50' }`} />
+              <span className={`text-[9px] font-black uppercase tracking-widest font-sans ${ isDark ? 'text-primary-400' : 'text-amber-700' }`}>Ecosystem Directory</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-serif font-black text-slate-800 tracking-tight">Community Hub</h2>
-            <p className="text-xs text-slate-500 font-sans font-light mt-1">Discover, enroll, and build synchronous workspaces configured for fellowship.</p>
+            <h2 className={`text-3xl md:text-4xl font-serif font-black tracking-tight ${ isDark ? 'text-zinc-50' : 'text-slate-800' }`}>Community Hub</h2>
+            <p className={`text-xs font-sans font-light mt-1 ${ isDark ? 'text-zinc-400' : 'text-slate-500' }`}>Discover, enroll, and build synchronous workspaces configured for fellowship.</p>
           </div>
 
           <button 
             onClick={() => setIsModalOpen(true)} 
-            className="group flex items-center gap-2 self-start sm:self-auto px-5 py-2.5 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-amber-700 hover:to-amber-800 text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
+            className={`group flex items-center gap-2 self-start sm:self-auto px-5 py-2.5 text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 ${
+              isDark
+                ? 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800'
+                : 'bg-gradient-to-r from-slate-800 to-slate-900 hover:from-amber-700 hover:to-amber-800'
+            }`}
           >
             <span className="material-symbols-outlined text-xs group-hover:rotate-90 transition-transform duration-300">add</span>
             Initialize Workspace
@@ -178,18 +193,26 @@ export default function CommunityPage() {
         </header>
 
         {/* Directory Controls Filter Panels */}
-        <div className="flex flex-col md:flex-row gap-4 mb-10 font-sans bg-white/30 backdrop-blur-md border border-white/60 p-3 rounded-xl shadow-sm">
+        <div className={`flex flex-col md:flex-row gap-4 mb-10 font-sans backdrop-blur-md border p-3 rounded-xl shadow-sm ${
+          isDark
+            ? 'bg-zinc-900/30 border-zinc-800/60'
+            : 'bg-white/30 border-white/60'
+        }`}>
           <div className="relative flex-1">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+            <span className={`material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-base ${ isDark ? 'text-zinc-500' : 'text-slate-400' }`}>search</span>
             <input 
               type="text"
               placeholder="Filter scopes via title, tag keywords, or blueprint definitions..."
-              className="w-full pl-10 pr-4 py-2.5 bg-white/60 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/60 text-xs outline-none text-slate-700 transition-all placeholder:text-slate-400 font-light"
+              className={`w-full pl-10 pr-4 py-2.5 backdrop-blur-sm border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500/60 text-xs outline-none transition-all font-light ${ 
+                isDark
+                  ? 'bg-zinc-900/60 border-zinc-800 text-zinc-100 placeholder:text-zinc-500'
+                  : 'bg-white/60 border-slate-200 text-slate-700 placeholder:text-slate-400'
+              }`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearchQuery('')} className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${ isDark ? 'text-zinc-500 hover:text-zinc-400' : 'text-slate-400 hover:text-slate-600' }`}>
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             )}
@@ -322,7 +345,7 @@ export default function CommunityPage() {
         </section>
       </main>
 
-      {/* Structured Configuration Configuration Dialog Modal Box Container */}
+      {/* Configuration Dialog Modal Box Container */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] overflow-y-auto animate-in scale-in-from-95 duration-200">

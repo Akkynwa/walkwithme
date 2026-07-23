@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useTheme } from '../../context/ThemeContext';
 
 interface NotificationConfig {
   emailNotifications: boolean;
@@ -15,6 +15,7 @@ interface NotificationConfig {
 
 export default function NotificationsSettingsPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notifications, setNotifications] = useState<NotificationConfig>({
@@ -81,53 +82,38 @@ export default function NotificationsSettingsPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
       <Sidebar />
 
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 px-6 md:px-10 pb-16 max-w-2xl mx-auto w-full">
+      {/* Main Single-Column Settings Area */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-[720px] mx-auto w-full">
         
-        {/* Header Section */}
-        <header className="mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-px bg-amber-400/40" />
-            <span className="text-[8px] font-black uppercase tracking-wider text-amber-600">Communications</span>
+        {/* Editorial Substack Header Row */}
+        <header className="mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+          <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
+            <span className="material-symbols-outlined text-[14px]">communications</span>
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Preferences Configuration</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-serif text-gray-800 tracking-tight">
-            Notification <span className="italic font-serif text-amber-600">Rules</span>
+          <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Notification Rules
           </h1>
-          <p className="text-sm text-gray-500 italic border-l-2 border-amber-400 pl-4 mt-2">
-            Configure how you receive updates and reminders.
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 font-sans mt-1.5">
+            Configure how and when you receive ecosystem updates, summaries, and reminders.
           </p>
         </header>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-6 h-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-[8px] font-black uppercase tracking-wider text-gray-500 animate-pulse">
+          <div className="flex flex-col items-center justify-center py-40 gap-4">
+            <div className="w-5 h-5 border-2 border-orange-600 dark:border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-[11px] font-sans font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500 animate-pulse">
               Retrieving configurations...
             </span>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 animate-in fade-in duration-500">
-            <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl overflow-hidden shadow-lg divide-y divide-gray-200/50">
+          <form onSubmit={handleSubmit} className="space-y-12">
+            
+            {/* List Row Flow Container */}
+            <div className="border border-zinc-100 dark:border-zinc-900 rounded-xl overflow-hidden divide-y divide-zinc-100 dark:divide-zinc-900">
               {Object.entries(notifications).map(([key, value]) => {
                 const configKey = key as keyof NotificationConfig;
                 const meta = metadataMap[configKey] || { title: key, desc: '', icon: 'notifications' };
@@ -136,28 +122,28 @@ export default function NotificationsSettingsPage() {
                   <div 
                     key={key} 
                     onClick={() => handleToggle(configKey)}
-                    className="flex items-center justify-between p-4 hover:bg-white/40 transition-colors cursor-pointer select-none"
+                    className="flex items-center justify-between p-5 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-colors cursor-pointer select-none"
                   >
-                    <div className="flex items-start gap-3 pr-4">
-                      <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500 mt-0.5">
+                    <div className="flex items-start gap-4 pr-6">
+                      <div className="w-8 h-8 rounded-lg border border-zinc-100 dark:border-zinc-800 bg-transparent flex items-center justify-center text-zinc-400 dark:text-zinc-500 mt-0.5 group-hover:text-zinc-900">
                         <span className="material-symbols-outlined text-[16px]">{meta.icon}</span>
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-bold text-gray-800 tracking-tight">
+                        <h4 className="text-[13px] font-sans font-medium text-zinc-800 dark:text-zinc-200">
                           {meta.title}
                         </h4>
-                        <p className="text-[8px] text-gray-500 leading-normal mt-0.5 max-w-md">
+                        <p className="text-[11px] text-zinc-400 dark:text-zinc-500 font-sans leading-normal mt-0.5 max-w-lg">
                           {meta.desc}
                         </p>
                       </div>
                     </div>
 
-                    {/* Custom Minimalist Toggle Switch */}
-                    <div className="relative pointer-events-none">
+                    {/* Architectural Accent Switch Toggle */}
+                    <div className="relative shrink-0">
                       <div className={`w-8 h-4 rounded-full transition-colors duration-200 ${
-                        value ? 'bg-amber-600' : 'bg-gray-300'
+                        value ? 'bg-orange-600 dark:bg-orange-500' : 'bg-zinc-200 dark:bg-zinc-800'
                       }`} />
-                      <div className={`absolute top-0.5 left-0.5 bg-white w-3 h-3 rounded-full shadow-sm transition-transform duration-200 transform ${
+                      <div className={`absolute top-0.5 left-0.5 bg-white dark:bg-zinc-100 w-3 h-3 rounded-full transition-transform duration-200 transform ${
                         value ? 'translate-x-4' : 'translate-x-0'
                       }`} />
                     </div>
@@ -166,29 +152,29 @@ export default function NotificationsSettingsPage() {
               })}
             </div>
 
-            {/* Actions Bar */}
-            <div className="flex items-center gap-3 pt-2">
+            {/* Structured Save/Form Action Row */}
+            <div className="flex items-center gap-3 pt-6 border-t border-zinc-100 dark:border-zinc-900">
               <button 
                 type="submit"
                 disabled={saving}
-                className="bg-gradient-to-r from-amber-600 to-amber-700 hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.02] text-white rounded-lg text-[8px] font-black uppercase tracking-wider px-6 py-2.5 transition-all disabled:opacity-50 flex items-center gap-2"
+                className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] px-4 py-2 rounded-full transition-colors shadow-sm disabled:opacity-50"
               >
                 {saving ? (
                   <>
-                    <span className="material-symbols-outlined animate-spin text-[12px]">sync</span>
-                    Saving...
+                    <span className="material-symbols-outlined animate-spin text-[14px]">sync</span>
+                    <span>Saving...</span>
                   </>
                 ) : (
                   <>
-                    <span className="material-symbols-outlined text-[12px]">save</span>
-                    Save Preferences
+                    <span className="material-symbols-outlined text-[14px]">save</span>
+                    <span>Save Preferences</span>
                   </>
                 )}
               </button>
               <button 
                 type="button"
                 onClick={() => router.push('/settings')}
-                className="bg-white/50 backdrop-blur-sm border border-gray-200 text-gray-600 rounded-lg text-[8px] font-black uppercase tracking-wider px-5 py-2.5 hover:bg-white/80 transition-all"
+                className="px-4 py-2 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-full text-[12px] font-sans font-medium text-zinc-600 dark:text-zinc-400 transition-colors bg-transparent"
               >
                 Cancel
               </button>
@@ -196,11 +182,9 @@ export default function NotificationsSettingsPage() {
           </form>
         )}
 
-        {/* Decorative Footer */}
-        <div className="mt-10 flex justify-center items-center gap-4 opacity-30">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400" />
-          <span className="material-symbols-outlined text-amber-400 text-sm">notifications</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400" />
+        {/* Elegant Centered System Rule Dot Divider */}
+        <div className="mt-24 flex justify-center">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
         </div>
       </main>
     </div>

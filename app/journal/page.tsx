@@ -5,9 +5,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Sidebar from '@/app/layout-components/Sidebar';
-import Header from '@/app/layout-components/Header';
 import { toast } from 'react-hot-toast';
-import Image from 'next/image';
+import { useTheme } from './../context/ThemeContext';
 
 interface JournalEntry {
   id: string;
@@ -25,6 +24,7 @@ export default function JournalPage() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -49,7 +49,8 @@ export default function JournalPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigating via grid/link wrapper clicks
     if (!confirm('Are you sure you want to delete this reflection?')) return;
     try {
       setDeleting(id);
@@ -79,181 +80,173 @@ export default function JournalPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="relative flex items-center justify-center min-h-screen">
-        <div className="fixed inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-            alt="Peaceful sanctuary background"
-            fill
-            className="object-cover scale-110 blur-xl opacity-30"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-        </div>
-        <div className="relative z-10 flex flex-col items-center">
-          <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center animate-pulse mb-4">
-            <span className="material-symbols-outlined text-indigo-500 text-2xl animate-spin">sync</span>
+      <div className={`flex items-center justify-center min-h-screen antialiased ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
+        <div className="flex flex-col items-center">
+          <div className="w-10 h-10 rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mb-3">
+            <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-xl animate-spin">
+              sync
+            </span>
           </div>
-          <p className="font-serif italic text-gray-500 text-sm">Opening your sanctuary...</p>
+          <p className="font-serif italic text-zinc-500 dark:text-zinc-400 text-xs">Opening your sanctuary...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-indigo-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-200/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
+    <div className={`flex min-h-screen antialiased selection:bg-orange-100 dark:selection:bg-orange-950/50 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
       <Sidebar />
-      <Header />
 
-      <main className="relative z-10 flex-1 lg:ml-56 pt-20 pb-16 px-6 md:px-10 max-w-7xl mx-auto w-full">
+      {/* Main Publication Container */}
+      <main className="flex-1 lg:ml-64 pt-24 px-4 md:px-8 pb-24 max-w-[850px] mx-auto w-full">
         
-        {/* Header Section */}
-        <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+        {/* Editorial Substack Header row */}
+        <section className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 pb-4 border-b border-zinc-100 dark:border-zinc-900">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-px bg-gray-400/40" />
-              <span className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Written Legacy</span>
+            <div className="flex items-center gap-1.5 text-orange-600 dark:text-orange-500 mb-2">
+              <span className="material-symbols-outlined text-[14px]">auto_stories</span>
+              <span className="text-[10px] font-sans font-semibold uppercase tracking-wider">Written Legacy</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-serif text-gray-800 mb-2 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-serif font-serif-sub font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
               Spiritual Journal
             </h1>
-            <p className="text-sm text-gray-600 italic border-l-2 border-indigo-400 pl-4">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-sans mt-1.5">
               Documenting your walk of faith, one day at a time.
             </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2">
+          {/* Understated Button Actions Group */}
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/journal/history"
-              className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg text-[9px] font-black tracking-wider text-gray-700 hover:bg-white/60 hover:border-indigo-300 transition-all uppercase"
+              className="flex items-center gap-1 px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-full text-[12px] font-medium font-sans text-zinc-600 dark:text-zinc-400 transition-colors"
             >
               <span className="material-symbols-outlined text-[14px]">history</span>
-              History
+              <span>History</span>
             </Link>
             <Link
               href="/reflect"
-              className="flex items-center gap-1.5 px-4 py-2 bg-white/40 backdrop-blur-sm border border-white/60 rounded-lg text-[9px] font-black tracking-wider text-gray-700 hover:bg-white/60 hover:border-indigo-300 transition-all uppercase"
+              className="flex items-center gap-1 px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-full text-[12px] font-medium font-sans text-zinc-600 dark:text-zinc-400 transition-colors"
             >
               <span className="material-symbols-outlined text-[14px]">self_improvement</span>
-              Meditation
+              <span>Meditation</span>
             </Link>
             <Link
               href="/journal/create"
-              className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg text-[9px] font-black tracking-wider hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.02] transition-all uppercase"
+              className="flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 text-white font-medium text-[12px] px-4 py-1.5 rounded-full transition-colors shadow-sm"
             >
               <span className="material-symbols-outlined text-[14px]">add</span>
-              New Entry
+              <span>New Entry</span>
             </Link>
           </div>
         </section>
 
-        {/* Entries Grid */}
-        {entries.length === 0 ? (
-          <div className="h-[400px] flex flex-col items-center justify-center bg-white/30 backdrop-blur-sm border-2 border-dashed border-indigo-200 rounded-2xl">
-            <div className="w-16 h-16 rounded-xl bg-indigo-100 flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-indigo-400 text-3xl">edit_note</span>
-            </div>
-            <p className="text-gray-500 font-serif italic mb-5">The pages are empty, waiting for your first word.</p>
-            <Link href="/journal/create" className="text-indigo-600 font-black text-[10px] tracking-wider uppercase border-b-2 border-indigo-600 pb-1 hover:text-indigo-700 transition-colors">
-              Begin Writing
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {entries.map((entry) => (
-              <div
-                key={entry.id}
-                className="group relative bg-white/40 backdrop-blur-sm border border-white/60 rounded-xl p-5 transition-all duration-300 hover:bg-white/60 hover:shadow-xl hover:-translate-y-0.5 flex flex-col"
-              >
-                {/* Date & Mood Badge */}
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-indigo-400 text-[12px]">calendar_today</span>
-                    <span className="text-[8px] font-black tracking-wider text-indigo-600 uppercase">
-                      {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
-                    </span>
-                  </div>
-                  {entry.mood && (
-                    <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 rounded-full">
-                      <span className="material-symbols-outlined text-indigo-500 text-[10px]">{getMoodIcon(entry.mood)}</span>
-                      <span className="text-[7px] font-bold text-indigo-600 uppercase tracking-tighter">{entry.mood}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-base font-serif font-semibold text-gray-800 mb-2 group-hover:text-indigo-700 transition-colors line-clamp-1">
-                    {entry.title}
-                  </h3>
-                  <p className="text-[11px] text-gray-600 leading-relaxed line-clamp-3 font-serif italic mb-4">
-                    {entry.content}
-                  </p>
-                </div>
-
-                {/* Tags */}
-                {entry.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {entry.tags.slice(0, 3).map((tag, idx) => (
-                      <span key={idx} className="text-[8px] text-gray-400 font-medium">
-                        #{tag}
-                      </span>
-                    ))}
-                    {entry.tags.length > 3 && (
-                      <span className="text-[8px] text-gray-400">+{entry.tags.length - 3}</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Card Actions */}
-                <div className="flex items-center gap-4 pt-4 border-t border-gray-200/50">
-                  <Link
-                    href={`/journal/${entry.id}`}
-                    className="text-[9px] font-black tracking-wider text-gray-600 uppercase hover:text-indigo-700 transition-colors flex items-center gap-0.5"
-                  >
-                    Read
-                    <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(entry.id)}
-                    disabled={deleting === entry.id}
-                    className="ml-auto text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">
-                      {deleting === entry.id ? 'sync' : 'delete'}
-                    </span>
-                  </button>
-                </div>
+        {/* Clean Feed Framework */}
+        <div className="max-w-[720px] mx-auto">
+          {entries.length === 0 ? (
+            /* Substack Empty Blank Space Frame */
+            <div className="text-center py-20 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl bg-transparent">
+              <div className="w-12 h-12 rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-zinc-400 dark:text-zinc-500 text-xl">edit_note</span>
               </div>
-            ))}
-          </div>
-        )}
+              <p className="text-sm font-serif italic text-zinc-500 dark:text-zinc-400 mb-1">
+                The pages are empty, waiting for your first word.
+              </p>
+              <Link 
+                href="/journal/create" 
+                className="mt-4 text-orange-600 dark:text-orange-500 font-sans font-medium text-[12px] hover:text-orange-700 dark:hover:text-orange-400 transition-colors inline-block border-b border-orange-600/30 pb-0.5"
+              >
+                Begin Writing →
+              </Link>
+            </div>
+          ) : (
+            /* Pure Linear Column Stream (Replaces Cards/Grids) */
+            <div className="space-y-0">
+              {entries.map((entry) => (
+                <div 
+                  key={entry.id} 
+                  className="group block border-b border-zinc-100 dark:border-zinc-900 py-8 first:pt-0 last:border-b-0"
+                >
+                  <article className="relative">
+                    
+                    {/* Meta Info Header Strip */}
+                    <div className="flex items-center justify-between gap-4 mb-2.5">
+                      <div className="flex items-center gap-3 text-[11px] font-sans text-zinc-400 dark:text-zinc-500">
+                        <span className="font-mono">
+                          {new Date(entry.createdAt).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: '2-digit', 
+                            year: 'numeric' 
+                          })}
+                        </span>
+                        {entry.mood && (
+                          <>
+                            <span>•</span>
+                            <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400">
+                              <span className="material-symbols-outlined text-[12px]">{getMoodIcon(entry.mood)}</span>
+                              <span className="font-medium text-[10px] uppercase tracking-wider">{entry.mood}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
 
-        {/* Decorative Footer */}
+                      {/* Explicit Action Delete Selector */}
+                      <button
+                        onClick={(e) => handleDelete(entry.id, e)}
+                        disabled={deleting === entry.id}
+                        className="text-zinc-300 hover:text-red-600 dark:text-zinc-700 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        title="Remove reflection"
+                      >
+                        <span className="material-symbols-outlined text-[15px] block">
+                          {deleting === entry.id ? 'sync' : 'delete'}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Interactive Title Link wrapper */}
+                    <Link href={`/journal/${entry.id}`} className="block group/link">
+                      <h3 className="text-xl font-serif font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 group-hover/link:text-orange-600 dark:group-hover/link:text-orange-500 transition-colors mb-2 leading-snug">
+                        {entry.title || 'Untitled Entry'}
+                      </h3>
+                      
+                      <p className="text-[14px] font-serif leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-3 mb-3">
+                        {entry.content}
+                      </p>
+                    </Link>
+
+                    {/* Tags Footer Section */}
+                    {entry.tags.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                        {entry.tags.slice(0, 4).map((tag, idx) => (
+                          <span key={idx} className="text-[11px] font-sans text-zinc-400 dark:text-zinc-500">
+                            #{tag}
+                          </span>
+                        ))}
+                        {entry.tags.length > 4 && (
+                          <span className="text-[10px] font-sans text-zinc-300 dark:text-zinc-600">
+                            +{entry.tags.length - 4} more
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Subtle Read CTA Link Action row */}
+                    <Link href={`/journal/${entry.id}`} className="inline-flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-4px] group-hover:translate-x-0">
+                      <span className="text-[11px] font-sans font-medium text-orange-600 dark:text-orange-500">Read entry</span>
+                      <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[12px]">arrow_forward</span>
+                    </Link>
+
+                  </article>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Elegant Centered System Rule Dot Divider Footer */}
         {entries.length > 0 && (
-          <div className="mt-12 flex justify-center items-center gap-4 opacity-30">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-indigo-400" />
-            <span className="material-symbols-outlined text-indigo-400 text-sm">edit_note</span>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-indigo-400" />
+          <div className="mt-24 pt-8 border-t border-zinc-100 dark:border-zinc-900 flex justify-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
           </div>
         )}
       </main>

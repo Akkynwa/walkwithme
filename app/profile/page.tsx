@@ -53,7 +53,7 @@ export default function ProfileSettingsPage() {
     <main className="lg:ml-64 min-h-screen bg-background text-on-background transition-colors duration-500 pb-20">
       <div className="max-w-[850px] mx-auto px-6 md:px-12 pt-12">
         <Sidebar />
-      <Header />
+        
         
         {/* 1. Header Section */}
         <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">

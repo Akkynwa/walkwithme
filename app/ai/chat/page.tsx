@@ -1,11 +1,16 @@
-// page.tsx or AIChatPage.tsx
-import SpiritualWalker from '../../../components/ai/SpiritualWalker'; // If this is a default export
+'use client';
+
+import SpiritualWalker from '../../../components/ai/SpiritualWalker';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function AIChatPage() {
+  const { isDark } = useTheme();
+  
   return (
-    <div>
-       <SpiritualWalker /> 
-       {/* If SpiritualWalker was imported incorrectly, this fails */}
+    <div className={`transition-colors duration-300 ${
+      isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
+    }`}>
+      <SpiritualWalker />
     </div>
   );
 }

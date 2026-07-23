@@ -1,109 +1,148 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
-import Sidebar from './layout-components/Sidebar';
-import Header from './layout-components/Header';
+import toast from 'react-hot-toast';
 
-// Existing Sub-components
-import { MorningGreeting } from './dashboard-components/MorningGreeting';
-import { AnchorVerse } from './dashboard-components/AnchorVerse';
-import { WorkspaceGrid } from './dashboard-components/WorkspaceGrid';
-import { TestimonyScroll } from './dashboard-components/TestimonyScroll';
-import { BreathingSpace } from './dashboard-components/BreathingSpace';
+// Existing Context Layer Wrappers
+import { ThemeProvider } from './context/ThemeContext';
+import { AppSettingsProvider } from './context/AppSettingsContext';
+import { Providers } from './providers';
 
-// NEWLY INTEGRATED COMPONENTS FOR STREAKS & PROGRESS TRACKING
-import ProgressTracker from '@/components/ProgressTracker';
-import { MotivationFeed } from '@/components/MotivationFeed';
+// Isolated Multi-Step Component Imports
+import { AuthForm } from './auth/_components/AuthForm';
+import { WelcomeStep } from './auth/_components/WelcomeStep';
+import { MoodStep } from './auth/_components/MoodStep';
+import { MeditationStep } from './auth/_components/MeditationStep';
 
-export default function Dashboard() {
-  const { data: session, status } = useSession();
+function OnboardingWizardFlow() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession();
+  
+  // Sequence Status: 1 = Sign In/Register, 2 = Welcome Brief, 3 = Mood Matrix, 4 = Focus Interval
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [userName, setUserName] = useState<string>('');
+  
+  const [moodPayload, setMoodPayload] = useState({
+    selectedMood: '',
+    suggestScriptures: true,
+    notes: ''
+  });
 
+  // Advance the layout automatically if active session cookies are detected on load
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
-    } else if (status === 'authenticated') {
-      setLoading(false);
+    if (status === 'authenticated' && session?.user && currentStep === 1) {
+      const extractedName = session.user.name || session.user.email?.split('@')[0] || 'Seeker';
+      setUserName(extractedName);
+      setCurrentStep(2);
     }
-  }, [status, router]);
+  }, [session, status, currentStep]);
 
-  if (status === 'loading' || loading) {
-    return (
-      <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-br from-amber-50 via-white to-orange-50">
-        <div className="relative z-10 flex flex-col items-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-amber-600 to-amber-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-amber-500/20 mb-6 animate-pulse">
-            <span className="material-symbols-outlined text-white text-3xl animate-spin">sync</span>
-          </div>
-          <p className="font-serif italic text-gray-600 text-sm">Preparing your Sanctuary...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleAuthSuccess = (computedName: string) => {
+    setUserName(computedName);
+    setCurrentStep(2);
+  };
+
+  const handleMoodSuccess = (payload: typeof moodPayload) => {
+    setMoodPayload(payload);
+    setCurrentStep(4);
+  };
+
+  const handleFinalizePipeline = async () => {
+    toast.success('successfull');
+    // Move user straight to the interior private layout routing
+    router.push('/dashboard');
+    router.refresh();
+  };
 
   return (
-    <div className="relative flex min-h-screen font-sans bg-gradient-to-br from-amber-50/30 via-white/40 to-orange-50/30">
-      {/* Blurred, Faded Background Image */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2070"
-          alt="Peaceful sanctuary background"
-          fill
-          className="object-cover scale-110 blur-xl opacity-30"
-          priority
-        />
-        {/* Additional fade overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/40 to-white/30"></div>
-      </div>
-
-      {/* Subtle Animated Ambient Glows */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-amber-200/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-amber-300/8 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '-3s' }} />
-      </div>
-
-      <Sidebar />
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-zinc-100 font-sans">
       
-      <div className="flex-1 lg:ml-56 relative z-10">
-        <Header />
+     {/* BACKGROUND CONTENT LAYER (Simulates the parent dashboard engine sitting behind the modal view) */}
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none filter blur-sm flex flex-col p-8 justify-between">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-zinc-400 rounded-lg"></div>
+            <div className="h-4 w-24 bg-zinc-300 rounded"></div>
+          </div>
+          <div className="h-4 w-32 bg-zinc-300 rounded"></div>
+        </div>
+        <div className="grid grid-cols-3 gap-6 my-auto max-w-4xl w-full mx-auto">
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+          <div className="h-32 bg-zinc-300 rounded-xl"></div>
+        </div>
+      </div>
+
+      {/* SEMI-TRANSPARENT MODAL OVERLAY BACKDROP */}
+      <div className="absolute inset-0 bg-white/35 z-10 backdrop-blur-[2px]" />
+
+      {/* FLOATING DIALOG CARD */}
+      <div className="relative z-20 w-full max-w-[920px] overflow-hidden rounded-[32px] border border-orange-100 bg-white/90 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.35)] backdrop-blur-xl md:flex min-h-[560px]">
         
-        <main className="pt-20 pb-12 px-4 md:px-8 max-w-[1600px] mx-auto">
-          {/* 1. Alluring Entry Ambience */}
-          <MorningGreeting name={session?.user?.name || 'Friend'} />
+        {/* ESCAPE / CLOSE CONTROL CROSS */}
+        <Link 
+          href="/"
+          className="absolute right-4 top-4 z-30 rounded-full bg-orange-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-orange-600 transition hover:bg-orange-100"
+          aria-label="Close form view"
+        >
+          <span className="material-symbols-outlined text-xl">close</span>
+        </Link>
 
-          {/* NEW: Dynamic Metrics Tracker Section */}
-          <div className="mt-6">
-            <ProgressTracker />
-          </div>
+       {/* LEFT COMPONENT COLUMN: Book Mockup Showcase Container */}
+<div className="w-full md:w-1/2 bg-orange-50/70 p-8 flex items-center justify-center border-r border-orange-100 select-none">
+  <Image
+  src="https://images.unsplash.com/photo-1653569746987-8c1c63b2ffe2?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  alt="The Names of God Ebook Guide on Tablet"
+  width={800}
+  height={600}
+  priority
+  className="w-full h-auto max-w-lg object-contain drop-shadow-xl select-none pointer-events-none mx-auto"
+/>
+</div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 mt-8">
-            {/* Left Column: Core Focus */}
-            <div className="xl:col-span-8 space-y-6 lg:space-y-8">
-              <AnchorVerse />
-              <WorkspaceGrid />
+
+        {/* RIGHT ACTIVE CONTROL CARD */}
+        <div className="w-full md:w-1/2 p-8 sm:p-12 flex flex-col justify-center bg-white">
+          <Suspense fallback={
+            <div className="w-full flex flex-col items-center justify-center py-20">
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-900 animate-pulse">MOUNTING ENGINE COMPONENTS...</p>
             </div>
+          }>
+            {currentStep === 1 && (
+              <AuthForm onAuthSuccess={handleAuthSuccess} />
+            )}
 
-            {/* Right Column: Community Support & Mutual Motivation */}
-            <aside className="xl:col-span-4 space-y-6 lg:space-y-8">
-              <BreathingSpace />
-              
-              {/* NEW: Mutual Motivation Loop Feed */}
-              <div className="bg-white/40 backdrop-blur-md border border-white/60 p-5 rounded-2xl shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="material-symbols-outlined text-amber-600 text-xl">groups</span>
-                  <h3 className="font-serif italic text-sm text-slate-800 font-bold">Encourage the Body</h3>
-                </div>
-                <MotivationFeed />
-              </div>
+            {currentStep === 2 && (
+              <WelcomeStep onNext={() => setCurrentStep(3)} userName={userName} />
+            )}
 
-              <TestimonyScroll />
-            </aside>
-          </div>
-        </main>
+            {currentStep === 3 && (
+              <MoodStep onNext={handleMoodSuccess} onBack={() => setCurrentStep(2)} />
+            )}
+
+            {currentStep === 4 && (
+              <MeditationStep moodContext={moodPayload} onBack={() => setCurrentStep(3)} onComplete={handleFinalizePipeline} />
+            )}
+          </Suspense>
+        </div>
+
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <ThemeProvider>
+      <AppSettingsProvider>
+        <Providers>
+          <OnboardingWizardFlow />
+        </Providers>
+      </AppSettingsProvider>
+    </ThemeProvider>
   );
 }
