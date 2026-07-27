@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { AudioPlayer } from '@/components/audio/AudioPlayer';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Sidebar from '@/app/layout-components/Sidebar';
 import { DownloadButton } from '@/components/audio/DownloadButton';
 import { useTheme } from '../../context/ThemeContext';
@@ -100,10 +99,16 @@ export default function QuietTimeAudioPage() {
   
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [noteContent, setNoteContent] = useState('');
   const [isSavingNote, setIsSavingNote] = useState(false);
   const [isLoadingNote, setIsLoadingNote] = useState(false);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const passageReference = `${book} ${chapter}`;
   const selectedBookData = BIBLE_STRUCTURE.find(b => b.name === book) || BIBLE_STRUCTURE[18];
@@ -111,6 +116,10 @@ export default function QuietTimeAudioPage() {
   const fetchSanctuaryAudio = useCallback(async () => {
     setIsLoadingAudio(true);
     setAudioUrl(null); 
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+
     try {
       const res = await fetch(`/api/bible/audio?book=${selectedBookData.id}&chapter=${chapter}&versionId=${version}`);
       const data = await res.json();
@@ -160,6 +169,43 @@ export default function QuietTimeAudioPage() {
     fetchJournalContext();
   }, [book, chapter, version, passageReference, fetchSanctuaryAudio]);
 
+  // Sync speed changes to the audio element
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackSpeed;
+    }
+  }, [playbackSpeed]);
+
+  const togglePlay = () => {
+    if (!audioRef.current || !audioUrl) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch((err) => {
+        console.error("Error playing audio:", err);
+      });
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = Number(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return '0:00';
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
   const saveStudyNotes = async () => {
     setIsSavingNote(true);
     try {
@@ -191,12 +237,11 @@ export default function QuietTimeAudioPage() {
       {/* Main viewport frame safely pushing below global header space */}
       <main className="lg:ml-56 flex-1 pt-16 md:pt-20 grid grid-cols-1 md:grid-cols-2 h-screen overflow-hidden box-border">
         
-        {/* LEFT COMPARTMENT: Centered Hero Context, Configuration Panel & Audio Player Deck */}
-        <div className={`flex flex-col items-center justify-start p-6 md:p-8 border-b md:border-b-0 md:border-r overflow-y-auto space-y-8 w-full ${
+        {/* LEFT COMPARTMENT: Configuration & Audio Controller */}
+        <div className={`flex flex-col items-center justify-start p-6 md:p-8 border-b md:border-b-0 md:border-r overflow-y-auto space-y-6 w-full ${
           isDark ? 'border-zinc-900 bg-zinc-950' : 'border-zinc-100 bg-zinc-50/40'
         }`}>
           
-          {/* Left Column Content Wrapper: Enforces consistent bounding lines */}
           <div className="w-full max-w-sm flex flex-col items-center space-y-6 mt-2">
             
             {/* Centered Hero Context Header */}
@@ -209,7 +254,7 @@ export default function QuietTimeAudioPage() {
               </p>
             </div>
             
-            {/* Uniform Parameter Selection Panel */}
+            {/* Selection Panel */}
             <div className={`w-full p-4 border rounded-2xl space-y-4 shadow-sm ${
               isDark ? 'bg-zinc-900/50 border-zinc-900' : 'bg-white border-zinc-200'
             }`}>
@@ -272,7 +317,7 @@ export default function QuietTimeAudioPage() {
                 </select>
               </div>
 
-              {/* Playback Pace Controller */}
+              {/* Playback Speed Controller */}
               <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800/60">
                 <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px]">speed</span> Playback Pace
@@ -290,38 +335,79 @@ export default function QuietTimeAudioPage() {
               </div>
             </div>
 
-            {/* Rescued Audio Player Deck Context */}
-            <div className="w-full flex flex-col items-center">
-              <div className="relative w-full aspect-video shadow-md rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-900 bg-zinc-100 dark:bg-zinc-900">
-                {isLoadingAudio && (
-                  <div className={`absolute inset-0 z-20 backdrop-blur-sm flex items-center justify-center ${
-                    isDark ? 'bg-zinc-950/60' : 'bg-white/60'
-                  }`}>
-                    <div className="w-4 h-4 border-2 border-orange-600 dark:border-orange-500 border-t-transparent rounded-full animate-spin" />
-                  </div>
-                )}
-                <AudioPlayer
-                  src={audioUrl || ''} 
-                  title={book}
-                  book={book}
-                  chapter={chapter}
-                  playbackSpeed={playbackSpeed}
-                  bgImage="https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=600&auto=format&fit=crop"
+            {/* MINIMAL FUNCTIONAL AUDIO PLAYER */}
+            <div className={`w-full p-6 border rounded-2xl flex flex-col items-center space-y-4 shadow-sm ${
+              isDark ? 'bg-zinc-900/60 border-zinc-800' : 'bg-white border-zinc-200'
+            }`}>
+              {/* Native HTML5 Audio Tag (Hidden) */}
+              {audioUrl && (
+                <audio
+                  ref={audioRef}
+                  src={audioUrl}
+                  onTimeUpdate={() => audioRef.current && setCurrentTime(audioRef.current.currentTime)}
+                  onLoadedMetadata={() => {
+                    if (audioRef.current) {
+                      setDuration(audioRef.current.duration);
+                      audioRef.current.playbackRate = playbackSpeed;
+                    }
+                  }}
+                  onEnded={() => setIsPlaying(false)}
                 />
+              )}
+
+              <div className="text-center">
+                <p className="text-xs font-semibold text-orange-600 dark:text-orange-500 uppercase tracking-widest mb-1">Now Playing</p>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{book} {chapter}</h3>
               </div>
-              
-              {/* Downstream Command Triggers */}
-              <div className="mt-4 flex flex-col gap-2 w-full">
-                {audioUrl && <DownloadButton audioUrl={audioUrl} title={`${book}_${chapter}`} />}
-                <button className={`flex items-center justify-center gap-2 py-2 border rounded-xl text-xs font-medium shadow-sm transition-colors w-full ${
-                  isDark 
-                    ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200' 
-                    : 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900'
-                }`}>
-                  <span className="material-symbols-outlined text-[16px]">bookmark_border</span>
-                  <span>Bookmark Position</span>
-                </button>
+
+              {/* Progress Slider */}
+              <div className="w-full space-y-1">
+                <input 
+                  type="range"
+                  min="0"
+                  max={duration || 0}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  disabled={!audioUrl || isLoadingAudio}
+                  className="w-full h-1 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-orange-600"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-400 font-mono">
+                  <span>{formatTime(currentTime)}</span>
+                  <span>{formatTime(duration)}</span>
+                </div>
               </div>
+
+              {/* Functional Play/Pause Button */}
+              <button 
+                onClick={togglePlay}
+                disabled={isLoadingAudio || !audioUrl}
+                className="w-16 h-16 rounded-full bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-800 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:scale-100 cursor-pointer"
+              >
+                {isLoadingAudio ? (
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <span className="material-symbols-outlined text-[32px] ml-0.5">
+                    {isPlaying ? 'pause' : 'play_arrow'}
+                  </span>
+                )}
+              </button>
+
+              <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                {isLoadingAudio ? 'Loading audio stream...' : audioUrl ? (isPlaying ? 'Playing...' : 'Paused') : 'Audio stream unavailable'}
+              </p>
+            </div>
+
+            {/* Downstream Actions */}
+            <div className="flex flex-col gap-2 w-full">
+              {audioUrl && <DownloadButton audioUrl={audioUrl} title={`${book}_${chapter}`} />}
+              <button className={`flex items-center justify-center gap-2 py-2 border rounded-xl text-xs font-medium shadow-sm transition-colors w-full ${
+                isDark 
+                  ? 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200' 
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900'
+              }`}>
+                <span className="material-symbols-outlined text-[16px]">bookmark_border</span>
+                <span>Bookmark Position</span>
+              </button>
             </div>
 
           </div>

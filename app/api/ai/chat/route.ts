@@ -1,4 +1,4 @@
-import { createOpenAI } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { streamText } from 'ai'; 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; 
@@ -34,19 +34,10 @@ export async function POST(req: Request) {
         ? 'The user seems to be in a season of trial. Prioritize healing, grace, and steady presence. Speak softly.' 
         : 'The user is seeking growth. Focus on depth, hidden wisdom, and spiritual discovery.'}
       2. INTUITION: Peer into the heart of the query. Look for the "why" behind the "what."
-      3. PACKAGING: Wrap your answers in "Spiritual Intuitions."
-      4. BIBLE ALIGNMENT: Weave in verses like threads in a tapestry.
-      5. POETICS: Use metaphors of light, paths, shepherds, and living water.
+      3. BIBLE ALIGNMENT: Weave in verses like threads in a tapestry.
+      4. FORMATTING: Provide direct, natural, and conversational responses. Do NOT include headings, tags, or labels such as "Spiritual Intuition", "Spiritual Intuitions", or similar headers in your output.
     `;
 
-    const groqProvider = createOpenAI({
-      apiKey: process.env.GROQ_API_KEY,
-      baseURL: "https://api.groq.com/openai/v1",
-    });
-
-    // 💡 VERSION-PROOF FIX: Pure JavaScript extraction. No SDK utility required.
-    // This extracts only the compliant properties that Groq demands, 
-    // shielding you from future SDK breaking-change updates.
     const cleanMessages = messages.map((msg: any) => ({
       role: msg.role === 'assistant' ? 'assistant' : 'user',
       content: msg.content,
@@ -64,11 +55,10 @@ export async function POST(req: Request) {
     }
 
     const result = await streamText({
-      model: groqProvider('llama-3.3-70b-versatile'),
+      model: google('gemini-2.5-flash'),
       system: systemMessage,
-      messages: cleanMessages, // 👈 Works flawlessly
+      messages: cleanMessages,
       temperature: 0.65,
-      
       onFinish: async ({ text }) => {
         if (!userId) return;
         await prisma.message.create({

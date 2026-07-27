@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth'; // Ensure this points to your NextAuth configuration
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { randomUUID } from 'crypto';
 
 /**
  * GET: Retrieve the authenticated user's message history
@@ -16,7 +17,8 @@ export async function GET() {
   try {
     const messages = await prisma.message.findMany({
       where: { userId: session.user.id },
-      orderBy: { createdAt: 'asc' }, // Orders the conversation sequentially
+      orderBy: { createdAt: 'asc' },
+      take: 100, // Limit to reasonable context length
     });
     
     return NextResponse.json(messages);
@@ -44,19 +46,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid payload format' }, { status: 400 });
     }
 
-    // Use a transaction or upsert loop to store message elements safely
+    // Execute message upserts safely with validated fallback IDs
     const saveOperations = messages.map((msg: any) => {
+      const messageId = msg.id || randomUUID();
+
       return prisma.message.upsert({
         where: {
-          // Relies on a unique string 'id' from useChat hook items to avoid duplication
-          id: msg.id || `${session.user.id}-${Date.now()}-${Math.random()}`,
+          id: messageId,
         },
         update: {
           content: msg.content,
           role: msg.role,
         },
         create: {
-          id: msg.id,
+          id: messageId,
           userId: session.user.id,
           content: msg.content,
           role: msg.role,

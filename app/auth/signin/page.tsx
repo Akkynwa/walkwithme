@@ -286,37 +286,36 @@ export default function AuthPage() {
           <span className="material-symbols-outlined text-xl">close</span>
         </Link>
 
-        {/* LEFT COMPONENT COLUMN: Brand Header & Showcase Container */}
-        <div className="w-full md:w-1/2 bg-orange-50/70 p-8 flex flex-col justify-between border-r border-orange-100 select-none">
-          {/* Brand Logo Header */}
-          <div className="shrink-0">
-            <Link href="/" className="inline-block">
-              <div className="flex items-center gap-2.5">
-                <Image
-                  src={logo}
-                  alt="WalkWithMe Logo"
-                  priority
-                  className="h-16 w-auto object-contain select-none pointer-events-none"
-                />
-                <span className="text-[11px] font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-200">
-                  WalkWithMe
-                </span>
-              </div>
-            </Link>
-          </div>
+<div className="w-full md:w-1/2 bg-orange-50/70 p-8 flex flex-col justify-between border-r border-orange-100 select-none">
+  {/* Centered Brand Logo Header */}
+  <div className="shrink-0 flex justify-center w-full">
+    <Link href="/" className="inline-block">
+      <div className="flex flex-col items-center justify-center gap-2">
+        <Image
+          src={logo}
+          alt="WalkWithMe Logo"
+          priority
+          className="h-24 w-auto object-contain select-none pointer-events-none"
+        />
+        <span className="text-[11px] font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-200">
+          WalkWithMe
+        </span>
+      </div>
+    </Link>
+  </div>
 
-          {/* Image Asset Showcase */}
-          <div className="my-auto py-6 flex items-center justify-center">
-            <Image
-              src="https://images.unsplash.com/photo-1653569746987-8c1c63b2ffe2?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="The Names of God Ebook Guide on Tablet"
-              width={800}
-              height={600}
-              priority
-              className="w-full h-auto max-w-lg object-contain drop-shadow-xl select-none pointer-events-none mx-auto"
-            />
-          </div>
-        </div>
+  {/* Image Asset Showcase */}
+  <div className="my-auto py-6 flex items-center justify-center">
+    <Image
+      src="https://images.unsplash.com/photo-1653569746987-8c1c63b2ffe2?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="The Names of God Ebook Guide on Tablet"
+      width={800}
+      height={600}
+      priority
+      className="w-full h-auto max-w-lg object-contain drop-shadow-xl select-none pointer-events-none mx-auto"
+    />
+  </div>
+</div>
 
         {/* RIGHT COMPONENT COLUMN: Core Interactive Auth Container */}
         <div className="w-full md:w-1/2 bg-white/90 p-8 sm:p-12 flex flex-col justify-between">

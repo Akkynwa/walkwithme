@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -23,6 +23,8 @@ interface SearchHint {
   color: string;
 }
 
+const ITEMS_PER_PAGE = 4;
+
 const SEARCH_HINTS: readonly SearchHint[] = [
   { label: 'Love & Grace', icon: 'favorite', query: 'God so loved the world', color: 'from-rose-500/10 to-pink-500/5 dark:from-rose-500/20 dark:to-transparent' },
   { label: 'Peace in Anxiety', icon: 'spa', query: 'do not be anxious', color: 'from-emerald-500/10 to-teal-500/5 dark:from-emerald-500/20 dark:to-transparent' },
@@ -41,12 +43,41 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
+/** Skeleton Loader Placeholder */
+function SearchSkeleton({ isDark }: { isDark: boolean }) {
+  return (
+    <div className="p-2 space-y-2 animate-pulse">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className={`p-3.5 rounded-xl border ${
+            isDark ? 'bg-zinc-900/40 border-zinc-800/50' : 'bg-stone-100/60 border-stone-200/50'
+          }`}
+        >
+          <div className="flex justify-between items-center mb-2">
+            <div className="flex items-center gap-2">
+              <div className={`w-4 h-4 rounded-full ${isDark ? 'bg-zinc-800' : 'bg-stone-300'}`} />
+              <div className={`h-3 w-28 rounded-md ${isDark ? 'bg-zinc-800' : 'bg-stone-300'}`} />
+            </div>
+            <div className={`h-3 w-10 rounded-md ${isDark ? 'bg-zinc-800' : 'bg-stone-300'}`} />
+          </div>
+          <div className="space-y-1.5 pt-1">
+            <div className={`h-2.5 w-full rounded-md ${isDark ? 'bg-zinc-800/70' : 'bg-stone-200'}`} />
+            <div className={`h-2.5 w-4/5 rounded-md ${isDark ? 'bg-zinc-800/70' : 'bg-stone-200'}`} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function BibleSearchPage() {
   const { isDark } = useTheme();
   const [inputValue, setInputValue] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   
   const [searchLocal, setSearchLocal] = useState(true);
   const [searchWeb, setSearchWeb] = useState(false);
@@ -68,29 +99,55 @@ export default function BibleSearchPage() {
     if (debouncedQuery.trim().length < 3) {
       setResults([]);
       setIsOpen(false);
+      setCurrentPage(1);
       return;
     }
 
+    const controller = new AbortController();
+
     const executeSearch = async () => {
       setLoading(true);
+      setIsOpen(true);
+      setCurrentPage(1); // Reset back to first page on query/toggle changes
+
       try {
         const response = await fetch(
-          `/api/bible/search?q=${encodeURIComponent(debouncedQuery)}&local=${searchLocal}&web=${searchWeb}`
+          `/api/bible/search?q=${encodeURIComponent(debouncedQuery)}&local=${searchLocal}&web=${searchWeb}`,
+          { signal: controller.signal }
         );
         const data = await response.json();
         if (data.success) {
           setResults(data.results || []);
-          setIsOpen(true);
         }
-      } catch (error) {
-        console.error('Search request failed:', error);
+      } catch (error: any) {
+        if (error.name !== 'AbortError') {
+          console.error('Search request failed:', error);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     executeSearch();
-  }, [debouncedQuery, loading, searchLocal, searchWeb]);
+
+    return () => {
+      controller.abort();
+    };
+  }, [debouncedQuery, searchLocal, searchWeb]);
+
+  // Pagination Computations
+  const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+
+  const paginatedResults = useMemo(() => {
+    const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+    return results.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  }, [results, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const handleHintClick = (query: string) => {
     setInputValue(query);
@@ -100,6 +157,7 @@ export default function BibleSearchPage() {
   const clearSearch = () => {
     setInputValue('');
     setResults([]);
+    setCurrentPage(1);
     setIsOpen(false);
   };
 
@@ -222,86 +280,122 @@ export default function BibleSearchPage() {
             )}
           </div>
 
-          {/* Inline Dropdown Panel handles mixed content card layouts */}
+          {/* Inline Dropdown Panel */}
           {isOpen && inputValue.trim().length >= 3 && (
             <div className={`absolute top-full left-0 right-0 mt-3 text-left backdrop-blur-xl border rounded-2xl shadow-2xl overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2 duration-200 ${
               isDark ? 'bg-zinc-900/95 border-zinc-800' : 'bg-white/95 border-stone-200'
             }`}>
-              <div className="max-h-[340px] overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-stone-500/10 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700/30">
-                {results.length > 0 ? (
-                  <div className="p-2 space-y-1">
-                    {results.map((result, idx) => {
-                      if (result.isExternal) {
+              <div className="max-h-[380px] overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-stone-500/10 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700/30">
+                {loading ? (
+                  <SearchSkeleton isDark={isDark} />
+                ) : results.length > 0 ? (
+                  <div>
+                    {/* Paginated List */}
+                    <div className="p-2 space-y-1 min-h-[220px]">
+                      {paginatedResults.map((result, idx) => {
+                        if (result.isExternal) {
+                          return (
+                            <a
+                              key={`ext-${idx}`}
+                              href={result.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`block p-3.5 rounded-xl transition-colors group ${
+                                isDark ? 'hover:bg-zinc-800/40' : 'hover:bg-blue-50/40'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center mb-1">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="material-symbols-outlined text-blue-500 text-sm flex-shrink-0" aria-hidden="true">
+                                    language
+                                  </span>
+                                  <h4 className={`text-xs font-bold line-clamp-1 ${
+                                    isDark ? 'text-zinc-200 group-hover:text-blue-400' : 'text-stone-800 group-hover:text-blue-700'
+                                  }`}>
+                                    {result.title}
+                                  </h4>
+                                </div>
+                                <span className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ml-2 flex-shrink-0 ${
+                                  isDark ? 'text-blue-400 border-blue-900/50 bg-blue-950/20' : 'text-blue-600 border-blue-100 bg-blue-50/50'
+                                }`}>
+                                  EXT REF
+                                </span>
+                              </div>
+                              <p className={`text-xs leading-relaxed line-clamp-2 ${
+                                isDark ? 'text-zinc-500 group-hover:text-zinc-400' : 'text-stone-500 group-hover:text-stone-600'
+                              }`}>
+                                {result.snippet}
+                              </p>
+                            </a>
+                          );
+                        }
+
                         return (
-                          <a
-                            key={`ext-${idx}`}
-                            href={result.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Link
+                            key={`local-${result.book}-${result.chapter}-${result.verse}-${idx}`}
+                            href={`/bible/${result.book?.toLowerCase()}/${result.chapter}`}
+                            onClick={() => setIsOpen(false)}
                             className={`block p-3.5 rounded-xl transition-colors group ${
-                              isDark ? 'hover:bg-zinc-800/40' : 'hover:bg-blue-50/40'
+                              isDark ? 'hover:bg-zinc-800/50' : 'hover:bg-amber-50/50'
                             }`}
                           >
-                            <div className="flex justify-between items-center mb-1">
-                              <div className="flex items-center gap-1.5 min-w-0">
-                                <span className="material-symbols-outlined text-blue-500 text-sm flex-shrink-0" aria-hidden="true">
-                                  language
+                            <div className="flex justify-between items-center mb-1.5">
+                              <div className="flex items-center gap-1.5">
+                                <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-sm" aria-hidden="true">
+                                  menu_book
                                 </span>
-                                <h4 className={`text-xs font-bold line-clamp-1 ${
-                                  isDark ? 'text-zinc-200 group-hover:text-blue-400' : 'text-stone-800 group-hover:text-blue-700'
+                                <h4 className={`text-xs font-bold uppercase tracking-wider ${
+                                  isDark ? 'text-amber-400' : 'text-amber-800'
                                 }`}>
-                                  {result.title}
+                                  {result.book} {result.chapter}:{result.verse}
                                 </h4>
                               </div>
-                              <span className={`text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ml-2 flex-shrink-0 ${
-                                isDark ? 'text-blue-400 border-blue-900/50 bg-blue-950/20' : 'text-blue-600 border-blue-100 bg-blue-50/50'
+                              <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 border rounded-md ${
+                                isDark ? 'text-zinc-500 border-zinc-800 bg-zinc-950/40' : 'text-stone-400 border-stone-200 bg-stone-50/40'
                               }`}>
-                                EXT REF
+                                {result.translation || 'KJV'}
                               </span>
                             </div>
-                            <p className={`text-xs leading-relaxed line-clamp-2 ${
-                              isDark ? 'text-zinc-500 group-hover:text-zinc-400' : 'text-stone-500 group-hover:text-stone-600'
+                            <p className={`text-xs font-serif leading-relaxed line-clamp-2 ${
+                              isDark ? 'text-zinc-400 group-hover:text-zinc-300' : 'text-stone-600 group-hover:text-stone-800'
                             }`}>
-                              {result.snippet}
+                              {result.text}
                             </p>
-                          </a>
+                          </Link>
                         );
-                      }
+                      })}
+                    </div>
 
-                      return (
-                        <Link
-                          key={`local-${result.book}-${result.chapter}-${result.verse}-${idx}`}
-                          href={`/bible/${result.book?.toLowerCase()}/${result.chapter}`}
-                          onClick={() => setIsOpen(false)}
-                          className={`block p-3.5 rounded-xl transition-colors group ${
-                            isDark ? 'hover:bg-zinc-800/50' : 'hover:bg-amber-50/50'
-                          }`}
+                    {/* Pagination Bar */}
+                    {totalPages > 1 && (
+                      <div className={`flex items-center justify-between px-4 py-2.5 border-t text-xs select-none ${
+                        isDark ? 'border-zinc-800/80 bg-zinc-950/40 text-zinc-400' : 'border-stone-100 bg-stone-50/60 text-stone-500'
+                      }`}>
+                        <button
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          className="px-2.5 py-1 rounded-lg border border-transparent hover:border-stone-200 dark:hover:border-zinc-700 disabled:opacity-30 disabled:hover:border-transparent transition-all"
                         >
-                          <div className="flex justify-between items-center mb-1.5">
-                            <div className="flex items-center gap-1.5">
-                              <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-sm" aria-hidden="true">
-                                menu_book
-                              </span>
-                              <h4 className={`text-xs font-bold uppercase tracking-wider ${
-                                isDark ? 'text-amber-400' : 'text-amber-800'
-                              }`}>
-                                {result.book} {result.chapter}:{result.verse}
-                              </h4>
-                            </div>
-                            <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 border rounded-md ${
-                              isDark ? 'text-zinc-500 border-zinc-800 bg-zinc-950/40' : 'text-stone-400 border-stone-200 bg-stone-50/40'
-                            }`}>
-                              {result.translation || 'KJV'}
-                            </span>
-                          </div>
-                          <p className={`text-xs font-serif leading-relaxed line-clamp-2 ${
-                            isDark ? 'text-zinc-400 group-hover:text-zinc-300' : 'text-stone-600 group-hover:text-stone-800'
-                          }`}>
-                            {result.text}
-                          </p>
-                        </Link>
-                      );
-                    })}
+                          Previous
+                        </button>
+
+                        <div className="flex items-center gap-1 font-mono text-[11px]">
+                          <span>Page</span>
+                          <span className={`font-bold ${isDark ? 'text-zinc-200' : 'text-stone-800'}`}>
+                            {currentPage}
+                          </span>
+                          <span>of {totalPages}</span>
+                        </div>
+
+                        <button
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          className="px-2.5 py-1 rounded-lg border border-transparent hover:border-stone-200 dark:hover:border-zinc-700 disabled:opacity-30 disabled:hover:border-transparent transition-all"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="py-12 text-center select-none">

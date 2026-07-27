@@ -53,7 +53,8 @@ export default function RootLayout({
         <ThemeProvider>
           <AppSettingsProvider>
             <Providers>
-              <div className="flex-grow flex flex-col">
+              {/* Added pb-20 for mobile clearance and lg:pb-0 for desktop layout */}
+              <div className="flex-grow flex flex-col pb-20 lg:pb-0">
                 <AppShell>{children}</AppShell>
               </div>
               
