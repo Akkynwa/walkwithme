@@ -2,270 +2,412 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { ReadingCanvas } from '@/components/reading/ReadingCanvas';
 import { useTheme } from '../../context/ThemeContext';
+
+const BIBLE_BOOKS = [
+  'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth',
+  '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra',
+  'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon',
+  'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos',
+  'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah',
+  'Malachi', 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians',
+  '2 Corinthians', 'Galatians', 'Ephesians', 'Philippians', 'Colossians',
+  '1 Thessalonians', '2 Thessalonians', '1 Timothy', '2 Timothy', 'Titus', 'Philemon',
+  'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation'
+];
+
+interface VerseItem {
+  verse: number;
+  text: string;
+}
+
+interface ScriptureResponse {
+  reference: string;
+  verses: VerseItem[];
+  text: string;
+  translation_name: string;
+}
 
 export default function QuietTimeReadingPage() {
   const router = useRouter();
   const { isDark } = useTheme();
-  
-  const [activeBook] = useState({ name: 'John', chapters: 21 });
-  const [activeChapter, setActiveChapter] = useState(15);
+
+  // Navigation & Scripture State
+  const [selectedBook, setSelectedBook] = useState('John');
+  const [selectedChapter, setSelectedChapter] = useState(15);
+  const [scripture, setScripture] = useState<ScriptureResponse | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  // Journal Drawer State
   const [note, setNote] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isJournalOpen, setIsJournalOpen] = useState(false);
   const [isAnonymousShare, setIsAnonymousShare] = useState(false);
 
-  // Hydrate initial note from localStorage securely safely on mount
-  useEffect(() => {
-    const savedNote = localStorage.getItem('sanctuary_pending_note');
-    if (savedNote) setNote(savedNote);
+  // Fetch scripture passage
+  const loadPassage = useCallback(async (book: string, chapter: number) => {
+    setIsFetching(true);
+    setApiError(null);
+    try {
+      const res = await fetch(
+        `https://bible-api.com/${encodeURIComponent(book)}+${chapter}?translation=web`
+      );
+      if (!res.ok) throw new Error('Could not fetch passage');
+      const data: ScriptureResponse = await res.json();
+      setScripture(data);
+    } catch (err) {
+      console.error('Scripture fetch error:', err);
+      setApiError('Unable to load scripture passage. Please check your connection.');
+    } finally {
+      setIsFetching(false);
+    }
   }, []);
 
-  // Listen for Escape key down to shut down layout drawers smoothly
+  useEffect(() => {
+    loadPassage(selectedBook, selectedChapter);
+  }, [selectedBook, selectedChapter, loadPassage]);
+
+  // Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsJournalOpen(false);
+      if (e.key === 'Escape') {
+        setIsJournalOpen(false);
+        return;
+      }
+
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'TEXTAREA' || activeTag === 'INPUT') return;
+
+      if (e.key === 'ArrowRight') {
+        setSelectedChapter((prev) => prev + 1);
+      } else if (e.key === 'ArrowLeft') {
+        setSelectedChapter((prev) => Math.max(1, prev - 1));
+      }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Structural Debounced Persistence Engine to keep interface blazing fast
-  const persistToLocalStorage = useCallback((value: string) => {
-    localStorage.setItem('sanctuary_pending_note', value);
+  // Hydrate local note
+  useEffect(() => {
+    const saved = localStorage.getItem('sanctuary_pending_note');
+    if (saved) setNote(saved);
   }, []);
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const targetVal = e.target.value;
-    setNote(targetVal);
-    persistToLocalStorage(targetVal);
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setNote(val);
+    localStorage.setItem('sanctuary_pending_note', val);
   };
 
   const handleArchiveAndPublish = async () => {
-    const cleanNote = note.trim();
-    if (!cleanNote) return;
+    const clean = note.trim();
+    if (!clean) return;
 
-    setLoading(true);
+    setIsSyncing(true);
     setErrorMessage(null);
-    
+
     try {
-      const response = await fetch('/api/community/revelations', {
+      const res = await fetch('/api/community/revelations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          book: activeBook.name,
-          chapter: activeChapter,
-          content: cleanNote,
-          note: cleanNote,
-          reflection: cleanNote,
-          isPublic: true, 
-          isAnonymous: isAnonymousShare
+          book: selectedBook,
+          chapter: selectedChapter,
+          content: clean,
+          note: clean,
+          reflection: clean,
+          isPublic: true,
+          isAnonymous: isAnonymousShare,
         }),
       });
 
-      if (!response.ok) throw new Error('Network boundary sync failure occurred.');
+      if (!res.ok) throw new Error('Sync failed');
 
       setShowToast(true);
       setNote('');
       localStorage.removeItem('sanctuary_pending_note');
-      
+
       setTimeout(() => {
         setShowToast(false);
         setIsJournalOpen(false);
-      }, 2200);
+      }, 2000);
     } catch (err) {
-      console.error(err);
-      setErrorMessage('Could not sync reflection. Retaining context local-side for safety.');
+      setErrorMessage('Could not publish revelation. Local copy retained.');
     } finally {
-      setLoading(false);
+      setIsSyncing(false);
     }
   };
 
+  const goToBiblePage = () => {
+    router.push(`/bible?book=${encodeURIComponent(selectedBook)}&chapter=${selectedChapter}`);
+  };
+
   return (
-    <div className={`flex min-h-screen antialiased transition-colors duration-300 lg:ml-64 ${
-      isDark ? 'bg-zinc-950 text-zinc-100 selection:bg-primary-950/40' : 'bg-stone-100 text-zinc-900 selection:bg-primary-100'
-    }`}>
-      
-      {/* Structural Minimal Control TopBar Header Framework */}
-      <header className={`fixed top-0 left-0 lg:left-64 right-0 h-16 border-b z-40 px-4 md:px-8 flex items-center justify-between transition-colors duration-300 ${
-        isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-stone-200'
-      }`}>
-        <button 
-          onClick={() => router.back()} 
-          className={`text-[11px] font-sans font-semibold uppercase tracking-wider flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors group focus-visible:ring-2 focus-visible:ring-primary-500 outline-none bg-transparent ${
-            isDark ? 'text-zinc-400 hover:text-primary-400' : 'text-zinc-600 hover:text-primary-600'
+    <div
+      className={`relative min-h-[calc(100vh-4rem)] flex flex-col antialiased transition-colors duration-300 ${
+        isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-stone-50 text-zinc-900'
+      }`}
+    >
+      {/* 1. Main Reader Viewport (pushed further down with pt-20 sm:pt-28) */}
+      <main className="flex-1 w-full max-w-3xl mx-auto px-4 sm:px-6 pt-20 sm:pt-28 pb-32 flex flex-col items-center">
+        
+        {/* Book & Chapter Selector Box */}
+        <div
+          className={`w-full mb-6 p-2.5 sm:p-3 rounded-xl border flex flex-wrap items-center justify-between gap-2 text-xs shadow-xs ${
+            isDark ? 'bg-zinc-900/80 border-zinc-800' : 'bg-white border-stone-200'
           }`}
         >
-          <span className="material-symbols-outlined text-[16px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span> 
-          Lobby
-        </button>
-
-        <div className="text-right font-sans select-none">
-          <span className={`text-[9px] font-bold uppercase tracking-[0.24em] block ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Stage 02</span>
-          <span className={`text-[12px] font-semibold ${isDark ? 'text-primary-400' : 'text-primary-600'}`}>Holy Scripture</span>
-        </div>
-      </header>
-
-      {/* Main Structural Layout Content Flow */}
-      <div className="flex-1 relative">
-        <main className="pt-24 px-4 md:px-8 pb-24 max-w-5xl mx-auto w-full">
-          <div className="space-y-8">
-            <div className={`rounded-[28px] border p-3 md:p-4 shadow-sm ${
-              isDark ? 'border-zinc-800/70 bg-zinc-900' : 'border-stone-200/80 bg-white'
-            }`}>
-              <ReadingCanvas book={activeBook} chapter={activeChapter} onChapterChange={setActiveChapter} />
-            </div>
-            
-            <div className={`pt-5 flex justify-end border-t ${isDark ? 'border-zinc-800/80' : 'border-stone-200/70'}`}>
-              <button 
-                onClick={() => router.push('/quiet-time/reflection')} 
-                className={`flex items-center gap-2 font-semibold text-[11px] uppercase tracking-[0.2em] px-6 py-3 rounded-full transition-all duration-200 shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 outline-none ${
-                  isDark ? 'bg-primary-600 hover:bg-primary-500 text-white' : 'bg-primary-600 hover:bg-primary-700 text-white'
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">
+              Book:
+            </span>
+            <div className="relative">
+              <select
+                value={selectedBook}
+                onChange={(e) => {
+                  setSelectedBook(e.target.value);
+                  setSelectedChapter(1);
+                }}
+                className={`appearance-none text-xs font-bold pl-2.5 pr-6 py-1 rounded-lg border outline-none cursor-pointer ${
+                  isDark
+                    ? 'bg-zinc-950 border-zinc-700 text-zinc-100 focus:border-orange-500'
+                    : 'bg-stone-50 border-stone-300 text-zinc-900 focus:border-orange-500'
                 }`}
               >
-                <span>Proceed to Reflection</span> 
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                {BIBLE_BOOKS.map((b) => (
+                  <option
+                    key={b}
+                    value={b}
+                    className={isDark ? 'bg-zinc-900 text-zinc-100' : 'bg-white text-zinc-900'}
+                  >
+                    {b}
+                  </option>
+                ))}
+              </select>
+              <span className="material-symbols-outlined text-[16px] pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-orange-500">
+                arrow_drop_down
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">
+              Chapter:
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                disabled={selectedChapter <= 1}
+                onClick={() => setSelectedChapter((prev) => Math.max(1, prev - 1))}
+                className={`p-1 rounded-md border disabled:opacity-30 hover:border-orange-500 transition-colors ${
+                  isDark ? 'bg-zinc-950 border-zinc-700' : 'bg-stone-50 border-stone-300'
+                }`}
+                title="Previous Chapter"
+              >
+                <span className="material-symbols-outlined text-[14px]">chevron_left</span>
+              </button>
+
+              <span className="text-xs font-mono font-bold px-1.5">
+                {selectedChapter}
+              </span>
+
+              <button
+                onClick={() => setSelectedChapter((prev) => prev + 1)}
+                className={`p-1 rounded-md border hover:border-orange-500 transition-colors ${
+                  isDark ? 'bg-zinc-950 border-zinc-700' : 'bg-stone-50 border-stone-300'
+                }`}
+                title="Next Chapter"
+              >
+                <span className="material-symbols-outlined text-[14px]">chevron_right</span>
               </button>
             </div>
           </div>
-        </main>
+        </div>
+
+        {/* Scaled Passage Heading */}
+        <div className="w-full mb-6 border-b pb-4 border-stone-200/80 dark:border-zinc-800/80 flex items-end justify-between">
+          <div>
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-orange-500 block mb-0.5">
+              Quiet Time Reading
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight">
+              {selectedBook} {selectedChapter}
+            </h1>
+          </div>
+
+          <span className="text-[10px] text-zinc-400 font-medium">
+            {scripture?.translation_name || 'World English Bible'}
+          </span>
+        </div>
+
+        {/* Passage Text */}
+        <div className="w-full">
+          {isFetching ? (
+            <div className="h-48 flex flex-col items-center justify-center gap-2 text-zinc-400">
+              <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-[10px] uppercase tracking-widest font-sans">Fetching Scripture...</span>
+            </div>
+          ) : apiError ? (
+            <div className="p-6 text-center space-y-3">
+              <p className="text-xs text-red-500">{apiError}</p>
+              <button
+                onClick={() => loadPassage(selectedBook, selectedChapter)}
+                className="px-3 py-1 text-[11px] bg-orange-600 text-white rounded-md"
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <article className="font-serif leading-relaxed text-base sm:text-lg space-y-4">
+              {scripture?.verses?.map((v) => (
+                <span key={v.verse} className="inline hover:bg-orange-500/10 transition-colors rounded px-0.5">
+                  <sup className="text-orange-500 font-sans font-bold text-[10px] mr-1 select-none">
+                    {v.verse}
+                  </sup>
+                  <span className={isDark ? 'text-zinc-200' : 'text-zinc-800'}>{v.text} </span>
+                </span>
+              ))}
+            </article>
+          )}
+        </div>
+      </main>
+
+      {/* 2. Floating Action Controls (Right-aligned) */}
+      <div className="fixed right-5 bottom-16 sm:bottom-20 z-40 flex flex-col items-end gap-2.5">
+        
+        {/* Deep Study Button */}
+        <button
+          onClick={goToBiblePage}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-orange-600 hover:bg-orange-500 text-white transition-all shadow-md active:scale-95"
+        >
+          <span className="material-symbols-outlined text-[13px]">menu_book</span>
+          <span>Deep Study</span>
+          <span className="material-symbols-outlined text-[11px]">open_in_new</span>
+        </button>
+
+        {/* Main Journal Button */}
+        <button
+          onClick={() => setIsJournalOpen(true)}
+          className="group outline-none"
+        >
+          <div
+            className={`flex items-center gap-2 border px-3.5 py-2 rounded-full shadow-xl transition-all ${
+              isDark
+                ? 'bg-zinc-900 border-zinc-700 text-zinc-100 hover:border-orange-500'
+                : 'bg-white border-stone-200 text-zinc-900 hover:border-orange-500 shadow-orange-500/10'
+            }`}
+          >
+            <div className="w-7 h-7 rounded-full bg-orange-600 flex items-center justify-center text-white shadow-xs">
+              <span className="material-symbols-outlined text-[16px]">edit_note</span>
+            </div>
+            <div className="flex flex-col text-left pr-1">
+              <span className="text-[8px] font-bold uppercase tracking-wider text-orange-500">
+                Journal
+              </span>
+              <span className="text-[11px] font-bold leading-none">Write Insights</span>
+            </div>
+          </div>
+        </button>
       </div>
 
-      {/* Primary Fixed Floating Action Panel Trigger */}
-      <button 
-        onClick={() => setIsJournalOpen(true)} 
-        aria-label="Open soul journal interface"
-        className="fixed right-4 bottom-4 z-40 group outline-none bg-transparent focus-visible:ring-2 focus-visible:ring-primary-500 rounded-2xl"
-      >
-        <div className={`flex items-center gap-3 border px-4 py-3 rounded-2xl shadow-xl transition-all duration-300 ${
-          isDark 
-            ? 'bg-zinc-900 border-zinc-800 text-zinc-100 hover:border-zinc-700/80 hover:bg-zinc-900' 
-            : 'bg-white border-stone-200/80 text-zinc-900 hover:border-stone-300 hover:shadow-2xl'
-        }`}>
-          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105 duration-300 ${
-            isDark ? 'bg-primary-600' : 'bg-primary-600'
-          }`}>
-            <span className="material-symbols-outlined text-[18px]">edit_note</span>
-          </div>
-          <div className="flex flex-col items-start font-sans text-left">
-            <span className={`text-[9px] font-bold uppercase tracking-[0.24em] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Reflect</span>
-            <span className={`text-[12px] font-semibold leading-none mt-0.5 ${isDark ? 'text-zinc-200' : 'text-stone-800'}`}>Soul Journal</span>
-          </div>
-        </div>
-      </button>
-
-      {/* Drawer Overlay Mask Layer */}
-      <div 
-        onClick={() => setIsJournalOpen(false)} 
-        className={`fixed inset-0 bg-black z-[90] transition-opacity duration-300 ${
-          isJournalOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
-        }`} 
+      {/* 3. Journal Backdrop Overlay */}
+      <div
+        onClick={() => setIsJournalOpen(false)}
+        className={`fixed inset-0 bg-black/50 backdrop-blur-xs z-[90] transition-opacity duration-300 ${
+          isJournalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
       />
 
-      {/* Structural Sliding Ledger Canvas Drawer Workspace Container */}
-      <div 
-        role="dialog"
-        aria-modal="true"
-        aria-hidden={!isJournalOpen}
-        className={`fixed inset-y-0 right-0 w-full sm:w-[480px] z-[100] border-l transform transition-transform duration-300 ease-in-out flex flex-col shadow-2xl ${
-          isDark ? 'bg-zinc-900 border-zinc-800/80' : 'bg-white border-stone-200/80'
-        } ${isJournalOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        
-        {/* Dynamic Status / Absolute Notification Inline Blocks */}
-        <div className={`absolute top-20 left-6 right-6 z-[110] flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg transition-all duration-300 ease-out ${
-          showToast ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'
-        } ${isDark ? 'bg-emerald-600 text-white' : 'bg-emerald-600 text-white'}`}>
-          <span className="material-symbols-outlined text-[18px]">check_circle</span>
-          <span className="text-[10px] font-sans font-bold uppercase tracking-widest">Archived & Synchronized Safely</span>
+      {/* 4. Journal Side Drawer */}
+      <aside
+        className={`fixed right-0 top-14 bottom-14 w-full sm:w-[400px] z-[100] border-l border-y rounded-l-2xl transform transition-transform duration-300 ease-in-out flex flex-col shadow-2xl ${
+          isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-stone-200'
+        } ${isJournalOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        {/* Toast Alert */}
+        <div
+          className={`absolute top-12 left-4 right-4 z-[110] flex items-center gap-2 px-3 py-2 rounded-lg shadow-md bg-emerald-600 text-white transition-all ${
+            showToast ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[16px]">check_circle</span>
+          <span className="text-xs font-medium">Reflection Saved & Shared!</span>
         </div>
 
-        {/* Drawer Document Header Frame Area */}
-        <div className={`px-6 py-5 border-b flex justify-between items-center ${isDark ? 'border-zinc-800' : 'border-stone-200'}`}>
+        <div className="px-4 py-3.5 border-b flex justify-between items-center border-stone-200 dark:border-zinc-800">
           <div>
-            <h4 className={`text-[11px] font-sans font-bold uppercase tracking-[0.24em] ${isDark ? 'text-primary-400' : 'text-primary-600'}`}>Sanctuary Journal</h4>
-            <span className={`text-[11px] font-sans flex items-center gap-1.5 mt-0.5 ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Auto-Save Active
-            </span>
+            <h3 className="text-[11px] font-bold uppercase tracking-widest text-orange-500">
+              Sanctuary Journal
+            </h3>
+            <p className="text-[11px] text-zinc-400 mt-0.5">
+              {selectedBook} {selectedChapter} Notes
+            </p>
           </div>
-          <button 
-            onClick={() => setIsJournalOpen(false)} 
-            aria-label="Close journal window"
-            className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
-              isDark ? 'border-zinc-800 hover:bg-zinc-800/60 text-zinc-400 hover:text-zinc-200' : 'border-stone-200 hover:bg-stone-50 text-zinc-500 hover:text-zinc-700'
-            }`}
+          <button
+            onClick={() => setIsJournalOpen(false)}
+            className="w-7 h-7 rounded-md border flex items-center justify-center border-stone-200 dark:border-zinc-800 text-zinc-400 hover:text-zinc-100"
           >
-            <span className="material-symbols-outlined text-[16px]">close</span>
+            <span className="material-symbols-outlined text-[15px]">close</span>
           </button>
         </div>
 
-        {/* Core Input Canvas Layer */}
-        <div className="flex-1 relative px-6 pt-6 overflow-y-auto space-y-4">
-          <div className={`inline-flex items-center gap-2 border px-2.5 py-1 rounded-full select-none ${
-            isDark ? 'border-zinc-800 bg-zinc-950' : 'border-stone-200 bg-stone-50'
-          }`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-primary-400' : 'bg-primary-600'}`} />
-            <span className={`text-[10px] font-sans font-bold uppercase tracking-[0.2em] ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
-              {activeBook.name} {activeChapter}
-            </span>
-          </div>
-
+        <div className="flex-1 p-4 flex flex-col gap-3 overflow-y-auto">
           {errorMessage && (
-            <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200/40 dark:border-red-900/30 rounded-xl flex items-start gap-2.5 text-red-600 dark:text-red-400 text-[11px] font-sans leading-relaxed">
-              <span className="material-symbols-outlined text-base mt-0.5">error</span>
-              <span>{errorMessage}</span>
+            <div className="p-2.5 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg text-xs">
+              {errorMessage}
             </div>
           )}
-          
-          <textarea 
+
+          <textarea
             value={note}
-            onChange={handleTextChange}
-            disabled={loading}
-            className={`w-full h-[calc(100%-80px)] bg-transparent border-0 focus:ring-0 text-sm font-sans leading-relaxed resize-none outline-none disabled:opacity-40 ${
-              isDark ? 'text-zinc-200 placeholder:text-zinc-600' : 'text-zinc-800 placeholder:text-zinc-400'
-            }`} 
-            placeholder="What is the Spirit speaking to you through this scripture? Record insights, references, or prayers here..." 
-          />
-        </div>
-
-        {/* Privacy Parameters Configuration Panel Controls */}
-        <div className={`p-4 mx-6 mb-4 border rounded-xl flex items-center justify-between ${
-          isDark ? 'border-zinc-800 bg-zinc-950' : 'border-stone-200 bg-stone-50'
-        }`}>
-          <div className="flex flex-col font-sans max-w-[80%]">
-            <label htmlFor="anon-checkbox" className={`text-[11px] font-bold uppercase tracking-[0.2em] cursor-pointer ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>
-              Share Anonymously
-            </label>
-            <span className={`text-[10px] mt-0.5 leading-snug ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Omit personal handle context profile links on community revelation feeds.</span>
-          </div>
-          <input 
-            id="anon-checkbox"
-            type="checkbox" 
-            checked={isAnonymousShare} 
-            onChange={(e) => setIsAnonymousShare(e.target.checked)}
-            className="rounded border-zinc-300 dark:border-zinc-700 text-primary-600 focus:ring-primary-500/30 bg-transparent w-4 h-4 cursor-pointer outline-none transition-colors"
-          />
-        </div>
-
-        {/* Action Dispatch Commit Final Footbar */}
-        <div className={`p-6 border-t ${isDark ? 'border-zinc-800' : 'border-stone-200'}`}>
-          <button 
-            onClick={handleArchiveAndPublish}
-            disabled={loading || !note.trim()}
-            className={`w-full py-3.5 rounded-xl font-semibold text-[11px] uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
-              loading || !note.trim()
-                ? isDark ? 'bg-zinc-800 text-zinc-500' : 'bg-zinc-100 text-zinc-400'
-                : 'bg-primary-600 hover:bg-primary-700 text-white'
+            onChange={handleNoteChange}
+            disabled={isSyncing}
+            placeholder="Record revelation notes, personal applications, or prayers here..."
+            className={`w-full flex-1 p-3 rounded-xl text-xs font-sans leading-relaxed outline-none border transition-all resize-none ${
+              isDark
+                ? 'bg-zinc-950 border-zinc-800 text-zinc-100 focus:border-orange-500'
+                : 'bg-stone-50 border-stone-200 text-zinc-800 focus:border-orange-500'
             }`}
+          />
+
+          <div className="p-3 border rounded-lg flex items-center justify-between border-stone-200 dark:border-zinc-800">
+            <div className="flex flex-col">
+              <label htmlFor="anon-toggle" className="text-[11px] font-semibold cursor-pointer">
+                Share Anonymously
+              </label>
+              <span className="text-[9px] text-zinc-400">Hide handle on community feed</span>
+            </div>
+            <input
+              id="anon-toggle"
+              type="checkbox"
+              checked={isAnonymousShare}
+              onChange={(e) => setIsAnonymousShare(e.target.checked)}
+              className="w-3.5 h-3.5 rounded text-orange-600 focus:ring-orange-500"
+            />
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-stone-200 dark:border-zinc-800 flex flex-col gap-2">
+          <button
+            onClick={handleArchiveAndPublish}
+            disabled={isSyncing || !note.trim()}
+            className="w-full py-2.5 bg-orange-600 hover:bg-orange-500 disabled:opacity-40 text-white rounded-lg font-semibold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
           >
-            <span className="material-symbols-outlined text-[16px]">self_improvement</span>
-            <span>{loading ? 'Synchronizing Archive...' : 'Archive & Commit Share'}</span>
+            {isSyncing ? (
+              <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-[15px]">save</span>
+                <span>Save & Publish Entry</span>
+              </>
+            )}
           </button>
         </div>
-      </div>
+      </aside>
     </div>
   );
 }

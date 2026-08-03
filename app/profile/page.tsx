@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import Sidebar from '../layout-components/Sidebar';
-import Header from '../layout-components/Header';
 
 type Theme = 'light' | 'dark' | 'system';
 

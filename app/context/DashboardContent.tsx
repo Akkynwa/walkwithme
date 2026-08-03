@@ -16,7 +16,7 @@ import CommunityFeeder from '../dashboard-components/CommunityFeeder';
 type CommunitySection = 'revelations' | 'intercession' | 'cohort';
 
 export default function DashboardContent() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const { isDark } = useTheme();

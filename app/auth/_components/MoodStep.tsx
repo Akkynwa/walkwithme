@@ -4,15 +4,20 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
 const PRESETS = [
-  { id: 'anxious', label: 'ANXIOUS' },
-  { id: 'thankful', label: 'THANKFUL' },
-  { id: 'weary', label: 'WEARY' },
-  { id: 'seeking', label: 'SEEKING GUIDE' },
-  { id: 'restless', label: 'RESTLESS' },
-  { id: 'peaceful', label: 'PEACEFUL' },
+  { id: 'anxious', label: 'Feeling stressed' },
+  { id: 'thankful', label: 'Grateful' },
+  { id: 'weary', label: 'Tired' },
+  { id: 'seeking', label: 'Looking for direction' },
+  { id: 'restless', label: 'Restless' },
+  { id: 'peaceful', label: 'Peaceful' },
 ];
 
-export function MoodStep({ onNext, onBack }: { onNext: (data: any) => void; onBack: () => void }) {
+interface MoodStepProps {
+  onNext: (data: { selectedMood: string; notes: string; suggestScriptures: boolean }) => void;
+  onBack: () => void;
+}
+
+export function MoodStep({ onNext, onBack }: MoodStepProps) {
   const [selectedMood, setSelectedMood] = useState('');
   const [notes, setNotes] = useState('');
   const [suggestScriptures, setSuggestScriptures] = useState(true);
@@ -29,17 +34,17 @@ export function MoodStep({ onNext, onBack }: { onNext: (data: any) => void; onBa
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mood: selectedMood,
-          content: notes || "Daily prompt initialization log.",
-          type: 'onboarding_check_in'
-        })
+          content: notes || 'Daily check-in',
+          type: 'onboarding_check_in',
+        }),
       });
 
       if (!response.ok) throw new Error('Database sync failed.');
 
-      toast.success('JOURNAL PERSISTENCE SUCCESSFUL.');
+      toast.success('Your note is saved.');
       onNext({ selectedMood, notes, suggestScriptures });
-    } catch (error) {
-      toast.error('PERSISTENCE FAULT. USING CLIENT STORAGE FALLBACK.');
+    } catch {
+      toast.error('We saved it locally for now.');
       onNext({ selectedMood, notes, suggestScriptures });
     } finally {
       setSubmitting(false);
@@ -47,13 +52,11 @@ export function MoodStep({ onNext, onBack }: { onNext: (data: any) => void; onBa
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full flex flex-col justify-between min-h-[440px] animate-in fade-in duration-200">
-      <div className="space-y-5 my-auto">
+    <form onSubmit={handleSubmit} className="flex min-h-[440px] w-full flex-col justify-between animate-in fade-in duration-200">
+      <div className="my-auto space-y-5">
         <div>
-          <h3 className="text-3xl font-sans font-bold tracking-tight text-zinc-900 mb-1">
-            FRAME OF MIND.
-          </h3>
-          <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">Sync metrics with your private journal instance.</p>
+          <h3 className="mb-1 text-3xl font-semibold tracking-tight text-slate-900">How are you feeling today?</h3>
+          <p className="text-sm leading-6 text-slate-600">Choose a word that fits your mood and add a short note if you want.</p>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -64,8 +67,10 @@ export function MoodStep({ onNext, onBack }: { onNext: (data: any) => void; onBa
                 key={mood.id}
                 type="button"
                 onClick={() => setSelectedMood(mood.id)}
-                className={`px-4 py-3 border text-xs font-bold tracking-wider uppercase transition-all ${
-                  active ? 'border-zinc-900 bg-zinc-900 text-white' : 'border-zinc-300 text-zinc-700 bg-white hover:border-zinc-900'
+                className={`rounded-2xl border px-4 py-3 text-sm font-medium transition-all ${
+                  active
+                    ? 'border-sky-600 bg-sky-700 text-white shadow-sm'
+                    : 'border-slate-200 bg-white text-slate-700 hover:border-sky-300 hover:text-sky-700'
                 }`}
               >
                 {mood.label}
@@ -75,37 +80,45 @@ export function MoodStep({ onNext, onBack }: { onNext: (data: any) => void; onBa
         </div>
 
         <div className="space-y-1">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">
-            POUR OUT YOUR THOUGHTS (OPTIONAL)
+          <label className="block text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+            Optional note
           </label>
           <textarea
-            className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-xs font-bold transition-all outline-none placeholder:text-zinc-400 h-24 resize-none"
-            placeholder="WRITE MENTAL LOGS RAW..."
+            className="h-24 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            placeholder="Write a few words about your day..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
         </div>
 
-        <div className="flex items-center justify-between p-3 border border-zinc-200 bg-zinc-50">
+        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3">
           <div>
-            <span className="text-xs font-bold text-zinc-900 uppercase tracking-wide block">PRESCRIBE SCRIPTURES</span>
-            <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wide">Correlate contextual text packages.</span>
+            <span className="block text-sm font-semibold text-slate-800">Suggest a verse</span>
+            <span className="text-xs text-slate-500">We can add a calming scripture based on your mood.</span>
           </div>
           <input
             type="checkbox"
             checked={suggestScriptures}
             onChange={(e) => setSuggestScriptures(e.target.checked)}
-            className="w-4 h-4 accent-zinc-900 text-zinc-950 focus:ring-zinc-900"
+            className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
           />
         </div>
       </div>
 
-      <div className="flex gap-3 mt-6">
-        <button type="button" onClick={onBack} className="px-6 py-4 border border-zinc-300 text-xs font-bold uppercase tracking-wider text-zinc-600 hover:text-zinc-900 transition-colors">
-          BACK
+      <div className="mt-6 flex gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
+        >
+          Back
         </button>
-        <button type="submit" disabled={!selectedMood || submitting} className="flex-1 bg-zinc-900 hover:bg-zinc-800 text-white py-4 text-xs font-bold tracking-wider uppercase transition-colors disabled:opacity-40">
-          {submitting ? 'SYNCHRONIZING...' : 'SAVE LOGS'}
+        <button
+          type="submit"
+          disabled={!selectedMood || submitting}
+          className="flex-1 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {submitting ? 'Saving…' : 'Save and continue'}
         </button>
       </div>
     </form>

@@ -9,6 +9,7 @@ interface ChapterListProps {
   currentChapter: number;
   verses: any[];
   onChapterChange: (chapter: number) => void;
+  isDark?: boolean;
 }
 
 export function ChapterList({
@@ -17,62 +18,84 @@ export function ChapterList({
   currentChapter,
   verses,
   onChapterChange,
+  isDark = false,
 }: ChapterListProps) {
   const [displayMode, setDisplayMode] = useState<'grid' | 'list'>('grid');
 
   const chapters = Array.from({ length: chapterCount }, (_, i) => i + 1);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className={`max-w-4xl mx-auto px-4 py-6 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
       {/* Header & View Toggle */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-5">
+      <div className="mb-8 flex flex-col items-center justify-center text-center gap-4">
         <div>
-          <div className="flex items-center gap-1.5 mb-1">
-            <span className="material-symbols-outlined text-amber-500 text-[12px]">menu_book</span>
-            <span className="text-[7px] font-black uppercase tracking-wider text-amber-600">Currently Reading</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-serif font-black text-gray-800 tracking-tight">{book}</h2>
+          <span className={`text-xs font-medium uppercase tracking-wider ${
+            isDark ? 'text-zinc-400' : 'text-zinc-500'
+          }`}>
+            Currently Reading
+          </span>
+          <h2 className={`text-3xl md:text-4xl font-serif tracking-tight mt-1 ${
+            isDark ? 'text-zinc-100' : 'text-zinc-900'
+          }`}>
+            {book}
+          </h2>
         </div>
 
         {/* Custom Segmented Control */}
-        <div className="flex bg-white/50 backdrop-blur-sm p-0.5 rounded-lg border border-white/60 w-fit">
+        <div className={`flex p-1 rounded-md border ${
+          isDark 
+            ? 'bg-zinc-900 border-zinc-800' 
+            : 'bg-zinc-100 border-zinc-200'
+        } w-fit mx-auto`}>
           <button
             onClick={() => setDisplayMode('grid')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[8px] font-black uppercase tracking-wider transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-colors ${
               displayMode === 'grid' 
-                ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-sm' 
-                : 'text-gray-500 hover:text-amber-600'
+                ? isDark
+                  ? 'bg-zinc-800 text-zinc-100'
+                  : 'bg-white text-zinc-900 shadow-sm'
+                : isDark
+                  ? 'text-zinc-400 hover:text-zinc-200'
+                  : 'text-zinc-600 hover:text-zinc-900'
             }`}
           >
-            <span className="material-symbols-outlined text-[12px]">grid_view</span>
+            <span className="material-symbols-outlined text-sm">grid_view</span>
             Grid
           </button>
           <button
             onClick={() => setDisplayMode('list')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[8px] font-black uppercase tracking-wider transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-medium transition-colors ${
               displayMode === 'list' 
-                ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-sm' 
-                : 'text-gray-500 hover:text-amber-600'
+                ? isDark
+                  ? 'bg-zinc-800 text-zinc-100'
+                  : 'bg-white text-zinc-900 shadow-sm'
+                : isDark
+                  ? 'text-zinc-400 hover:text-zinc-200'
+                  : 'text-zinc-600 hover:text-zinc-900'
             }`}
           >
-            <span className="material-symbols-outlined text-[12px]">list</span>
+            <span className="material-symbols-outlined text-sm">list</span>
             Select
           </button>
         </div>
       </div>
 
       {/* Navigation Area */}
-      <div className="mb-10">
+      <div className="mb-8 flex justify-center">
         {displayMode === 'grid' ? (
-          <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
-            {chapters.map(chapter => (
+          <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 w-full justify-items-center">
+            {chapters.map((chapter) => (
               <button
                 key={chapter}
                 onClick={() => onChapterChange(chapter)}
-                className={`h-9 rounded-lg font-serif font-bold text-xs transition-all active:scale-95 ${
+                className={`w-full h-9 rounded-md font-serif text-xs font-medium transition-colors ${
                   currentChapter === chapter 
-                    ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md shadow-amber-500/20 scale-105' 
-                    : 'bg-white/50 backdrop-blur-sm border border-white/60 text-gray-600 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700'
+                    ? isDark
+                      ? 'bg-zinc-100 text-zinc-900'
+                      : 'bg-zinc-900 text-zinc-100'
+                    : isDark
+                      ? 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 border border-zinc-800'
+                      : 'bg-zinc-50 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 border border-zinc-200'
                 }`}
               >
                 {chapter}
@@ -80,28 +103,43 @@ export function ChapterList({
             ))}
           </div>
         ) : (
-          <div className="relative group">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-amber-500 text-[16px]">menu_book</span>
+          <div className="relative w-full max-w-xs mx-auto">
             <select
               value={currentChapter}
-              onChange={e => onChapterChange(parseInt(e.target.value))}
-              className="w-full pl-9 pr-8 py-2.5 rounded-lg border border-white/60 bg-white/50 backdrop-blur-sm font-serif font-semibold text-gray-700 appearance-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none cursor-pointer text-sm"
+              onChange={(e) => onChapterChange(parseInt(e.target.value))}
+              className={`w-full px-3 py-2 rounded-md border text-sm font-medium appearance-none outline-none cursor-pointer text-center ${
+                isDark
+                  ? 'bg-zinc-900 border-zinc-800 text-zinc-100'
+                  : 'bg-white border-zinc-300 text-zinc-900'
+              }`}
             >
-              {chapters.map(chapter => (
+              {chapters.map((chapter) => (
                 <option key={chapter} value={chapter}>
                   Chapter {chapter}
                 </option>
               ))}
             </select>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[16px] pointer-events-none">expand_more</span>
+            <span className={`absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-sm pointer-events-none ${
+              isDark ? 'text-zinc-400' : 'text-zinc-500'
+            }`}>
+              unfold_more
+            </span>
           </div>
         )}
       </div>
 
       {/* Content Area */}
-      <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 p-6 md:p-8 shadow-lg">
+      <div className={`rounded-md border p-6 md:p-8 ${
+        isDark 
+          ? 'bg-zinc-900 border-zinc-800' 
+          : 'bg-white border-zinc-200'
+      }`}>
         <div className="max-w-prose mx-auto">
-          <VerseRenderer verses={verses} translation="KJV" />
+          <VerseRenderer 
+            verses={verses} 
+            translation="KJV" 
+            isDark={isDark}
+          />
         </div>
       </div>
     </div>

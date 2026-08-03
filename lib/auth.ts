@@ -5,8 +5,36 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || '')
+  .split(',')
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
+const resolveUserRole = (
+  userOrEmail?: { role?: string; email?: string | null } | string | null,
+  fallback = 'USER'
+) => {
+  if (typeof userOrEmail === 'string') {
+    return ADMIN_EMAILS.includes(userOrEmail.toLowerCase()) ? 'ADMIN' : fallback;
+  }
+
+  if (!userOrEmail) {
+    return fallback;
+  }
+
+  if ((userOrEmail as { role?: string }).role === 'ADMIN') {
+    return 'ADMIN';
+  }
+
+  const email = (userOrEmail as { email?: string | null }).email;
+  if (email && ADMIN_EMAILS.includes(email.toLowerCase())) {
+    return 'ADMIN';
+  }
+
+  return (userOrEmail as { role?: string }).role === 'USER' ? 'USER' : fallback;
+};
+
 export const authOptions: NextAuthOptions = {
-  // Keeps Prisma tracking your Google and Credentials user profiles safely
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -34,11 +62,14 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid credentials');
         }
 
+        const userRole = resolveUserRole(user, 'USER');
+
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           image: user.image,
+          role: userRole,
         };
       },
     }),
@@ -58,22 +89,30 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      // On initial login, bind the user's database ID directly to the JWT token instance
       if (user) {
         token.id = user.id;
+        token.role = resolveUserRole(user, typeof token.role === 'string' ? token.role : 'USER') as string;
       }
+
+      if (!token.role && token.sub) {
+        token.role = 'USER';
+      }
+
       return token;
     },
-    
+
     async session({ session, token }) {
       if (session.user && token) {
-        // Correctly inject the true user database ID into the frontend session
-        session.user.id = (token.id || token.sub || "") as string;
+        session.user.id = (token.id || token.sub || '') as string;
+        session.user.role = resolveUserRole(
+          { email: session.user.email, role: token.role as string | undefined },
+          'USER'
+        ) as string;
       }
       return session;
     },
   },
-  
+
   events: {
     async signIn({ user }) {
       if (user?.id) {
@@ -87,7 +126,6 @@ export const authOptions: NextAuthOptions = {
       }
     },
 
-    // Safeguarded to prevent server-side crashes during session clearing
     async signOut({ token }) {
       const activeUserId = token?.sub || token?.id;
       if (activeUserId) {
@@ -103,7 +141,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   session: {
-    strategy: "jwt", 
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 

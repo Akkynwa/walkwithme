@@ -14,22 +14,33 @@ const protectedRoutes = [
   '/streak',
   '/ai',
   '/downloads',
+  '/admin',
 ];
 
+const adminRoutes = ['/admin'];
+
 export default withAuth(
-  function middleware(_req: NextRequest) {
+  function middleware(req: NextRequest) {
     // If auth is disabled, let everything through
     if (!AUTH_ENABLED) {
       return NextResponse.next();
     }
 
     // Use protectedRoutes to determine if this path requires auth
-    const { pathname } = _req.nextUrl;
+    const { pathname } = req.nextUrl;
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
 
     // If the route is not protected, allow through without further checks
     if (!isProtected) {
       return NextResponse.next();
+    }
+
+    const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
+
+    if (isAdminRoute) {
+      const signInUrl = new URL('/auth/signin', req.url);
+      signInUrl.searchParams.set('callbackUrl', req.url);
+      return NextResponse.redirect(signInUrl);
     }
 
     // For protected routes, allow withAuth's authorized callback to handle access

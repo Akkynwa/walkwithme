@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import Sidebar from '../../../app/layout-components/Sidebar';
-import Header from '../../../app/layout-components/Header';
 import { signOut } from 'next-auth/react';
 import { useTheme } from '../../context/ThemeContext';
 import Image from 'next/image';

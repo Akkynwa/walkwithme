@@ -460,72 +460,73 @@ export default function QuietTimeAudioPage() {
       </main>
 
       {/* Slide-out Journal Panel */}
-      <div className={`fixed inset-y-0 right-0 w-full max-w-md border-l z-50 transition-transform duration-300 ease-out flex flex-col ${
-        isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'
-      } ${isNotesOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        
-        <div className="h-full flex flex-col p-6 justify-between overflow-y-auto pt-20">
-          <div>
-            <div className="flex justify-between items-center mb-5 pb-4 border-b border-zinc-100 dark:border-zinc-800">
-              <div>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[16px]">edit_note</span>
-                  <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-orange-600 dark:text-orange-500">
-                    Journal Sync
-                  </span>
-                </div>
-                <h3 className="text-base font-sans font-semibold text-zinc-900 dark:text-zinc-100">
-                  {book} {chapter} Insights
-                </h3>
-              </div>
-              
-              <button 
-                onClick={() => setIsNotesOpen(false)}
-                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
-                  isDark ? 'border-zinc-800 text-zinc-500 hover:text-zinc-300' : 'border-zinc-200 text-zinc-400 hover:text-zinc-600'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[16px]">close</span>
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <textarea 
-                value={noteContent}
-                disabled={isLoadingNote}
-                onChange={(e) => setNoteContent(e.target.value)}
-                placeholder={isLoadingNote ? "Waiting for journal sync..." : "Record revelation notes here..."}
-                className={`w-full h-80 p-3 rounded-xl text-xs font-sans outline-none border transition-all resize-none leading-relaxed disabled:opacity-50 ${
-                  isDark 
-                    ? 'bg-zinc-950 border-zinc-800 text-zinc-200 placeholder:text-zinc-700 focus:border-zinc-700' 
-                    : 'bg-white border-zinc-200 text-zinc-800 placeholder:text-zinc-300 focus:border-zinc-300'
-                }`}
-              />
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between mt-6">
-            <span className="text-xs font-sans text-zinc-400 dark:text-zinc-500">
-              {noteContent.length} characters
-            </span>
-            
-            <button 
-              onClick={saveStudyNotes}
-              disabled={isSavingNote || isLoadingNote}
-              className="px-5 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 text-white disabled:text-zinc-400 dark:disabled:text-zinc-600 rounded-full font-sans font-medium text-xs transition-colors flex items-center gap-2"
-            >
-              {isSavingNote ? (
-                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-[14px]">save</span>
-                  <span>Save Entry</span>
-                </>
-              )}
-            </button>
-          </div>
+<div className={`fixed inset-y-0 right-0 w-full max-w-md border-l z-50 transition-transform duration-300 ease-out flex flex-col ${
+  isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'
+} ${isNotesOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+  
+  <div className="h-full flex flex-col p-6 overflow-y-auto pt-6">
+    <div className="flex justify-between items-center mb-5 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+      <div>
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <span className="material-symbols-outlined text-orange-600 dark:text-orange-500 text-[16px]">edit_note</span>
+          <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-orange-600 dark:text-orange-500">
+            Journal Sync
+          </span>
         </div>
+        <h3 className="text-base font-sans font-semibold text-zinc-900 dark:text-zinc-100">
+          {book} {chapter} Insights
+        </h3>
       </div>
+      
+      <button 
+        onClick={() => setIsNotesOpen(false)}
+        className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+          isDark ? 'border-zinc-800 text-zinc-500 hover:text-zinc-300' : 'border-zinc-200 text-zinc-400 hover:text-zinc-600'
+        }`}
+      >
+        <span className="material-symbols-outlined text-[16px]">close</span>
+      </button>
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <textarea 
+        value={noteContent}
+        disabled={isLoadingNote}
+        onChange={(e) => setNoteContent(e.target.value)}
+        placeholder={isLoadingNote ? "Waiting for journal sync..." : "Record revelation notes here..."}
+        className={`w-full h-48 md:h-64 p-3 rounded-xl text-xs font-sans outline-none border transition-all resize-none leading-relaxed disabled:opacity-50 ${
+          isDark 
+            ? 'bg-zinc-950 border-zinc-800 text-zinc-200 placeholder:text-zinc-700 focus:border-zinc-700' 
+            : 'bg-white border-zinc-200 text-zinc-800 placeholder:text-zinc-300 focus:border-zinc-300'
+        }`}
+      />
+    </div>
+
+    {/* Controls right beneath the textarea */}
+    <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex flex-col gap-3 mt-3">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-sans text-zinc-400 dark:text-zinc-500">
+          {noteContent.length} characters
+        </span>
+      </div>
+
+      <button 
+        onClick={saveStudyNotes}
+        disabled={isSavingNote || isLoadingNote}
+        className="w-full py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 text-white disabled:text-zinc-400 dark:disabled:text-zinc-600 rounded-xl font-sans font-medium text-xs transition-colors flex items-center justify-center gap-2"
+      >
+        {isSavingNote ? (
+          <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <>
+            <span className="material-symbols-outlined text-[14px]">save</span>
+            <span>Save Entry</span>
+          </>
+        )}
+      </button>
+    </div>
+  </div>
+</div>
     </div>
   );
 }

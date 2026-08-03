@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../layout-components/Sidebar';
-import Header from '../layout-components/Header';
 import { useTheme } from './../context/ThemeContext';
 
 const modules = [

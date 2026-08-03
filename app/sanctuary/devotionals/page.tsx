@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Sidebar from '@/app/layout-components/Sidebar';
-import MainHeader from '@/app/layout-components/Header';
 import { DEVOTIONALS } from '../../data/devotionals';
 import DevotionalCard from '@/components/DevotionalCard';
 import { useTheme } from '../../context/ThemeContext';

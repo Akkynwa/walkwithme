@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import { useRouter } from 'next/navigation';
 import { useTheme } from '@/app/context/ThemeContext';
 import Sidebar from '@/app/layout-components/Sidebar';
 import MainHeader from '@/app/layout-components/Header';
@@ -24,7 +23,6 @@ export default function SpiritualWalker() {
   const [isLoading, setIsLoading] = useState(false);
   const { isDark } = useTheme();
 
-  const router = useRouter();
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const saveChatHistory = async (messagesToSave: ChatMessage[]) => {
@@ -155,20 +153,10 @@ export default function SpiritualWalker() {
       <main className="relative z-10 flex-1 lg:pl-56 pt-16 h-screen flex flex-col w-full">
         
         {/* Centered Chat Workspace Container */}
-        <div className="flex-1 flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-6 h-full overflow-hidden">
+        <div className="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 sm:px-6 h-full overflow-hidden">
           
-          {/* Top Navigation */}
-          <div className="py-4 flex items-center justify-between border-b border-transparent shrink-0">
-            <button 
-              onClick={() => router.back()}
-              className={`flex items-center gap-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 ${
-                isDark ? 'text-zinc-400 hover:text-amber-400' : 'text-stone-500 hover:text-stone-900'
-              }`}
-            >
-              <span className="material-symbols-outlined text-base">arrow_back</span>
-              <span>Return</span>
-            </button>
-
+          {/* Top Status Header */}
+          <div className="py-2 flex items-center justify-end shrink-0 h-8">
             {isSaving && (
               <motion.div 
                 initial={{ opacity: 0 }}
@@ -178,8 +166,8 @@ export default function SpiritualWalker() {
                 <span className={`material-symbols-outlined text-xs animate-spin ${
                   isDark ? 'text-amber-400' : 'text-amber-600'
                 }`}>sync</span>
-                <span className={`text-[10px] ${isDark ? 'text-zinc-500' : 'text-stone-400'}`}>
-                  Saving...
+                <span className={`text-[11px] font-medium ${isDark ? 'text-zinc-500' : 'text-stone-400'}`}>
+                  Saving ledger...
                 </span>
               </motion.div>
             )}
@@ -188,7 +176,7 @@ export default function SpiritualWalker() {
           {/* Chat Messages List */}
           <div 
             ref={chatContainerRef}
-            className={`flex-1 overflow-y-auto py-6 space-y-6 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
+            className={`flex-1 overflow-y-auto py-4 space-y-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full ${
               isDark 
                 ? '[&::-webkit-scrollbar-thumb]:bg-zinc-800'
                 : '[&::-webkit-scrollbar-thumb]:bg-stone-300'
@@ -198,42 +186,37 @@ export default function SpiritualWalker() {
               {messages.map((msg, idx) => (
                 <motion.div
                   key={msg.id || idx}
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.25 }}
-                  className={`flex gap-3 sm:gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  transition={{ duration: 0.2 }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  {/* Assistant Avatar */}
-                  {msg.role === 'assistant' && (
-                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0 shadow-md ${
-                      isDark 
-                        ? 'bg-gradient-to-tr from-amber-500/20 to-purple-500/20 border border-amber-500/30 text-amber-400'
-                        : 'bg-amber-100 border border-amber-300/60 text-amber-800'
-                    }`}>
-                      <span className="material-symbols-outlined text-sm sm:text-base">auto_awesome</span>
-                    </div>
-                  )}
-
-                  <div className={`max-w-[88%] sm:max-w-[80%] px-4 sm:px-6 py-3.5 sm:py-4 rounded-2xl text-sm sm:text-base leading-relaxed ${
+                  <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm md:text-base leading-relaxed tracking-normal ${
                     msg.role === 'user' 
                       ? isDark
-                        ? 'bg-zinc-800 text-zinc-100 rounded-tr-none border border-zinc-700/60'
-                        : 'bg-stone-900 text-white rounded-tr-none'
+                        ? 'bg-amber-600/90 text-white rounded-br-xs border border-amber-500/30'
+                        : 'bg-stone-900 text-stone-50 rounded-br-xs'
                       : isDark
-                        ? 'bg-zinc-900/60 border border-zinc-800/80 text-zinc-100 rounded-tl-none backdrop-blur-md'
-                        : 'bg-white/90 border border-stone-200/80 text-stone-800 rounded-tl-none backdrop-blur-md shadow-sm'
+                        ? 'bg-zinc-900/80 border border-zinc-800/80 text-zinc-200 rounded-bl-xs backdrop-blur-md'
+                        : 'bg-white border border-stone-200/90 text-stone-800 rounded-bl-xs backdrop-blur-md shadow-xs'
                   }`}>
                     {msg.role === 'user' ? (
-                      <p className="whitespace-pre-wrap font-normal">{msg.content}</p>
+                      <p className="whitespace-pre-wrap font-normal text-sm md:text-base">{msg.content}</p>
                     ) : (
-                      <ReactMarkdown className="space-y-2 font-normal" components={{
-                        p: ({node, ...props}) => <p className="mb-2 last:mb-0 leading-relaxed" {...props} />,
-                        strong: ({node, ...props}) => <strong className={`font-semibold ${
-                          isDark ? 'text-amber-400' : 'text-amber-700'
-                        }`} {...props} />,
-                        em: ({node, ...props}) => <em className="font-serif italic" {...props} />,
-                      }}>
+                      <ReactMarkdown 
+                        className="space-y-3 font-normal text-sm md:text-base" 
+                        components={{
+                          p: ({node, ...props}) => <p className="leading-relaxed text-sm md:text-base mb-2 last:mb-0" {...props} />,
+                          strong: ({node, ...props}) => (
+                            <strong className={`font-semibold ${isDark ? 'text-amber-400' : 'text-amber-700'}`} {...props} />
+                          ),
+                          em: ({node, ...props}) => <em className="font-serif italic" {...props} />,
+                          ul: ({node, ...props}) => <ul className="list-disc pl-5 space-y-1 my-2" {...props} />,
+                          ol: ({node, ...props}) => <ol className="list-decimal pl-5 space-y-1 my-2" {...props} />,
+                          li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
+                        }}
+                      >
                         {msg.content}
                       </ReactMarkdown>
                     )}
@@ -245,33 +228,26 @@ export default function SpiritualWalker() {
             {/* Typing Indicator */}
             {isLoading && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex gap-3 sm:gap-4 items-center"
+                className="flex justify-start"
               >
-                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0 ${
-                  isDark 
-                    ? 'bg-gradient-to-tr from-amber-500/20 to-purple-500/20 border border-amber-500/30 text-amber-400'
-                    : 'bg-amber-100 border border-amber-300/60 text-amber-800'
-                }`}>
-                  <span className="material-symbols-outlined text-sm sm:text-base animate-pulse">auto_awesome</span>
-                </div>
-                <div className={`rounded-2xl rounded-tl-none px-4 py-3 ${
-                  isDark ? 'bg-zinc-900/60 border border-zinc-800' : 'bg-white border border-stone-200'
+                <div className={`rounded-2xl rounded-bl-xs px-4 py-3 ${
+                  isDark ? 'bg-zinc-900/80 border border-zinc-800' : 'bg-white border border-stone-200 shadow-xs'
                 }`}>
                   <div className="flex gap-1.5 items-center h-4">
                     <motion.span 
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
                       transition={{ duration: 0.8, repeat: Infinity, delay: 0 }}
                       className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-amber-400' : 'bg-amber-600'}`} 
                     />
                     <motion.span 
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
                       transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
                       className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-amber-400' : 'bg-amber-600'}`} 
                     />
                     <motion.span 
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
                       transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
                       className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-amber-400' : 'bg-amber-600'}`} 
                     />
@@ -281,18 +257,18 @@ export default function SpiritualWalker() {
             )}
           </div>
 
-          {/* Gemini-Style Input Bar Wrapper */}
+          {/* Input Area */}
           <div className="pb-6 pt-2 shrink-0">
             <div className="relative group p-[1px] rounded-2xl transition-all duration-500">
-              <div className={`absolute -inset-0.5 rounded-2xl blur-md opacity-40 group-hover:opacity-100 transition duration-500 ${
+              <div className={`absolute -inset-0.5 rounded-2xl blur-md opacity-30 group-hover:opacity-80 transition duration-500 ${
                 isDark
-                  ? 'bg-gradient-to-r from-amber-500 via-purple-500 to-blue-500'
-                  : 'bg-gradient-to-r from-amber-400 via-rose-300 to-sky-400'
+                  ? 'bg-gradient-to-r from-amber-500/40 via-purple-500/30 to-blue-500/40'
+                  : 'bg-gradient-to-r from-amber-300/60 via-rose-200/50 to-sky-300/60'
               }`} />
               
-              <div className={`relative rounded-2xl p-2 sm:p-3 shadow-2xl transition-colors ${
+              <div className={`relative rounded-2xl p-2 sm:p-3 shadow-xl transition-colors ${
                 isDark 
-                  ? 'bg-zinc-900/90 border border-zinc-700/60' 
+                  ? 'bg-zinc-900/90 border border-zinc-800' 
                   : 'bg-white/95 border border-stone-200'
               }`}>
                 <AIChatInput 
@@ -303,8 +279,8 @@ export default function SpiritualWalker() {
                 />
               </div>
             </div>
-            <p className={`text-[11px] text-center mt-2 ${isDark ? 'text-zinc-500' : 'text-stone-400'}`}>
-              AI may display inaccurate info. Always verify responses.
+            <p className={`text-[11px] font-medium text-center mt-2.5 ${isDark ? 'text-zinc-500' : 'text-stone-400'}`}>
+              AI responses can vary. Please verify key insights.
             </p>
           </div>
 

@@ -1,5 +1,8 @@
 'use client';
 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
 interface Verse {
   book: string;
   chapter: number;
@@ -10,63 +13,142 @@ interface Verse {
 interface VerseRendererProps {
   verses: Verse[];
   translation: string;
+  isDark?: boolean;
 }
 
-export function VerseRenderer({ verses, translation }: VerseRendererProps) {
+export function VerseRenderer({ verses, translation, isDark = false }: VerseRendererProps) {
+  const [copiedVerse, setCopiedVerse] = useState<string | null>(null);
+  const [savedVerses, setSavedVerses] = useState<string[]>([]);
+
+  const getVerseKey = (verse: Verse, index: number) => 
+    `${verse.book}-${verse.chapter}-${verse.verse}-${index}`;
+
+  const handleCopy = (verse: Verse, key: string) => {
+    navigator.clipboard.writeText(`${verse.book} ${verse.chapter}:${verse.verse} - ${verse.text}`);
+    setCopiedVerse(key);
+    setTimeout(() => setCopiedVerse(null), 2000);
+  };
+
+  const handleSave = (key: string) => {
+    setSavedVerses((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  };
+
+  const handleShare = (verse: Verse) => {
+    const shareData = {
+      title: `${verse.book} ${verse.chapter}:${verse.verse}`,
+      text: `${verse.text}`,
+    };
+    if (navigator.share) {
+      navigator.share(shareData);
+    } else {
+      navigator.clipboard.writeText(`${verse.book} ${verse.chapter}:${verse.verse} - ${verse.text}`);
+    }
+  };
+
+  if (!verses || verses.length === 0) {
+    return (
+      <p className={`text-sm italic text-center py-12 ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
+        No verses available for this chapter.
+      </p>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-6 animate-in fade-in duration-700">
-      {verses.map((verse, index) => (
-        <div key={index} className="group relative flex gap-4 md:gap-6 items-start">
-          
-          {/* VERSE NUMBER GUTTER */}
-          <div className="flex flex-col items-center pt-1 min-w-[28px]">
-            <span className="text-[9px] font-black text-amber-500/50 group-hover:text-amber-600 transition-colors">
-              {verse.verse}
-            </span>
-            <div className="w-px h-full bg-gradient-to-b from-amber-500/20 via-transparent to-transparent mt-2 hidden md:block"></div>
-          </div>
+    <div className={`flex flex-col gap-4 py-2 ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'}`}>
+      {verses.map((verse, index) => {
+        const verseKey = getVerseKey(verse, index);
+        const isCopied = copiedVerse === verseKey;
+        const isSaved = savedVerses.includes(verseKey);
 
-          {/* SCRIPTURE CONTENT */}
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span className="text-[7px] font-black uppercase tracking-wider text-amber-600">
-                {verse.book} {verse.chapter}:{verse.verse}
-              </span>
-              <div className="h-px flex-1 bg-amber-500/10"></div>
-              <span className="text-[7px] font-black uppercase tracking-wider text-gray-400">
-                {translation}
+        return (
+          <motion.div
+            key={verseKey}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.15, delay: Math.min(index * 0.01, 0.3) }}
+            className={`group relative flex gap-3 md:gap-4 items-baseline p-3.5 rounded-lg transition-colors ${
+              isDark ? 'hover:bg-zinc-900/40' : 'hover:bg-zinc-50'
+            }`}
+          >
+            {/* VERSE NUMBER */}
+            <div className="flex justify-end min-w-[20px]">
+              <span
+                className={`text-xs font-mono font-semibold select-none transition-colors ${
+                  isDark ? 'text-zinc-500 group-hover:text-zinc-300' : 'text-zinc-400 group-hover:text-zinc-700'
+                }`}
+              >
+                {verse.verse}
               </span>
             </div>
 
-            <p className="font-serif text-[15px] md:text-[17px] leading-relaxed text-gray-700 opacity-90 group-hover:opacity-100 transition-opacity">
-              {verse.text}
-            </p>
+            {/* SCRIPTURE CONTENT */}
+            <div className="flex-1 min-w-0">
+              {/* Reference Badge */}
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className={`text-[9px] font-sans font-medium uppercase tracking-wider ${
+                  isDark ? 'text-zinc-400' : 'text-zinc-500'
+                }`}>
+                  {verse.book} {verse.chapter}:{verse.verse}
+                </span>
+                <div className={`h-px flex-1 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`} />
+                <span className={`text-[9px] font-sans font-medium uppercase tracking-wider ${
+                  isDark ? 'text-zinc-500' : 'text-zinc-400'
+                }`}>
+                  {translation}
+                </span>
+              </div>
 
-            {/* ACTION MINI-BAR */}
-            <div className="flex gap-3 mt-3 opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0">
-              <button className="flex items-center gap-1 text-[7px] font-black uppercase tracking-wider text-gray-400 hover:text-amber-600 transition-colors">
-                <span className="material-symbols-outlined text-[12px]">content_copy</span>
-                Copy
-              </button>
-              <button className="flex items-center gap-1 text-[7px] font-black uppercase tracking-wider text-gray-400 hover:text-amber-600 transition-colors">
-                <span className="material-symbols-outlined text-[12px]">share</span>
-                Share
-              </button>
-              <button className="flex items-center gap-1 text-[7px] font-black uppercase tracking-wider text-gray-400 hover:text-amber-600 transition-colors">
-                <span className="material-symbols-outlined text-[12px]">bookmark_border</span>
-                Save
-              </button>
+              {/* Expanded Verse Text */}
+              <p className={`font-serif text-lg md:text-xl leading-relaxed tracking-normal ${
+                isDark ? 'text-zinc-100' : 'text-zinc-900'
+              }`}>
+                {verse.text}
+              </p>
+
+              {/* Compact Action Buttons */}
+              <div className={`flex items-center gap-1 mt-2 transition-opacity duration-200 ${
+                isDark ? 'text-zinc-400' : 'text-zinc-500'
+              }`}>
+                <button
+                  onClick={() => handleCopy(verse, verseKey)}
+                  className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                    isDark ? 'hover:text-zinc-100 hover:bg-zinc-800' : 'hover:text-zinc-900 hover:bg-zinc-100'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[13px]">
+                    {isCopied ? 'check' : 'content_copy'}
+                  </span>
+                  {isCopied ? 'Copied' : 'Copy'}
+                </button>
+
+                <button
+                  onClick={() => handleSave(verseKey)}
+                  className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                    isDark ? 'hover:text-zinc-100 hover:bg-zinc-800' : 'hover:text-zinc-900 hover:bg-zinc-100'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[13px]">
+                    {isSaved ? 'bookmark' : 'bookmark_border'}
+                  </span>
+                  {isSaved ? 'Saved' : 'Save'}
+                </button>
+
+                <button
+                  onClick={() => handleShare(verse)}
+                  className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                    isDark ? 'hover:text-zinc-100 hover:bg-zinc-800' : 'hover:text-zinc-900 hover:bg-zinc-100'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[13px]">share</span>
+                  Share
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      ))}
-
-      {/* FOOTER DECORATION */}
-      <div className="flex items-center justify-center py-8">
-        <div className="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/20"></div>
-        <span className="material-symbols-outlined text-amber-500/30 text-sm mx-3">self_improvement</span>
-        <div className="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/20"></div>
-      </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

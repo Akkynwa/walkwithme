@@ -22,8 +22,9 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [isExploreRowOpen, setIsExploreRowOpen] = useState(false);
   const [activeFeederSection, setActiveFeederSection] = useState<CommunitySection>('revelations');
+  const [streamRefreshKey, setStreamRefreshKey] = useState(0);
 
-  // Hard route protection for the private workspace
+  // Hard route protection for private workspace
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/');
@@ -32,6 +33,7 @@ export default function DashboardPage() {
     }
   }, [status, router]);
 
+  // Listen for custom navigation event from Sidebar or external controls
   useEffect(() => {
     const handleStateChange = (e: Event) => {
       setIsExploreRowOpen((e as CustomEvent).detail);
@@ -48,6 +50,11 @@ export default function DashboardPage() {
     { label: 'Prayers', href: '/prayers' },
     { label: 'Community Hub', href: '/community' },
   ];
+
+  const handleFreshPostCreated = (_type: CommunitySection, _freshData: unknown) => {
+    // Trigger feed reload across stream components when a post is created
+    setStreamRefreshKey((prev) => prev + 1);
+  };
 
   if (status === 'loading' || loading) {
     return (
@@ -66,10 +73,6 @@ export default function DashboardPage() {
     );
   }
 
-  const handleFreshPostCreated = (type: CommunitySection, freshData: any) => {
-    console.log(`New item generated under context: ${type}`, freshData);
-  };
-
   return (
     <div className={`min-h-screen font-sans antialiased selection:bg-amber-200/50 ${
       isDark ? 'bg-[#0f0f11] text-zinc-200' : 'bg-[#fcfbf9] text-stone-900'
@@ -78,6 +81,7 @@ export default function DashboardPage() {
       <Sidebar />
       
       <div className="flex-1 lg:ml-64 relative min-w-0 flex flex-col">
+        {/* Sticky Header */}
         <header className={`sticky top-0 z-20 backdrop-blur-md border-b px-4 md:px-8 py-3.5 flex items-center justify-between ${
           isDark ? 'bg-[#0f0f11]/90 border-zinc-800/80' : 'bg-[#fcfbf9]/90 border-stone-200/60'
         }`}>
@@ -115,10 +119,11 @@ export default function DashboardPage() {
           </div>
         </header>
 
+        {/* Main Content Area */}
         <main className="pt-8 pb-16 px-4 md:px-6 xl:px-12 max-w-[1300px] w-full mx-auto">
           <div className="flex flex-col lg:flex-row gap-8 xl:gap-12">
             
-            {/* MIDDLE COLUMN (Feed Stream Component Workspace) */}
+            {/* MIDDLE COLUMN (Main Stream Workspace) */}
             <div className="flex-1 min-w-0 space-y-6">
               
               {isExploreRowOpen && (
@@ -162,11 +167,14 @@ export default function DashboardPage() {
                 onPostCreated={handleFreshPostCreated}
               />
 
-              <CommunityFellowshipStream status={status} />
+              <CommunityFellowshipStream 
+                key={streamRefreshKey} 
+                status={status} 
+              />
 
             </div>
 
-            {/* RIGHT COLUMN (Editorial Context Sidebar Layout) */}
+            {/* RIGHT COLUMN (Editorial Context Sidebar) */}
             <div className="lg:w-72 xl:w-80 shrink-0">
               <div className="sticky top-24 space-y-8">
                 

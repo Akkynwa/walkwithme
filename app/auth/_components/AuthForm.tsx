@@ -5,7 +5,11 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
-export function AuthForm({ onAuthSuccess }: { onAuthSuccess: (name: string) => void }) {
+interface AuthFormProps {
+  onAuthSuccess: (name: string) => void;
+}
+
+export function AuthForm({ onAuthSuccess }: AuthFormProps) {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -13,13 +17,14 @@ export function AuthForm({ onAuthSuccess }: { onAuthSuccess: (name: string) => v
     lastName: '',
     email: '',
     password: '',
-    agreeTerms: false
+    agreeTerms: false,
   });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
+
     try {
       const result = await signIn('credentials', {
         email: formData.email,
@@ -28,14 +33,14 @@ export function AuthForm({ onAuthSuccess }: { onAuthSuccess: (name: string) => v
       });
 
       if (result?.error) {
-        toast.error(result.error || 'Failed to sign in');
+        toast.error('We could not sign you in. Please check your details and try again.');
       } else if (result?.ok) {
-        toast.success('IDENTITY VERIFIED.');
+        toast.success('Welcome back. You are signed in.');
         const computedName = formData.email.split('@')[0];
         onAuthSuccess(computedName);
       }
-    } catch (error) {
-      toast.error('An unexpected validation error occurred');
+    } catch {
+      toast.error('Something went wrong. Please try again in a moment.');
     } finally {
       setLoading(false);
     }
@@ -44,8 +49,9 @@ export function AuthForm({ onAuthSuccess }: { onAuthSuccess: (name: string) => v
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
     if (!formData.firstName || !formData.lastName || !formData.email || formData.password.length < 8 || !formData.agreeTerms) {
-      toast.error('Complete all fields parameters correctly');
+      toast.error('Please complete everything and accept the terms before continuing.');
       return;
     }
 
@@ -63,90 +69,141 @@ export function AuthForm({ onAuthSuccess }: { onAuthSuccess: (name: string) => v
 
       const data = await response.json();
       if (!response.ok) {
-        toast.error(data.error || 'Registration failed');
+        toast.error(data.error || 'We could not create your account right now.');
       } else {
-        toast.success('ACCOUNT CREATED. PROCEED TO SIGN IN.');
+        toast.success('Your account is ready. You can sign in now.');
         setActiveTab('login');
         setFormData({ ...formData, password: '', agreeTerms: false });
       }
-    } catch (error) {
-      toast.error('Network execution fault');
+    } catch {
+      toast.error('The connection timed out. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full flex flex-col justify-center animate-in fade-in duration-200">
+    <div className="flex w-full flex-col justify-center animate-in fade-in duration-200">
       <div className="mb-6 text-center">
-        <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">
-          {activeTab === 'login' ? 'Welcome back.' : 'Join the tribe.'}
+        <h2 className="mb-2 text-3xl font-semibold tracking-tight text-slate-900">
+          {activeTab === 'login' ? 'Welcome back' : 'Create your account'}
         </h2>
-        <p className="text-sm font-medium text-slate-600">
-          {activeTab === 'login' ? 'Access your private digital sanctuary space and stay grounded in your daily rhythm.' : 'Create an account to keep your journal, prayer life, and quiet-time plans in one place.'}
+        <p className="text-sm leading-6 text-slate-600">
+          {activeTab === 'login'
+            ? 'Sign in to pick up where you left off and keep your quiet time, prayers, and journal in one place.'
+            : 'Join in a few simple steps and start building a calmer daily routine.'}
         </p>
       </div>
 
-      <div className="flex justify-center gap-4 mb-6 border-b border-orange-100">
+      <div className="mb-6 flex justify-center gap-4 border-b border-slate-200">
         {(['login', 'register'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`pb-2 text-xs font-black uppercase tracking-[0.22em] transition-all relative ${
-              activeTab === tab ? 'text-orange-600' : 'text-slate-500 hover:text-slate-700'
+            className={`relative pb-2 text-xs font-semibold uppercase tracking-[0.24em] transition-all ${
+              activeTab === tab ? 'text-sky-700' : 'text-slate-500 hover:text-slate-700'
             }`}
           >
-            {tab === 'login' ? 'SIGN IN' : 'REGISTER'}
-            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-orange-500" />}
+            {tab === 'login' ? 'Sign in' : 'Register'}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-sky-600" />}
           </button>
         ))}
       </div>
 
       {activeTab === 'login' ? (
         <form onSubmit={handleLogin} className="space-y-3">
-          <input 
-            required 
+          <input
+            required
             type="email"
-            className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm font-bold tracking-wide outline-none"
-            placeholder="EMAIL ADDRESS"
+            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            placeholder="Email address"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
           <div className="relative w-full">
-            <input 
-              required 
+            <input
+              required
               type="password"
-              className="w-full bg-white border border-zinc-300 focus:border-zinc-900 px-4 py-3 text-sm font-bold tracking-wide outline-none"
-              placeholder="PASSWORD"
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+              placeholder="Password"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
-            <Link href="/auth/forgot-password" className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-semibold uppercase text-slate-500 hover:text-orange-600">
-              FORGOT?
+            <Link href="/auth/forgot-password" className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-500 transition hover:text-sky-700">
+              Forgot?
             </Link>
           </div>
-          <button type="submit" disabled={loading} className="w-full rounded-2xl bg-orange-500 py-4 text-xs font-black uppercase tracking-[0.22em] text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600 disabled:opacity-50">
-            {loading ? 'VERIFYING CREDENTIALS...' : 'ENTER SANCTUARY'}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-2xl bg-sky-700 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-700/20 transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {loading ? 'Signing you in…' : 'Continue to your space'}
           </button>
         </form>
       ) : (
         <form onSubmit={handleRegister} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <input required className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3 text-sm font-medium tracking-wide text-slate-700 outline-none transition focus:border-orange-400 focus:bg-white" placeholder="FIRST NAME" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} />
-            <input required className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3 text-sm font-medium tracking-wide text-slate-700 outline-none transition focus:border-orange-400 focus:bg-white" placeholder="LAST NAME" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} />
+            <input
+              required
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
+              placeholder="First name"
+              value={formData.firstName}
+              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+            />
+            <input
+              required
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
+              placeholder="Last name"
+              value={formData.lastName}
+              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+            />
           </div>
-          <input required type="email" className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3 text-sm font-medium tracking-wide text-slate-700 outline-none transition focus:border-orange-400 focus:bg-white" placeholder="EMAIL ADDRESS" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
-          <input required type="password" className="w-full rounded-2xl border border-orange-100 bg-orange-50/70 px-4 py-3 text-sm font-medium tracking-wide text-slate-700 outline-none transition focus:border-orange-400 focus:bg-white" placeholder="PASSWORD (8+ CHARACTERS)" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} />
-          
+          <input
+            required
+            type="email"
+            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
+            placeholder="Email address"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+          <input
+            required
+            type="password"
+            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
+            placeholder="Password (8+ characters)"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+
           <div className="flex items-start gap-3 pt-1">
-            <input type="checkbox" id="terms" className="mt-1 rounded border-orange-200 text-orange-500 focus:ring-orange-400" checked={formData.agreeTerms} onChange={(e) => setFormData({...formData, agreeTerms: e.target.checked})} />
-            <label htmlFor="terms" className="text-[11px] font-medium leading-normal text-slate-600">
-              I AGREE TO THE TERMS AND PRIVACY PROTOCOLS.
+            <input
+              type="checkbox"
+              id="terms"
+              className="mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+              checked={formData.agreeTerms}
+              onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
+            />
+            <label htmlFor="terms" className="text-[11px] leading-5 text-slate-600">
+              I agree to the{' '}
+              <Link href="/terms" className="font-medium text-sky-700 hover:text-sky-800">
+                Terms
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy" className="font-medium text-sky-700 hover:text-sky-800">
+                Privacy Policy
+              </Link>
+              .
             </label>
           </div>
-          <button type="submit" disabled={loading} className="w-full rounded-2xl bg-orange-500 py-4 text-xs font-black uppercase tracking-[0.22em] text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600">
-            {loading ? 'PROCESSING ACCOUNT...' : 'CREATE ACCOUNT'}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-2xl bg-sky-700 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-700/20 transition hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {loading ? 'Creating your account…' : 'Create account'}
           </button>
         </form>
       )}

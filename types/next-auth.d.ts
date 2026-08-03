@@ -7,6 +7,7 @@ declare module 'next-auth' {
       email: string;
       name?: string;
       image?: string;
+      role?: string;
     } & DefaultSession['user'];
   }
 
@@ -16,6 +17,7 @@ declare module 'next-auth' {
     name?: string | null;
     image?: string | null;
     password?: string;
+    role?: string;
   }
 }
 
@@ -25,6 +27,7 @@ declare module 'next-auth/jwt' {
     email: string;
     name?: string;
     image?: string;
+    role?: string;
   }
 }
 declare module "next-auth/providers/webauthn" {

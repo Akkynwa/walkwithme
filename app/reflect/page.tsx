@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import Sidebar from '@/app/layout-components/Sidebar';
-import MainHeader from '@/app/layout-components/Header';
 import { useTheme } from './../context/ThemeContext';
 
 export default function ReflectionPage() {

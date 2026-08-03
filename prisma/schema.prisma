@@ -10,6 +10,10 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL") // Added directUrl for structural migrations
 }
+enum Role {
+  USER
+  ADMIN
+}
 
 model User {
   id                    String                @id @default(cuid())
@@ -28,6 +32,7 @@ model User {
   dailyReminder         Boolean               @default(true)
   prayerReminder        Boolean               @default(true)
   newContent            Boolean               @default(true)
+  role      Role     @default(USER) // <-- Add this field
 
   // --- COHORT & WORKSPACE RELATIONS ---
   shares                CommunityShare[]      @relation("UserShares")

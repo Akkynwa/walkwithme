@@ -1,50 +1,103 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth'; // Ensure this path points to your NextAuth options file
 
 const FREE_API_BASE = 'https://bible.helloao.org/api';
 const PAID_API_BASE = 'https://api.scripture.api.bible/v1';
 
+// Default mappings for Free translation IDs
+const FREE_TRANSLATION_MAP: Record<string, string> = {
+  KJV: 'BSB', // Default fallback to Berean Standard Bible or KJV on helloao
+  NIV: 'BSB',
+  RVR09: 'RVR09',
+};
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const bibleId = searchParams.get('bibleId');
+  const rawBibleId = searchParams.get('bibleId');
   const passageId = searchParams.get('passageId');
-  
-  if (!bibleId || !passageId) {
-    return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
+
+  if (!rawBibleId || !passageId) {
+    return NextResponse.json(
+      { success: false, error: 'Missing parameters: bibleId and passageId are required' },
+      { status: 400 }
+    );
   }
 
-  const session = await getServerSession();
-  // const isPaidUser = !!session?.user?.isPaid;
-const isPaidUser = !!(session?.user as any)?.isPaid;
+  // 1. Get user session with custom NextAuth config
+  const session = await getServerSession(authOptions);
+  const isPaidUser = !!(session?.user as any)?.isPaid;
+
   try {
-    let url;
+    let url = '';
     let headers: HeadersInit = {};
 
     if (isPaidUser) {
-      url = `${PAID_API_BASE}/bibles/${bibleId}/passages/${passageId}?content-type=text`;
-      headers = { 'api-key': process.env.BIBLE_API_KEY_PAID as string };
+      url = `${PAID_API_BASE}/bibles/${rawBibleId}/passages/${passageId}?content-type=json`;
+      headers = { 'api-key': process.env.BIBLE_API_KEY_PAID || '' };
     } else {
-      url = `${FREE_API_BASE}/${bibleId}/${passageId}.json`;
+      // 2. Parse passage format (e.g. "Genesis.1" or "GEN.1" -> book: "GEN", chapter: "1")
+      const [book, chapter] = passageId.split('.');
+      const freeTranslation = FREE_TRANSLATION_MAP[rawBibleId.toUpperCase()] || rawBibleId;
+      
+      url = `${FREE_API_BASE}/${freeTranslation}/${book}/${chapter || 1}.json`;
     }
 
-    const response = await fetch(url, { headers });
-    if (!response.ok) throw new Error(`Upstream API failed: ${response.status}`);
-    
+    const response = await fetch(url, {
+      headers,
+      next: { revalidate: 86400 }, // Next.js fetch caching layer
+    });
+
+    if (!response.ok) {
+      throw new Error(`Upstream API failed with status ${response.status}`);
+    }
+
     const rawData = await response.json();
 
-    // --- NORMALIZATION STEP ---
-    // This transforms the response into a unified format for your frontend
-    const normalizedData = isPaidUser 
-      ? { success: true, verses: rawData.data.content, audio: rawData.data.audio }
-      : { success: true, verses: rawData.chapters[0].content, audio: null }; 
-      // Note: check the Free API JSON to see if it's .content or .verses
+    // 3. Normalization Step
+    let normalizedVerses: Array<{ verse: number; text: string }> = [];
+    let audioUrl: string | null = null;
 
-    return NextResponse.json(normalizedData, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=86400',
+    if (isPaidUser) {
+      // API.Bible format
+      const content = rawData?.data?.content || [];
+      normalizedVerses = Array.isArray(content)
+        ? content.map((v: any, idx: number) => ({
+            verse: Number(v.number || idx + 1),
+            text: (v.text || v.value || '').trim(),
+          }))
+        : [];
+      audioUrl = rawData?.data?.audio || null;
+    } else {
+      // helloao.org format
+      const chapterContent = rawData?.chapter?.content || rawData?.verses || [];
+      normalizedVerses = chapterContent
+        .filter((item: any) => item.type === 'verse' || item.text)
+        .map((v: any, idx: number) => ({
+          verse: Number(v.number || idx + 1),
+          text: (v.text || (Array.isArray(v.content) ? v.content.join(' ') : '')).trim(),
+        }));
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        passage: passageId,
+        verses: normalizedVerses,
+        audio: audioUrl,
+        isPaid: isPaidUser,
       },
-    });
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=604800, stale-while-revalidate=86400',
+        },
+      }
+    );
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Bible Route Error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'Failed to fetch passage' },
+      { status: 500 }
+    );
   }
 }

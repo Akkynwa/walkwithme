@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import Link from 'next/link';
 
 interface SearchResult {
   book?: string;
@@ -35,8 +34,8 @@ export default function PaginatedBibleSearch({ isDark = false }: { isDark?: bool
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [searchLocal, setSearchLocal] = useState(true);
-  const [searchWeb, setSearchWeb] = useState(false);
+  const [searchLocal] = useState(true);
+  const [searchWeb] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const debouncedQuery = useDebounce(inputValue, 350);

@@ -297,9 +297,7 @@ export default function AuthPage() {
           priority
           className="h-24 w-auto object-contain select-none pointer-events-none"
         />
-        <span className="text-[11px] font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-200">
-          WalkWithMe
-        </span>
+        
       </div>
     </Link>
   </div>

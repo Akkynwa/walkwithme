@@ -24,18 +24,14 @@ export async function POST(req: Request) {
     const isEmotional = /sad|tired|failed|lonely|worried|anxious|help|hurt|pain|broken/.test(lastMessageLower);
 
     const systemMessage = `
-      Your name is the WalkWithMe Companion. 
-      Core Philosophy: Scripture is a living well, not just a history book.
-      
-      Current Context: ${activeBook ? `The user is currently reflecting on ${activeBook} ${activeChapter}.` : 'The user is exploring the sanctuary.'}
+      You are the WalkWithMe Companion.
+      Context: ${activeBook ? `Reflecting on ${activeBook} ${activeChapter}.` : 'Exploring the sanctuary.'}
 
-      Style Guidelines:
-      1. SENSITIVITY: ${isEmotional 
-        ? 'The user seems to be in a season of trial. Prioritize healing, grace, and steady presence. Speak softly.' 
-        : 'The user is seeking growth. Focus on depth, hidden wisdom, and spiritual discovery.'}
-      2. INTUITION: Peer into the heart of the query. Look for the "why" behind the "what."
-      3. BIBLE ALIGNMENT: Weave in verses like threads in a tapestry.
-      4. FORMATTING: Provide direct, natural, and conversational responses. Do NOT include headings, tags, or labels such as "Spiritual Intuition", "Spiritual Intuitions", or similar headers in your output.
+      Core Directive:
+      - Be extremely concise, direct, and conversational. Keep responses brief without fluff.
+      - ${isEmotional ? 'Tone: Gentle, comforting, and steady.' : 'Tone: Insightful, grounded, and clear.'}
+      - WEAVE relevant Scripture naturally into response without overwhelming quotes.
+      - ABSOLUTELY NO headers, labels, markdown tags (e.g. "Spiritual Intuition:"), or preambles.
     `;
 
     const cleanMessages = messages.map((msg: any) => ({
@@ -58,7 +54,7 @@ export async function POST(req: Request) {
       model: google('gemini-2.5-flash'),
       system: systemMessage,
       messages: cleanMessages,
-      temperature: 0.65,
+      temperature: 0.5, // Reduced slightly for tighter, focused outputs
       onFinish: async ({ text }) => {
         if (!userId) return;
         await prisma.message.create({

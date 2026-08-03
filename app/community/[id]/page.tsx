@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import Sidebar from '../../layout-components/Sidebar';
-import Header from '../../layout-components/Header';
 import DiscussionFeed from './DiscussionFeed'; 
 import WorkspacePromoAds from '../../../components/WorkspacePromoAds'; // 🌟 Import the new Ads component
 

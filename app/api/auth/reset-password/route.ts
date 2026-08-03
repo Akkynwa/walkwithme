@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     });
 
     // Build the reset link
-    const origin = request.headers.get('origin') || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || 'http://localhost:3000/signin';
     const resetUrl = `${origin}/auth/reset-password/${resetToken}`;
 
     // Send the actual email

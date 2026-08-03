@@ -111,32 +111,32 @@ export const colorSchemes: Record<ColorScheme, ThemeColors> = {
   },
   blue: {
     primary: {
-      50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
-      400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
-      800: '#1e40af', 900: '#1e3a8a'
+      50: '#f3f7fb', 100: '#dce9f2', 200: '#bfd8e8', 300: '#8fb7d0',
+      400: '#5f95b7', 500: '#356f98', 600: '#24577b', 700: '#183b63',
+      800: '#112d49', 900: '#0b1f31'
     },
     accent: {
-      50: '#fef3c7', 100: '#fde68a', 200: '#fcd34d', 300: '#fbbf24',
-      400: '#f59e0b', 500: '#d97706', 600: '#b45309', 700: '#92400e',
-      800: '#78350f', 900: '#451a03'
+      50: '#eef5fb', 100: '#d8e7f4', 200: '#bdd8e7', 300: '#91bdda',
+      400: '#5f93bf', 500: '#37749f', 600: '#24577b', 700: '#183b63',
+      800: '#112d49', 900: '#0b1f31'
     },
     background: {
-      light: '#f0f4fa',
-      dark: '#0f172a',
+      light: '#f4f7fb',
+      dark: '#0b1724',
       card: '#ffffff',
       elevated: '#e8eef5',
-      surface: '#e0e8f0'
+      surface: '#e6edf5'
     },
     text: {
-      primary: '#1e293b',
-      secondary: '#475569',
-      tertiary: '#94a3b8',
+      primary: '#10253b',
+      secondary: '#415a72',
+      tertiary: '#6f8296',
       inverse: '#ffffff'
     },
     border: {
-      light: '#e2e8f0',
-      dark: '#1e293b',
-      default: '#cbd5e1'
+      light: '#dce6f0',
+      dark: '#213449',
+      default: '#c8d7e5'
     }
   },
   purple: {
@@ -202,4 +202,4 @@ export const colorSchemes: Record<ColorScheme, ThemeColors> = {
 };
 
 export const defaultTheme: ThemeMode = 'auto';
-export const defaultColorScheme: ColorScheme = 'amber';
+export const defaultColorScheme: ColorScheme = 'blue';

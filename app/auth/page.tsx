@@ -45,7 +45,7 @@ export default function AuthPage() {
   };
 
   const handleFinalizePipeline = async (_meditationData: { timeRange: number }) => {
-    toast.success('SANCTUARY PARAMETERS VERIFIED. OPENING WORKSPACE.');
+    toast.success('');
     router.push('/dashboard');
     router.refresh();
   };

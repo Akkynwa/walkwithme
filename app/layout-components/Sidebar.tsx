@@ -8,23 +8,46 @@ import Image from 'next/image';
 import { useTheme } from '../context/ThemeContext';
 import { useLayoutShell } from './layout-shell-context';
 
-// Direct import for guaranteed static asset resolution
 import logo from '@/public/logo.png';
+import { UnifrakturMaguntia } from 'next/font/google';
+
+const gothicFont = UnifrakturMaguntia({
+  weight: '400',
+  subsets: ['latin'],
+});
 
 export default function Sidebar() {
   const { renderInLayout } = useLayoutShell();
   const { data: session } = useSession();
   const pathname = usePathname();
   const { isDark } = useTheme();
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   // Menu Control States
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isExploreRowOpen, setIsExploreRowOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const moreMenuRef = useRef<HTMLDivElement>(null);
   const createMenuRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Track window scroll position to show support banner below top navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 30) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 1. In your component file (or top of page):
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -40,7 +63,6 @@ export default function Sidebar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Precise scrolling handler for the pills navigation row
   const handleScroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 200;
@@ -55,16 +77,22 @@ export default function Sidebar() {
     return null;
   }
 
-  // Primary High-Level Substack Core Rows
+  // Desktop primary items
   const primaryNavItems = [
     { icon: 'home', label: 'Home', href: '/dashboard' },
-    { icon: 'subscriptions', label: 'bible', href: '/bible' },
-    { icon: 'chat_bubble', label: 'chat', href: '/ai/chat' },
+    { icon: 'subscriptions', label: 'Bible', href: '/bible' },
+    { icon: 'chat_bubble', label: 'Chat', href: '/ai/chat' },
   ];
 
-  // Extended Spiritual Sub-items styled precisely to mimic the categories strip
+  // Mobile navigation items (with devotionals captured)
+  const mobileNavItems = [
+    { icon: 'home', label: 'Home', href: '/dashboard' },
+    { icon: 'auto_stories', label: 'Devotionals', href: '/sanctuary/devotionals' },
+    { icon: 'subscriptions', label: 'Bible', href: '/bible' },
+    { icon: 'chat_bubble', label: 'Chat', href: '/ai/chat' },
+  ];
+
   const extendedSpiritualItems = [
-    { label: 'Bible Scroll', href: '/bible' },
     { label: 'Devotionals', href: '/sanctuary/devotionals' },
     { label: 'Quiet Time', href: '/quiet-time' },
     { label: 'Journal', href: '/journal' },
@@ -75,7 +103,145 @@ export default function Sidebar() {
   return (
     <>
       {/* ========================================================= */}
-      {/* 1. DESKTOP SIDEBAR                                         */}
+      {/* 1. MOBILE TOP NAVBAR (WITH HAMBURGER & AVATAR)            */}
+      {/* ========================================================= */}
+      <header
+        className={`lg:hidden fixed top-0 left-0 right-0 z-[80] transition-all duration-300 border-b backdrop-blur-xl px-4 py-3 flex items-center justify-between ${
+          isDark
+            ? 'bg-zinc-950/90 border-white/10 text-white'
+            : 'bg-white/90 border-slate-200/80 text-slate-800'
+        }`}
+      >
+        {/* Left: Hamburger Toggle & Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-1 rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-zinc-800"
+            aria-label="Toggle Menu"
+          >
+            <span className="material-symbols-outlined text-2xl block">
+              {isMobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <Image
+              src={logo}
+              alt="Logo"
+              width={28}
+              height={28}
+              className="object-contain"
+            />
+          </Link>
+        </div>
+
+        {/* Right: User Avatar */}
+        <Link
+          href="/settings"
+          className="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-amber-500/30 flex items-center justify-center shrink-0"
+        >
+          <Image
+            src={
+              session?.user?.image ||
+              `https://ui-avatars.com/api/?name=${
+                session?.user?.name || 'U'
+              }&background=ea580c&color=fff`
+            }
+            alt="Profile Avatar"
+            fill
+            className="object-cover"
+          />
+        </Link>
+      </header>
+
+      {/* ========================================================= */}
+      {/* 2. MOBILE SCROLL-ONLY GIVE / SUPPORT BANNER BELOW NAVBAR  */}
+      {/* ========================================================= */}
+      {isScrolled && (
+        <div
+          className={`lg:hidden fixed top-[53px] left-0 right-0 z-[75] px-4 py-2 border-b backdrop-blur-md shadow-md animate-in slide-in-from-top-2 fade-in duration-200 flex items-center justify-between ${
+            isDark
+              ? 'bg-zinc-900/95 border-white/10 text-white'
+              : 'bg-slate-50/95 border-slate-200 text-slate-800'
+          }`}
+        >
+          <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
+            Need assistance or want to give?
+          </span>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/support"
+              className={`text-xs px-3 py-1 rounded-lg border font-medium transition-colors ${
+                isDark
+                  ? 'border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200'
+                  : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700'
+              }`}
+            >
+              Support
+            </Link>
+            <Link
+              href="/DonatePage"
+              className="text-xs px-3 py-1 rounded-lg bg-[#FF6221] text-white font-medium hover:bg-[#e65217] transition-colors shadow-sm flex items-center gap-1"
+            >
+              <span>Give</span>
+              <span className="material-symbols-outlined text-xs">add</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* 3. MOBILE HAMBURGER SLIDE-OUT MENU DRAWER                 */}
+      {/* ========================================================= */}
+      {isMobileMenuOpen && (
+        <div
+          className={`lg:hidden fixed inset-0 top-[53px] z-[70] backdrop-blur-xl transition-all duration-300 animate-in fade-in slide-in-from-top-3 ${
+            isDark ? 'bg-zinc-950/95 text-white' : 'bg-white/95 text-slate-800'
+          }`}
+        >
+          <div className="p-6 space-y-4 flex flex-col h-full">
+            <div className="space-y-1">
+              <Link
+                href="/settings"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                  isDark ? 'hover:bg-zinc-900' : 'hover:bg-slate-100'
+                }`}
+              >
+                <span className="material-symbols-outlined">person</span>
+                Profile Settings
+              </Link>
+              <Link
+                href="/support"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                  isDark ? 'hover:bg-zinc-900' : 'hover:bg-slate-100'
+                }`}
+              >
+                <span className="material-symbols-outlined">help</span>
+                Help & Support
+              </Link>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 dark:border-white/10 mt-auto pb-12">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  signOut();
+                }}
+                className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                <span className="material-symbols-outlined">logout</span>
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* 4. DESKTOP SIDEBAR (UNTOUCHED VIEW)                        */}
       {/* ========================================================= */}
       <aside
         className={`hidden lg:flex flex-col h-screen fixed top-0 left-0 w-64 z-50 backdrop-blur-xl border-r px-6 py-6 select-none transition-colors duration-300 ${
@@ -84,21 +250,21 @@ export default function Sidebar() {
             : 'bg-white/40 border-slate-200/50 text-slate-700'
         }`}
       >
-  <div className="mb-8 pl-2 shrink-0">
-  <Link href="/dashboard" className="inline-block">
-    <div className="flex items-center gap-2.5">
-      <Image
-        src={logo}
-        alt="WalkWithMe Logo"
-        priority
-        className="h-16 w-auto object-contain select-none pointer-events-none"
-      />
-      <span className="text-[11px] font-bold tracking-widest uppercase text-slate-800 dark:text-zinc-200">
-        WalkWithMe
-      </span>
-    </div>
-  </Link>
+        <div className="mb-8 pl-2 shrink-0">
+          <Link href="/dashboard" className="inline-block">
+            <div className="flex items-center gap-2.5">
+  <Image
+    src={logo}
+    alt="WalkWithMe Logo"
+    priority
+    className="h-16 w-auto object-contain select-none pointer-events-none"
+  />
+  <span className={`${gothicFont.className} text-base text-slate-900 dark:text-zinc-100 tracking-wider`}>
+    WalkWithMe
+  </span>
 </div>
+          </Link>
+        </div>
 
         {/* Core Navigation Items */}
         <nav className="space-y-1 flex-1">
@@ -112,7 +278,7 @@ export default function Sidebar() {
                   isActive
                     ? isDark
                       ? 'text-white font-semibold bg-white/10'
-                      : 'text-slate-900 font-semibold'
+                      : 'text-slate-900 font-semibold bg-slate-900/5'
                     : isDark
                     ? 'text-gray-400 hover:text-white hover:bg-white/10'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-900/5'
@@ -133,7 +299,6 @@ export default function Sidebar() {
             );
           })}
 
-          {/* Explore Trigger Toggle Button */}
           <button
             onClick={() => setIsExploreRowOpen(!isExploreRowOpen)}
             className={`w-full flex items-center gap-4 px-3 py-2.5 rounded-xl transition-all duration-200 group text-[15px] ${
@@ -155,7 +320,6 @@ export default function Sidebar() {
             </span>
           </button>
 
-          {/* Profile Quicklink */}
           <Link
             href="/settings"
             className={`flex items-center gap-4 px-3 py-2.5 rounded-xl transition-all text-[15px] ${
@@ -180,7 +344,20 @@ export default function Sidebar() {
             <span>Profile</span>
           </Link>
 
-          {/* "Create" Custom Action Dropdown Button Block */}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={`flex items-center gap-4 px-3 py-2.5 rounded-xl transition-all text-[15px] ${
+                isDark
+                  ? 'text-gray-400 hover:text-white hover:bg-white/10'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-900/5'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[23px]">shield_person</span>
+              <span>Admin</span>
+            </Link>
+          )}
+
           <div className="pt-4 relative" ref={createMenuRef}>
             <button
               onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
@@ -227,7 +404,6 @@ export default function Sidebar() {
           </div>
         </nav>
 
-        {/* Bottom "More" Popover Menu Anchor */}
         <div
           className={`relative mt-auto pt-4 border-t ${
             isDark ? 'border-white/10' : 'border-slate-200/40'
@@ -263,28 +439,9 @@ export default function Sidebar() {
               }`}
             >
               <Link
-                href=""
-                className={`flex items-center gap-3 px-4 py-2.5 text-[13px] transition-colors ${
-                  isDark
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'hover:bg-slate-50'
-                }`}
-              >
-                <span className="material-symbols-outlined text-lg">
-                  archive
-                </span>{' '}
-              </Link>
-              <div
-                className={`h-[1px] my-1 ${
-                  isDark ? 'bg-gray-700' : 'bg-slate-100'
-                }`}
-              />
-              <Link
                 href="/settings"
                 className={`flex items-center gap-3 px-4 py-2.5 text-[13px] transition-colors ${
-                  isDark
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'hover:bg-slate-50'
+                  isDark ? 'text-gray-300 hover:bg-gray-700' : 'hover:bg-slate-50'
                 }`}
               >
                 Appearance
@@ -292,22 +449,10 @@ export default function Sidebar() {
               <Link
                 href="/settings"
                 className={`flex items-center gap-3 px-4 py-2.5 text-[13px] transition-colors ${
-                  isDark
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'hover:bg-slate-50'
+                  isDark ? 'text-gray-300 hover:bg-gray-700' : 'hover:bg-slate-50'
                 }`}
               >
                 Settings
-              </Link>
-              <Link
-                href="/support"
-                className={`flex items-center gap-3 px-4 py-2.5 text-[13px] transition-colors ${
-                  isDark
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'hover:bg-slate-50'
-                }`}
-              >
-                Support
               </Link>
               <button
                 onClick={() => signOut()}
@@ -315,69 +460,42 @@ export default function Sidebar() {
               >
                 Sign out
               </button>
-              <div
-                className={`h-[1px] my-1 ${
-                  isDark ? 'bg-gray-700' : 'bg-slate-100'
-                }`}
-              />
-              <Link
-                href="/apps"
-                className="flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium text-[#FF6221] transition-colors hover:bg-orange-50 dark:hover:bg-orange-900/20"
-              >
-                Get the app
-              </Link>
-              <div
-                className={`h-[1px] my-1 ${
-                  isDark ? 'bg-gray-700' : 'bg-slate-100'
-                }`}
-              />
-              <div className="px-4 py-1.5 flex flex-wrap gap-x-2 gap-y-0.5 text-[10px] text-slate-400 dark:text-gray-500 font-medium">
-                <Link href="#" className="hover:underline">
-                  About
-                </Link>
-                <Link href="#" className="hover:underline">
-                  Privacy
-                </Link>
-                <Link href="#" className="hover:underline">
-                  Terms
-                </Link>
-              </div>
             </div>
           )}
         </div>
       </aside>
 
       {/* ========================================================= */}
-      {/* 2. MOBILE BOTTOM FIXED STRIP NAV BAR                      */}
+      {/* 5. MOBILE BOTTOM FIXED STRIP NAV BAR                       */}
       {/* ========================================================= */}
       <div
-        className={`lg:hidden fixed bottom-0 left-0 right-0 backdrop-blur-md border-t z-[90] px-4 py-2 shadow-lg ${
+        className={`lg:hidden fixed bottom-3 left-3 right-3 rounded-2xl backdrop-blur-xl border z-[90] px-2 py-2 shadow-2xl transition-all duration-300 ${
           isDark
-            ? 'bg-black/80 border-white/10'
-            : 'bg-white/80 border-slate-200/60'
+            ? 'bg-zinc-950/90 border-white/10 text-white'
+            : 'bg-white/90 border-slate-200/80 text-slate-800'
         }`}
       >
-        <div className="flex items-center justify-around max-w-md mx-auto">
-          {primaryNavItems.map((item) => {
+        <div className="flex items-center justify-between max-w-md mx-auto px-1">
+          {mobileNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl ${
+                className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-xl transition-colors ${
                   isActive
                     ? isDark
                       ? 'text-white font-bold'
                       : 'text-slate-950 font-bold'
                     : isDark
-                    ? 'text-gray-500'
+                    ? 'text-gray-400'
                     : 'text-slate-500'
                 }`}
               >
-                <span className="material-symbols-outlined text-[22px]">
+                <span className="material-symbols-outlined text-[19px]">
                   {item.icon}
                 </span>
-                <span className="text-[11px] tracking-tight font-medium">
+                <span className="text-[9.5px] tracking-tight font-medium">
                   {item.label}
                 </span>
               </Link>
@@ -386,53 +504,47 @@ export default function Sidebar() {
 
           <button
             onClick={() => setIsExploreRowOpen(!isExploreRowOpen)}
-            className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-colors ${
+            className={`flex flex-col items-center gap-0.5 py-1 px-1.5 rounded-xl transition-colors ${
               isExploreRowOpen
                 ? isDark
                   ? 'text-orange-400 font-bold'
                   : 'text-[#FF6221] font-bold'
                 : isDark
-                ? 'text-gray-500'
+                ? 'text-gray-400'
                 : 'text-slate-500'
             }`}
           >
-            <span className="material-symbols-outlined text-[22px]">search</span>
-            <span className="text-[11px] tracking-tight font-medium">
-              Explore
+            <span className="material-symbols-outlined text-[19px]">search</span>
+            <span className="text-[9.5px] tracking-tight font-medium">
+              More
             </span>
           </button>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 3. REPLICATED SUBSTACK STYLE EXPLORE STRIPPER HEADER       */}
+      {/* 6. SUB-NAVIGATION EXPLORE ROW / MOBILE DRAWER            */}
       {/* ========================================================= */}
       {isExploreRowOpen && (
         <div
-          className={`w-full fixed inset-x-0 top-14 z-30 border-b transition-all animate-in slide-in-from-top-2 duration-300 ${
-            isDark ? 'bg-zinc-950 border-white/10' : 'bg-white border-slate-200'
-          }`}
+          className={`w-full fixed left-0 right-0 lg:top-14 bottom-20 lg:bottom-auto z-40 transition-all ease-out animate-in slide-in-from-bottom-2 lg:slide-in-from-top-2 duration-300 ${
+            isDark ? 'bg-zinc-950/95 border-white/10' : 'bg-white/95 border-slate-200'
+          } border-t lg:border-b shadow-xl backdrop-blur-md`}
         >
-          <div className="max-w-[1400px] mx-auto px-4 lg:px-8 h-12 flex items-center justify-between gap-4 relative lg:pl-72 select-none">
-            {/* Left Edge Left Arrow Fade Wrapper */}
+          <div className="max-w-[1400px] mx-auto px-4 lg:px-8 h-14 lg:h-12 flex items-center justify-between gap-4 relative lg:pl-72 select-none">
             <div className="flex items-center relative flex-1 min-w-0 h-full overflow-hidden">
               <button
                 onClick={() => handleScroll('left')}
-                className={`absolute left-0 z-10 w-8 h-full flex items-center justify-start bg-gradient-to-r transition-opacity text-slate-400 hover:text-slate-700 dark:hover:text-white ${
+                className={`absolute left-0 z-10 w-8 h-full flex items-center justify-start bg-gradient-to-r transition-opacity text-slate-400 ${
                   isDark
                     ? 'from-zinc-950 via-zinc-950/70 to-transparent'
                     : 'from-white via-white/70 to-transparent'
                 }`}
-              >
-                <span className="material-symbols-outlined text-base">
-                  chevron_left
-                </span>
-              </button>
+              />
 
-              {/* Precise Pills Track Row */}
               <div
                 ref={scrollContainerRef}
-                className="flex items-center gap-1.5 overflow-x-auto h-full w-full no-scrollbar px-6"
+                className="flex items-center gap-2 overflow-x-auto h-full w-full no-scrollbar px-4"
               >
                 {extendedSpiritualItems.map((subItem) => {
                   const isSubActive = pathname === subItem.href;
@@ -441,7 +553,7 @@ export default function Sidebar() {
                       key={subItem.label}
                       href={subItem.href}
                       onClick={() => setIsExploreRowOpen(false)}
-                      className={`px-3 py-1 text-[13px] font-medium rounded-full transition-all shrink-0 ${
+                      className={`px-3.5 py-1.5 text-[12px] lg:text-[13px] font-medium rounded-full transition-all shrink-0 ${
                         isSubActive
                           ? isDark
                             ? 'bg-white text-black'
@@ -457,33 +569,12 @@ export default function Sidebar() {
                 })}
               </div>
 
-              {/* Right Edge Arrow Fade Wrapper */}
               <button
                 onClick={() => handleScroll('right')}
-                className={`absolute right-0 z-10 w-8 h-full flex items-center justify-end bg-gradient-to-l transition-opacity text-slate-400 hover:text-slate-700 dark:hover:text-white ${
+                className={`absolute right-0 z-10 w-8 h-full flex items-center justify-end bg-gradient-to-l transition-opacity text-slate-400 ${
                   isDark
                     ? 'from-zinc-950 via-zinc-950/70 to-transparent'
                     : 'from-white via-white/70 to-transparent'
-                }`}
-              >
-                <span className="material-symbols-outlined text-base">
-                  chevron_right
-                </span>
-              </button>
-            </div>
-
-            {/* Substack Style Right Aligned Input Search Box */}
-            <div className="relative shrink-0 w-44 sm:w-60 md:w-64">
-              <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">
-                search
-              </span>
-              <input
-                type="text"
-                placeholder="Search the scriptures..."
-                className={`w-full h-8 pl-8 pr-3 text-[13px] rounded-full outline-none transition-all border ${
-                  isDark
-                    ? 'bg-zinc-900 border-zinc-800 text-zinc-200 placeholder:text-zinc-500 focus:border-zinc-700'
-                    : 'bg-zinc-50 border-zinc-200/80 text-slate-800 placeholder:text-zinc-400 focus:bg-white focus:border-zinc-300'
                 }`}
               />
             </div>

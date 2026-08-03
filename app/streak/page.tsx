@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../layout-components/Sidebar';
-import Header from '../layout-components/Header';
 import Image from 'next/image';
 
 type NodeStatus = 'completed' | 'active' | 'locked';

@@ -34,16 +34,19 @@ export function AudioPlayer({
   // 1. Fetch Audio Source from API if book/chapter provided
   const fetchAudioUrl = useCallback(async () => {
     if (!book || !chapter) return;
-    
+
     setIsAudioLoading(true);
     try {
-      const res = await fetch(`/api/bible/audio?book=${book}&chapter=${chapter}&versionId=${version}`);
+      const res = await fetch(`/api/bible/audio?book=${encodeURIComponent(book)}&chapter=${chapter}&versionId=${encodeURIComponent(version)}`);
       const data = await res.json();
       if (data.url) {
         setAudioSrc(data.url);
+      } else {
+        setAudioSrc('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
       }
     } catch (err) {
-      console.error("Audio Sanctuary Error:", err);
+      console.error('Audio Sanctuary Error:', err);
+      setAudioSrc('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
     } finally {
       setIsAudioLoading(false);
     }
