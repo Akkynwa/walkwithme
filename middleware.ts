@@ -1,9 +1,14 @@
-import { withAuth } from 'next-auth/middleware';
+import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Enable route protection so authenticated pages are guarded consistently.
-const AUTH_ENABLED = true; 
+const AUTH_ENABLED = true;
+
+function getSignInUrl(req: NextRequest) {
+  const url = new URL('/auth/signin', req.url);
+  url.searchParams.set('callbackUrl', req.url);
+  return url;
+}
 
 const protectedRoutes = [
   '/journal',
@@ -19,51 +24,35 @@ const protectedRoutes = [
 
 const adminRoutes = ['/admin'];
 
-export default withAuth(
-  function middleware(req: NextRequest) {
-    // If auth is disabled, let everything through
-    if (!AUTH_ENABLED) {
-      return NextResponse.next();
-    }
-
-    // Use protectedRoutes to determine if this path requires auth
-    const { pathname } = req.nextUrl;
-    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
-
-    // If the route is not protected, allow through without further checks
-    if (!isProtected) {
-      return NextResponse.next();
-    }
-
-    const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
-
-    if (isAdminRoute) {
-      const signInUrl = new URL('/auth/signin', req.url);
-      signInUrl.searchParams.set('callbackUrl', req.url);
-      return NextResponse.redirect(signInUrl);
-    }
-
-    // For protected routes, allow withAuth's authorized callback to handle access
+export async function middleware(req: NextRequest) {
+  if (!AUTH_ENABLED) {
     return NextResponse.next();
-  },
-  {
-    callbacks: {
-      // If AUTH_ENABLED is false, always return true to allow access
-      // If true, it checks if a token exists in the request
-      authorized: ({ token }) => !AUTH_ENABLED || !!token,
-    },
-    pages: {
-      signIn: '/auth/signin',
-    },
   }
-);
+
+  const { pathname } = req.nextUrl;
+  const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+
+  if (!isProtected) {
+    return NextResponse.next();
+  }
+
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!token) {
+    return NextResponse.redirect(getSignInUrl(req));
+  }
+
+  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
+  if (isAdminRoute && token.role !== 'ADMIN') {
+    const dashboardUrl = new URL('/dashboard', req.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for specific exclusions
-     * Added 'public' and 'images' explicitly for clarity
-     */
     '/((?!api|_next/static|_next/image|favicon.ico|public|auth|manifest.json|icons|images).*)',
   ],
 };

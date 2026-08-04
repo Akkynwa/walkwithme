@@ -1,16 +1,26 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth'; // Ensure this path points to your NextAuth options file
+import { authOptions } from '@/lib/auth';
 
 const FREE_API_BASE = 'https://bible.helloao.org/api';
 const PAID_API_BASE = 'https://api.scripture.api.bible/v1';
 
-// Default mappings for Free translation IDs
+const DEFAULT_FREE_TRANSLATION = 'BSB';
+
 const FREE_TRANSLATION_MAP: Record<string, string> = {
-  KJV: 'BSB', // Default fallback to Berean Standard Bible or KJV on helloao
+  KJV: 'BSB',
   NIV: 'BSB',
   RVR09: 'RVR09',
+  BSB: 'BSB',
+  'DE4E12AF7F29F59F-01': 'BSB',
+  'DE4E12AF7F895F10-01': 'BSB',
+  '06125AD3D5662098-01': 'BSB',
 };
+
+function getFreeTranslationCode(rawBibleId: string): string {
+  const upper = rawBibleId.trim().toUpperCase();
+  return FREE_TRANSLATION_MAP[upper] || DEFAULT_FREE_TRANSLATION;
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -24,7 +34,6 @@ export async function GET(request: Request) {
     );
   }
 
-  // 1. Get user session with custom NextAuth config
   const session = await getServerSession(authOptions);
   const isPaidUser = !!(session?.user as any)?.isPaid;
 
@@ -33,49 +42,57 @@ export async function GET(request: Request) {
     let headers: HeadersInit = {};
 
     if (isPaidUser) {
-      url = `${PAID_API_BASE}/bibles/${rawBibleId}/passages/${passageId}?content-type=json`;
-      headers = { 'api-key': process.env.BIBLE_API_KEY_PAID || '' };
+      const apiKey = process.env.BIBLE_API_KEY_PAID || process.env.BIBLE_API_KEY;
+      if (!apiKey) {
+        throw new Error('API key missing for paid tier request');
+      }
+      url = `${PAID_API_BASE}/bibles/${rawBibleId}/passages/${passageId}?content-type=html&include-notes=false&include-titles=false&include-verse-numbers=true`;
+      headers = { 'api-key': apiKey };
     } else {
-      // 2. Parse passage format (e.g. "Genesis.1" or "GEN.1" -> book: "GEN", chapter: "1")
       const [book, chapter] = passageId.split('.');
-      const freeTranslation = FREE_TRANSLATION_MAP[rawBibleId.toUpperCase()] || rawBibleId;
-      
-      url = `${FREE_API_BASE}/${freeTranslation}/${book}/${chapter || 1}.json`;
+      const freeTranslation = getFreeTranslationCode(rawBibleId);
+      url = `${FREE_API_BASE}/${freeTranslation}/${book.toUpperCase()}/${chapter || 1}.json`;
     }
 
     const response = await fetch(url, {
       headers,
-      next: { revalidate: 86400 }, // Next.js fetch caching layer
+      next: { revalidate: 86400 },
     });
 
     if (!response.ok) {
-      throw new Error(`Upstream API failed with status ${response.status}`);
+      const errorText = await response.text().catch(() => '');
+      console.error(`Upstream API status ${response.status}:`, errorText.slice(0, 200));
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Upstream service error (${response.status})`,
+        },
+        { status: response.status }
+      );
     }
 
     const rawData = await response.json();
 
-    // 3. Normalization Step
     let normalizedVerses: Array<{ verse: number; text: string }> = [];
     let audioUrl: string | null = null;
 
     if (isPaidUser) {
-      // API.Bible format
-      const content = rawData?.data?.content || [];
-      normalizedVerses = Array.isArray(content)
-        ? content.map((v: any, idx: number) => ({
-            verse: Number(v.number || idx + 1),
-            text: (v.text || v.value || '').trim(),
-          }))
-        : [];
+      const content = rawData?.data?.content || '';
       audioUrl = rawData?.data?.audio || null;
+
+      if (typeof content === 'string') {
+        const textOnly = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        normalizedVerses = [{ verse: 1, text: textOnly }];
+      }
     } else {
-      // helloao.org format
       const chapterContent = rawData?.chapter?.content || rawData?.verses || [];
       normalizedVerses = chapterContent
         .filter((item: any) => item.type === 'verse' || item.text)
         .map((v: any, idx: number) => ({
           verse: Number(v.number || idx + 1),
-          text: (v.text || (Array.isArray(v.content) ? v.content.join(' ') : '')).trim(),
+          text: (
+            v.text || (Array.isArray(v.content) ? v.content.join(' ') : '')
+          ).trim(),
         }));
     }
 
@@ -94,7 +111,7 @@ export async function GET(request: Request) {
       }
     );
   } catch (error: any) {
-    console.error('Bible Route Error:', error);
+    console.error('Bible Passage Route Error:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to fetch passage' },
       { status: 500 }
